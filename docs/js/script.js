@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleIcon = document.querySelector('.toggle-icon');
     const searchBtn = document.getElementById('search-btn');
     const topicInput = document.getElementById('topic-input');
-    const themeToggleContainer = document.querySelector('.theme-toggle');
-    const topicTags = document.querySelectorAll('.topic-tag');
+    const themeToggleContainer = document.querySelector('.theme-toggle-top');
+    // Topic标签已移除
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     const startYearSelect = document.getElementById('start-year');
     const endYearSelect = document.getElementById('end-year');
@@ -183,8 +183,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         searchBtn.addEventListener('click', function() {
-            const searchTerm = topicInput.value.trim();
+            let searchTerm = topicInput.value.trim();
+            
+            // 如果输入框是默认的placeholder内容或为空，使用"flow matching"
+            if (!searchTerm || searchTerm === 'flow matching') {
+                searchTerm = 'flow matching';
+                topicInput.value = searchTerm; // 更新输入框显示
+            }
+            
             currentSearchTerm = searchTerm; // 保存当前搜索词
+            
             if (searchTerm) {
                 console.log('Searching for:', searchTerm);
                 
@@ -745,20 +753,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 添加主题切换事件监听器
     if (themeToggleContainer) {
         themeToggleContainer.addEventListener('click', function(e) {
-            // 防止复选框点击事件被触发两次
-            if (e.target !== themeToggle) {
-                console.log("Theme toggle container clicked!"); // 调试信息
-                const isDarkMode = document.body.classList.contains('dark-mode');
-                setTheme(!isDarkMode);
-            }
-        });
-    }
-    
-    // 监听复选框更改事件
-    if (themeToggle) {
-        themeToggle.addEventListener('change', function() {
-            console.log("Toggle changed, new value:", this.checked); // 调试信息
-            setTheme(this.checked);
+            console.log("Theme toggle container clicked!"); // 调试信息
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            setTheme(!isDarkMode);
         });
     }
 
@@ -965,29 +962,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     }
 
-    // 处理主题标签点击
-    topicTags.forEach(tag => {
-        tag.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent default behavior
-            e.stopPropagation(); // Stop event propagation
-            
-            const topic = tag.dataset.topic;
-            topicInput.value = topic;
-            filterPapers();
-        });
-        
-        // Prevent touch scrolling issues on mobile
-        tag.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-        }, { passive: false });
-        
-        tag.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            const topic = tag.dataset.topic;
-            topicInput.value = topic;
-            filterPapers();
-        }, { passive: false });
-    });
+    // Topic标签已移除，不再需要相关处理代码
 
     // 获取所有选择的会议
     function getSelectedConferences() {
@@ -1152,20 +1127,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // 可以在这里添加针对移动端的特定逻辑
         // 例如：调整卡片尺寸、简化UI等
         
-        // 当在移动端时，点击侧边栏选项后滚动到卡片区域
+        // 当在移动端时，点击搜索后滚动到论文区域
         if(isMobile) {
-            const topicTags = document.querySelectorAll('.topic-tag');
             const searchBtn = document.getElementById('search-btn');
             
             const scrollToPapers = () => {
                 setTimeout(() => {
-                    document.getElementById('papers-grid').scrollIntoView({ behavior: 'smooth' });
+                    const paperContainer = document.querySelector('.paper-container');
+                    if (paperContainer) {
+                        paperContainer.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }, 300);
             };
-            
-            topicTags.forEach(tag => {
-                tag.addEventListener('click', scrollToPapers);
-            });
             
             if(searchBtn) {
                 searchBtn.addEventListener('click', scrollToPapers);

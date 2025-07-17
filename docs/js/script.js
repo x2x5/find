@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let allFilteredPapers = []; // 存储所有过滤后的论文
     let displayedPapers = []; // 存储当前显示的论文
     let currentPage = 0; // 当前页数
-    const papersPerPage = 9; // 每页显示的论文数量
+    const papersPerPage = 50; // 每页显示的论文数量
     let isLoading = false; // 是否正在加载
     let hasMorePapers = true; // 是否还有更多论文
 

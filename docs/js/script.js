@@ -13,9 +13,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const endYearSelect = document.getElementById('end-year');
     const fieldMainCheckboxes = document.querySelectorAll('.field-main-checkbox');
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
-    const loadMoreIndicator = document.getElementById('load-more-indicator');
-    const loadingMore = document.getElementById('loading-more');
-    const noMorePapers = document.getElementById('no-more-papers');
+    const paginationContainer = document.getElementById('pagination-container');
+    const prevPageBtn = document.getElementById('prev-page-btn');
+    const nextPageBtn = document.getElementById('next-page-btn');
+    const currentPageInput = document.getElementById('current-page-input');
+    const totalPagesSpan = document.getElementById('total-pages');
+    const pageStartSpan = document.getElementById('page-start');
+    const pageEndSpan = document.getElementById('page-end');
+    const totalPapersPagination = document.getElementById('total-papers-pagination');
     
     // 统计信息相关元素
     const papersStats = document.getElementById('papers-stats');
@@ -37,13 +42,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 全局变量：当前搜索词
     let currentSearchTerm = '';
 
-    // 无限滚动相关变量
+    // 翻页相关变量
     let allFilteredPapers = []; // 存储所有过滤后的论文
-    let displayedPapers = []; // 存储当前显示的论文
-    let currentPage = 0; // 当前页数
+    let currentPage = 1; // 当前页数，从1开始
     const papersPerPage = 50; // 每页显示的论文数量
-    let isLoading = false; // 是否正在加载
-    let hasMorePapers = true; // 是否还有更多论文
+    let totalPages = 0; // 总页数
 
     // Function to check if a paper matches all keywords
     function paperMatchesAllKeywords(paper, keywords) {
@@ -259,22 +262,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // 显示过滤后的论文
                     if (shuffledPapers.length > 0) {
-                        // 初始显示第一批论文
-                        const initialPapers = shuffledPapers.slice(0, papersPerPage);
-                        displayedPapers = initialPapers;
-                        displayPapers(initialPapers);
+                        // 计算总页数
+                        totalPages = Math.ceil(shuffledPapers.length / papersPerPage);
                         currentPage = 1;
+                        
+                        // 显示第一页
+                        displayCurrentPage();
+                        
+                        // 更新翻页控件
+                        updatePaginationControls();
+                        
+                        // 显示翻页容器
+                        if (paginationContainer) paginationContainer.style.display = 'block';
                         
                         // 更新统计信息
                         updatePapersStats();
-                        
-                        // 如果还有更多论文，显示加载指示器
-                        if (shuffledPapers.length > papersPerPage) {
-                            hasMorePapers = true;
-                            if (loadMoreIndicator) loadMoreIndicator.style.display = 'block';
-                        } else {
-                            hasMorePapers = false;
-                        }
                     } else {
                         showNoResultsMessage(true);
                     }
@@ -297,6 +299,99 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchBtn.click();
             }
         });
+    }
+
+    // 翻页事件监听器
+    function initializePaginationEvents() {
+        // 上一页按钮
+        if (prevPageBtn) {
+            prevPageBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    goToPage(currentPage - 1);
+                }
+            });
+        }
+
+        // 下一页按钮
+        if (nextPageBtn) {
+            nextPageBtn.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    goToPage(currentPage + 1);
+                }
+            });
+        }
+
+        // 页码输入框
+        if (currentPageInput) {
+            currentPageInput.addEventListener('change', function() {
+                let page = parseInt(this.value);
+                if (page >= 1 && page <= totalPages) {
+                    goToPage(page);
+                } else {
+                    this.value = currentPage; // 恢复当前页码
+                }
+            });
+
+            currentPageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    let page = parseInt(this.value);
+                    if (page >= 1 && page <= totalPages) {
+                        goToPage(page);
+                    } else {
+                        this.value = currentPage; // 恢复当前页码
+                    }
+                }
+            });
+        }
+    }
+
+    // 跳转到指定页
+    function goToPage(page) {
+        if (page < 1 || page > totalPages) return;
+        
+        currentPage = page;
+        displayCurrentPage();
+        updatePaginationControls();
+        
+        // 滚动到顶部
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    // 显示当前页的论文
+    function displayCurrentPage() {
+        const startIndex = (currentPage - 1) * papersPerPage;
+        const endIndex = startIndex + papersPerPage;
+        const currentPagePapers = allFilteredPapers.slice(startIndex, endIndex);
+        
+        displayPapers(currentPagePapers);
+        updatePaginationSummary();
+    }
+
+    // 更新翻页控件状态
+    function updatePaginationControls() {
+        if (currentPageInput) currentPageInput.value = currentPage;
+        if (totalPagesSpan) totalPagesSpan.textContent = totalPages;
+        
+        // 更新按钮状态
+        if (prevPageBtn) {
+            prevPageBtn.disabled = currentPage <= 1;
+        }
+        if (nextPageBtn) {
+            nextPageBtn.disabled = currentPage >= totalPages;
+        }
+    }
+
+    // 更新翻页摘要信息
+    function updatePaginationSummary() {
+        const startIndex = (currentPage - 1) * papersPerPage + 1;
+        const endIndex = Math.min(currentPage * papersPerPage, allFilteredPapers.length);
+        
+        if (pageStartSpan) pageStartSpan.textContent = startIndex;
+        if (pageEndSpan) pageEndSpan.textContent = endIndex;
+        if (totalPapersPagination) totalPapersPagination.textContent = allFilteredPapers.length;
     }
 
     // Function to display papers
@@ -341,8 +436,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 copyAllBtn.className = 'list-copy-button copy-all-button';
                 copyAllBtn.innerHTML = '<i class="fas fa-copy"></i> ALL';
                 copyAllBtn.addEventListener('click', function() {
-                    // 格式化所有显示的论文标题为要求的格式
-                    const formattedText = displayedPapers.map(paper => 
+                    // 获取当前页显示的论文
+                    const startIndex = (currentPage - 1) * papersPerPage;
+                    const endIndex = startIndex + papersPerPage;
+                    const currentPagePapers = allFilteredPapers.slice(startIndex, endIndex);
+                    
+                    // 格式化当前页显示的论文标题为要求的格式
+                    const formattedText = currentPagePapers.map(paper => 
                         `- ${paper.conference} ${paper.year} ${paper.title}`
                     ).join('\n');
                     
@@ -1164,7 +1264,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 返回顶部按钮功能
     const backToTopBtn = document.getElementById('back-to-top');
 
-    // 添加滚动监听器实现无限滚动和返回顶部按钮控制
+    // 添加滚动监听器实现返回顶部按钮控制
     window.addEventListener('scroll', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
@@ -1178,20 +1278,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 backToTopBtn.style.display = 'none';
             }
         }
-        
-        // 无限滚动逻辑
-        if (isLoading || !hasMorePapers || allFilteredPapers.length === 0) {
-            return;
-        }
-        
-        // 检查是否滚动到页面底部附近
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-        
-        // 当距离底部还有200px时开始加载
-        if (scrollTop + windowHeight >= documentHeight - 200) {
-            loadMorePapers();
-        }
     });
     
     // 返回顶部按钮点击事件
@@ -1204,66 +1290,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 加载更多论文
-    function loadMorePapers() {
-        if (isLoading || !hasMorePapers) {
-            return;
-        }
-        
-        isLoading = true;
-        
-        // 显示加载指示器
-        if (loadMoreIndicator) loadMoreIndicator.style.display = 'block';
-        if (loadingMore) loadingMore.style.display = 'block';
-        if (noMorePapers) noMorePapers.style.display = 'none';
-        
-        // 模拟加载延迟
-        setTimeout(() => {
-            const startIndex = currentPage * papersPerPage;
-            const endIndex = startIndex + papersPerPage;
-            const newPapers = allFilteredPapers.slice(startIndex, endIndex);
-            
-            if (newPapers.length > 0) {
-                displayedPapers = displayedPapers.concat(newPapers);
-                appendPapersToList(newPapers);
-                currentPage++;
-                
-                // 更新统计信息
-                updatePapersStats();
-                
-                // 检查是否还有更多论文
-                if (endIndex >= allFilteredPapers.length) {
-                    hasMorePapers = false;
-                    if (loadingMore) loadingMore.style.display = 'none';
-                    if (noMorePapers) noMorePapers.style.display = 'block';
-                }
-            } else {
-                hasMorePapers = false;
-                if (loadingMore) loadingMore.style.display = 'none';
-                if (noMorePapers) noMorePapers.style.display = 'block';
-            }
-            
-            isLoading = false;
-            
-            // 如果没有更多论文，隐藏加载指示器
-            if (!hasMorePapers && newPapers.length === 0) {
-                if (loadMoreIndicator) loadMoreIndicator.style.display = 'none';
-            }
-        }, 500); // 500ms延迟以提供更好的用户体验
-    }
+    // 初始化翻页事件监听器
+    initializePaginationEvents();
     
     // 重置显示状态
     function resetDisplayState() {
         allFilteredPapers = [];
-        displayedPapers = [];
-        currentPage = 0;
-        isLoading = false;
-        hasMorePapers = true;
+        currentPage = 1;
+        totalPages = 0;
         
-        // 隐藏加载指示器
-        if (loadMoreIndicator) loadMoreIndicator.style.display = 'none';
-        if (loadingMore) loadingMore.style.display = 'none';
-        if (noMorePapers) noMorePapers.style.display = 'none';
+        // 隐藏翻页容器
+        if (paginationContainer) paginationContainer.style.display = 'none';
         
         // 隐藏统计信息
         if (papersStats) papersStats.style.display = 'none';
@@ -1271,7 +1308,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 更新统计信息
     function updatePapersStats() {
-        if (!papersStats || !totalPapersCount) {
+        if (!totalPapersCount) {
             return;
         }
         
@@ -1282,13 +1319,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalCount = document.getElementById('total-count');
         
         const totalPapers = allFilteredPapers.length;
-        const currentDisplayed = displayedPapers.length;
+        // 计算当前页实际显示的论文数量
+        const startIndex = (currentPage - 1) * papersPerPage + 1;
+        const endIndex = Math.min(currentPage * papersPerPage, totalPapers);
+        const currentDisplayed = endIndex - startIndex + 1;
         
         // 更新统计数字
         totalPapersCount.textContent = totalPapers;
         
-        // 更新内联统计信息
-        if (displayedCountInline) displayedCountInline.textContent = currentDisplayed;
+        // 更新内联统计信息 - 显示当前页范围
+        if (displayedCountInline) displayedCountInline.textContent = endIndex;
         if (totalCountInline) totalCountInline.textContent = totalPapers;
         
         // 更新原有统计信息（如果存在）
@@ -1296,6 +1336,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (totalCount) totalCount.textContent = totalPapers;
         
         // 永远不显示统计信息区域，因为All按钮左边已经有统计信息了
-        papersStats.style.display = 'none';
+        if (papersStats) papersStats.style.display = 'none';
     }
 }); 

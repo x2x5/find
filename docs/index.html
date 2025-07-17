@@ -1329,6 +1329,129 @@
         .dark-mode .github-link:hover {
             color: #3498db !important;
         }
+        
+        /* 翻页控件样式 */
+        .pagination-container {
+            border-top: 1px solid #e0e0e0;
+            margin-top: 20px;
+        }
+        
+        .pagination-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background-color: #2980b9 !important;
+            transform: translateY(-1px);
+        }
+        
+        .pagination-btn:disabled {
+            background-color: #bdc3c7 !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+        }
+        
+        .pagination-info {
+            background-color: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        #current-page-input {
+            transition: border-color 0.3s ease;
+        }
+        
+        #current-page-input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        /* 翻页控件夜间模式样式 */
+        .dark-mode .pagination-container {
+            border-top-color: #444;
+        }
+        
+        .dark-mode .pagination-btn {
+            background-color: #34495e !important;
+            color: #ecf0f1 !important;
+        }
+        
+        .dark-mode .pagination-btn:hover:not(:disabled) {
+            background-color: #4a5568 !important;
+        }
+        
+        .dark-mode .pagination-btn:disabled {
+            background-color: #2c3e50 !important;
+            color: #7f8c8d !important;
+        }
+        
+        .dark-mode .pagination-info {
+            background-color: #2d2d2d;
+            border-color: #444;
+            color: #ecf0f1;
+        }
+        
+        .dark-mode #current-page-input {
+            background-color: #2d2d2d;
+            color: #ecf0f1;
+            border-color: #444;
+        }
+        
+        .dark-mode #current-page-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .dark-mode .pagination-summary {
+            color: #bdc3c7 !important;
+        }
+        
+        /* 移动端翻页控件适配 */
+        @media (max-width: 768px) {
+            .pagination-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .pagination-info {
+                order: -1;
+            }
+            
+            .pagination-btn {
+                width: 120px;
+                padding: 10px 16px !important;
+                font-size: 14px !important;
+            }
+            
+            .pagination-summary {
+                font-size: 12px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .pagination-container {
+                padding: 15px 10px;
+                margin: 15px 0;
+            }
+            
+            .pagination-btn {
+                width: 100px;
+                padding: 8px 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .pagination-info {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+            
+            #current-page-input {
+                width: 50px;
+                font-size: 13px;
+            }
+        }
     </style>
     <style>
         /* 最终保障：无论内容多少，表格都要保持固定宽度和布局 */
@@ -1604,13 +1727,28 @@
                     </table>
                 </div>
                 
-                <!-- 无限滚动加载指示器 -->
-                <div id="load-more-indicator" class="load-more-indicator" style="display: none; text-align: center; padding: 20px; margin: 20px 0;">
-                    <div id="loading-more" class="loading-more" style="display: none;">
-                        <i class="fas fa-spinner fa-spin"></i> Loading more papers...
+                <!-- 翻页控件 -->
+                <div id="pagination-container" class="pagination-container" style="display: none; text-align: center; padding: 20px; margin: 20px 0;">
+                    <div class="pagination-controls" style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <button id="prev-page-btn" class="pagination-btn" style="padding: 8px 16px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;" disabled>
+                            <i class="fas fa-chevron-left"></i> 上一页
+                        </button>
+                        
+                        <div class="pagination-info" style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #666;">
+                            <span>第</span>
+                            <input type="number" id="current-page-input" min="1" value="1" style="width: 60px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 14px;">
+                            <span>页</span>
+                            <span>/</span>
+                            <span>共 <span id="total-pages">1</span> 页</span>
+                        </div>
+                        
+                        <button id="next-page-btn" class="pagination-btn" style="padding: 8px 16px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                            下一页 <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
-                    <div id="no-more-papers" class="no-more-papers" style="display: none; color: #666;">
-                        No more papers to load
+                    
+                    <div class="pagination-summary" style="margin-top: 10px; font-size: 13px; color: #777;">
+                        显示第 <span id="page-start">1</span> - <span id="page-end">50</span> 篇，共 <span id="total-papers-pagination">0</span> 篇论文
                     </div>
                 </div>
             </div>

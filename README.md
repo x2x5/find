@@ -90,9 +90,6 @@ python pre_data.py
 # 使用Python内置服务器
 cd docs
 python -m http.server 8000
-
-# 或使用Node.js服务器
-npx serve docs
 ```
 
 ### 4. 访问应用

@@ -572,14 +572,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 创建标题单元格并高亮搜索词
             const titleCell = document.createElement('td');
-            titleCell.className = 'list-paper-title';
+            titleCell.className = 'list-paper-title tex2jax_process';
             titleCell.title = paper.title;
             
             // 高亮显示搜索词
             if (currentSearchTerm && currentSearchTerm.trim() !== '') {
                 titleCell.innerHTML = highlightText(paper.title, currentSearchTerm);
             } else {
-                titleCell.textContent = paper.title;
+                titleCell.innerHTML = paper.title; // 使用innerHTML而不是textContent以支持LaTeX
             }
             
             // 创建操作单元格
@@ -602,6 +602,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             listTbody.appendChild(row);
         });
+        
+        // 重新渲染MathJax以显示数学公式
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([listTbody]).catch(function (err) {
+                console.log('MathJax rendering error:', err.message);
+            });
+        }
     }
 
     // 显示复制成功的UI反馈
@@ -1312,9 +1319,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // 获取内联统计信息元素
-        const displayedCountInline = document.getElementById('displayed-count-inline');
-        const totalCountInline = document.getElementById('total-count-inline');
+        // 获取统计信息元素
         const displayedCount = document.getElementById('displayed-count');
         const totalCount = document.getElementById('total-count');
         
@@ -1327,11 +1332,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 更新统计数字
         totalPapersCount.textContent = totalPapers;
         
-        // 更新内联统计信息 - 显示当前页范围
-        if (displayedCountInline) displayedCountInline.textContent = endIndex;
-        if (totalCountInline) totalCountInline.textContent = totalPapers;
-        
-        // 更新原有统计信息（如果存在）
+        // 更新统计信息（如果存在）
         if (displayedCount) displayedCount.textContent = currentDisplayed;
         if (totalCount) totalCount.textContent = totalPapers;
         

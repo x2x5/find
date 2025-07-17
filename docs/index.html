@@ -6,6 +6,24 @@
     <title>Top AI Papers</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- MathJax配置和库 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         body {
             width: 100%;
@@ -1626,11 +1644,6 @@
                     
                     <!-- 搜索按钮 -->
                     <button id="search-btn" class="top-bar-button" style="font-size: 16px; padding: 8px 16px;">搜索</button>
-                    
-                    <!-- 统计信息 -->
-                    <div class="stats-progress" style="font-size: 15px; color: #777; white-space: nowrap; margin: 0 8px; flex-shrink: 0; min-width: 60px; width: 60px; text-align: center;">
-                        <span id="displayed-count-inline">0</span>/<span id="total-count-inline">0</span>
-                    </div>
 
                     <!-- ML按钮 -->
                     <div class="field-dropdown" data-field="ML" style="background-color: #ce93d8; padding: 6px 8px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0; display: inline-block; width: 70px !important; max-width: 70px !important;">

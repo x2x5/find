@@ -21,6 +21,66 @@ document.addEventListener('DOMContentLoaded', function() {
     const pageStartSpan = document.getElementById('page-start');
     const pageEndSpan = document.getElementById('page-end');
     const totalPapersPagination = document.getElementById('total-papers-pagination');
+
+    const DATA_MANIFEST_URL = 'data/manifest.json';
+
+    const manifestCache = { loaded: false, data: null };
+    const conferenceDataCache = new Map();
+
+    async function loadManifest() {
+        if (manifestCache.loaded) {
+            return manifestCache.data;
+        }
+        const response = await fetch(DATA_MANIFEST_URL, { cache: 'no-cache' });
+        if (!response.ok) {
+            throw new Error('Failed to load manifest');
+        }
+        const data = await response.json();
+        manifestCache.loaded = true;
+        manifestCache.data = data;
+        return data;
+    }
+
+    async function loadConferenceData(conference) {
+        if (conferenceDataCache.has(conference)) {
+            return conferenceDataCache.get(conference);
+        }
+
+        const manifest = await loadManifest();
+        const confInfo = manifest.conferences[conference];
+        if (!confInfo) {
+            conferenceDataCache.set(conference, []);
+            return [];
+        }
+
+        const response = await fetch(confInfo.file, { cache: 'force-cache' });
+        if (!response.ok) {
+            throw new Error(`Failed to load data for ${conference}`);
+        }
+        const data = await response.json();
+        const papers = Array.isArray(data.papers) ? data.papers : [];
+        conferenceDataCache.set(conference, papers);
+        return papers;
+    }
+
+    async function loadPapersForConferences(conferences) {
+        const loadPromises = conferences.map(conf => loadConferenceData(conf));
+        const results = await Promise.all(loadPromises);
+
+        const merged = [];
+        for (let i = 0; i < conferences.length; i++) {
+            const conf = conferences[i];
+            const papers = results[i];
+            papers.forEach(p => {
+                merged.push({
+                    conference: conf,
+                    year: p.y,
+                    title: p.t
+                });
+            });
+        }
+        return merged;
+    }
     
     // 统计信息相关元素
     const papersStats = document.getElementById('papers-stats');
@@ -162,30 +222,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Search functionality
     if (searchBtn && topicInput) {
-        // 全局变量存储所有论文数据
         let allPapersData = null;
-        
-        // 加载所有论文数据
-        function loadAllPapers() {
-            return fetch('papers.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to load papers data');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    allPapersData = data;
-                    return data;
-                });
+
+        async function ensurePapersLoaded(conferences) {
+            const uniqueConfs = Array.from(new Set(conferences));
+            return loadPapersForConferences(uniqueConfs);
         }
         
-        // 加载所有论文数据
-        loadAllPapers().catch(error => {
-            console.error('Error loading papers data:', error);
-        });
-        
-        searchBtn.addEventListener('click', function() {
+        searchBtn.addEventListener('click', async function() {
             let searchTerm = topicInput.value.trim();
             
             // 如果输入框是默认的placeholder内容或为空，使用"flow matching"
@@ -220,37 +264,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (loading) loading.style.display = 'block';
                 if (noResults) noResults.style.display = 'none';
                 
-                // 检查是否已加载论文数据
-                const papersPromise = allPapersData ? Promise.resolve(allPapersData) : loadAllPapers();
-                
-                papersPromise.then(data => {
-                    // 在客户端过滤论文
-                    const papers = data.papers || [];
-                    
-                    // 将搜索词分割成关键词数组
-                    const keywords = searchTerm.split(' ').filter(k => k.trim() !== '');
-                    
-                    // 根据条件过滤论文
-                    const filteredPapers = papers.filter(paper => {
-                        // 检查会议
-                        if (conferences.length > 0 && !conferences.includes(paper.conference)) {
-                            return false;
-                        }
-                        
-                        // 检查年份
-                        const paperYear = parseInt(paper.year);
-                        const startYearInt = parseInt(startYear);
-                        const endYearInt = parseInt(endYear);
-                        if (paperYear < startYearInt || paperYear > endYearInt) {
-                            return false;
-                        }
-                        
-                        // 检查标题是否包含所有关键词
-                        const titleLower = paper.title.toLowerCase();
-                        return keywords.every(keyword => 
-                            titleLower.includes(keyword.toLowerCase())
-                        );
-                    });
+                ensurePapersLoaded(conferences)
+                    .then(data => {
+                        allPapersData = data;
+                        return data;
+                    })
+                    .then(data => {
+                        const papers = data || [];
+                        const keywords = searchTerm.split(' ').filter(k => k.trim() !== '');
+
+                        const filteredPapers = papers.filter(paper => {
+                            if (conferences.length > 0 && !conferences.includes(paper.conference)) {
+                                return false;
+                            }
+
+                            const paperYear = parseInt(paper.year, 10);
+                            const startYearInt = parseInt(startYear, 10);
+                            const endYearInt = parseInt(endYear, 10);
+                            if (paperYear < startYearInt || paperYear > endYearInt) {
+                                return false;
+                            }
+
+                            if (keywords.length === 0) return true;
+                            const titleLower = paper.title.toLowerCase();
+                            return keywords.every(keyword => titleLower.includes(keyword.toLowerCase()));
+                        });
                     
                     // 随机排序所有过滤后的论文
                     const shuffledPapers = [...filteredPapers].sort(() => 0.5 - Math.random());

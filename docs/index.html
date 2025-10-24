@@ -70,7 +70,7 @@
             z-index: 20000;
             position: relative;
         }
-        
+
         .top-bar .dropdown-content {
             z-index: 99999;
             position: absolute !important;
@@ -128,10 +128,6 @@
             gap: 4px;
             cursor: pointer;
             flex-shrink: 0;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
         
         #single-year-checkbox {
@@ -221,7 +217,7 @@
             width: 100%;
             overflow: visible; /* 允许下拉菜单显示 */
         }
-        
+
         .top-bar-row {
             width: 100%;
             max-width: 100%;
@@ -286,12 +282,13 @@
             }
             
             .top-bar-row {
-                gap: 3px !important;
+                gap: 6px !important;
                 justify-content: flex-start !important;
                 padding: 0 3px;
                 width: 100% !important;
                 max-width: 100% !important;
                 overflow: visible !important;
+                flex-wrap: wrap !important;
             }
             
             .top-bar-input {
@@ -309,6 +306,18 @@
             #topic-input {
                 width: 80px !important;
                 flex-shrink: 1;
+            }
+
+            .field-dropdown {
+                width: calc(32% - 4px) !important;
+                min-width: 90px !important;
+                max-width: 120px !important;
+                margin-top: 4px;
+            }
+
+            .field-dropdown[data-field="All"] {
+                margin-left: 0 !important;
+                width: calc(32% - 4px) !important;
             }
             
             /* 单年份复选框移动端样式 */
@@ -380,11 +389,11 @@
             }
             
             .top-bar-row {
-                gap: 2px !important;
+                gap: 4px !important;
                 padding: 0 2px;
                 width: 100% !important;
                 max-width: 100% !important;
-                flex-wrap: nowrap !important;
+                flex-wrap: wrap !important;
                 overflow: visible !important;
             }
             
@@ -411,6 +420,8 @@
                 padding: 2px 3px !important;
                 font-size: 8px !important;
                 flex-shrink: 1;
+                width: calc(48% - 4px) !important;
+                min-width: 120px !important;
             }
             
             .field-dropdown span {
@@ -1705,6 +1716,11 @@
                 flex-basis: calc(50% - 10px) !important;
                 margin-bottom: 10px;
             }
+            
+            /* 确保下拉内容在新行时不受限制 */
+            .dropdown-content {
+                min-width: 160px !important;
+            }
         }
     </style>
 </head>
@@ -1785,7 +1801,7 @@
                     <!-- AI按钮 -->
                     <div class="field-dropdown" data-field="AI" style="background-color: #ff9a9a; padding: 6px 8px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0; display: inline-block; width: 70px !important; max-width: 70px !important;">
                         <div class="field-label dropdown-toggle" data-field="AI" style="color: white; font-weight: bold; display: flex; align-items: center; font-size: 14px; gap: 2px; white-space: nowrap; width: 100% !important; justify-content: center;">
-                            <input type="checkbox" class="field-main-checkbox" data-field="AI" checked style="margin-right: 2px; transform: scale(0.8);">
+                            <input type="checkbox" class="field-main-checkbox" data-field="AI" style="margin-right: 2px; transform: scale(0.8);">
                             <span>AI</span>
                             <i class="fas fa-caret-down" style="font-size: 10px;"></i>
                         </div>
@@ -1797,7 +1813,7 @@
                     <!-- X按钮（原Other） -->
                     <div class="field-dropdown" data-field="Other" style="background-color: #d4a76a; padding: 6px 8px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0; display: inline-block; width: 50px !important; max-width: 50px !important;">
                         <div class="field-label dropdown-toggle" data-field="Other" style="color: white; font-weight: bold; display: flex; align-items: center; font-size: 14px; gap: 2px; white-space: nowrap; width: 100% !important; justify-content: center;">
-                            <input type="checkbox" class="field-main-checkbox" data-field="Other" checked style="margin-right: 2px; transform: scale(0.8);">
+                            <input type="checkbox" class="field-main-checkbox" data-field="Other" style="margin-right: 2px; transform: scale(0.8);">
                             <span>X</span>
                             <i class="fas fa-caret-down" style="font-size: 10px;"></i>
                         </div>
@@ -1809,7 +1825,7 @@
                     <!-- All按钮（放在最右边） -->
                     <div class="field-dropdown" data-field="All" style="background-color: #333; padding: 6px 8px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0; display: inline-block; width: 70px !important; max-width: 70px !important; margin-left: auto;">
                         <div class="field-label" data-field="All" style="color: white; font-weight: bold; display: flex; align-items: center; font-size: 14px; white-space: nowrap; width: 100% !important; justify-content: center;">
-                            <input type="checkbox" id="select-all-checkbox" class="field-main-checkbox" data-field="All" checked style="margin-right: 4px; transform: scale(0.8);">
+                            <input type="checkbox" id="select-all-checkbox" class="field-main-checkbox" data-field="All" style="margin-right: 4px; transform: scale(0.8);">
                             <span>All</span>
                         </div>
                     </div>

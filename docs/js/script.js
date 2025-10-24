@@ -640,9 +640,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let selectedConferences = {};
     let fieldsSelected = {
         'CV': true,
-        'AI': true,
+        'AI': false,
         'ML': true,
-        'Other': true
+        'Other': false
     };
     
     // 全选/全不选功能
@@ -946,10 +946,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const confs = categories[field];
                     dropdownContent.innerHTML = ''; // 清空现有内容
                     
-                    // 初始化所有会议为选中状态
+                    const fieldDefaultSelected = fieldsSelected[field] === true;
+                    
+                    // 初始化会议默认选中状态
                     Object.keys(confs).forEach(conf => {
                         if (selectedConferences[conf] === undefined) {
-                            selectedConferences[conf] = true;
+                            selectedConferences[conf] = fieldDefaultSelected;
                         }
                     });
                     

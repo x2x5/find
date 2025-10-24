@@ -832,7 +832,6 @@ footer {
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    user-select: none;
     padding: 5px;
     border-radius: 5px;
     transition: background-color 0.3s;
@@ -1190,8 +1189,6 @@ footer {
     touch-action: manipulation; /* Prevents browser handling of touch gestures */
     -webkit-tap-highlight-color: transparent; /* Removes tap highlight on iOS */
     -webkit-touch-callout: none; /* Prevents callout display on iOS */
-    -webkit-user-select: none;
-    user-select: none; /* Prevents text selection */
     position: relative; /* Enables z-index */
     z-index: 1; /* Ensures it's above other elements */
 }
@@ -1236,7 +1233,6 @@ footer {
     display: flex;
     align-items: center;
     cursor: pointer;
-    user-select: none;
 }
 
 .field-label span, .year-label span {
@@ -1893,7 +1889,6 @@ footer {
     font-weight: bold;
     color: #444;
     border: 1px solid #ddd;
-    user-select: none;
     transition: all 0.2s ease;
 }
 
@@ -2066,6 +2061,45 @@ footer {
     margin-top: 10px;
     display: none;
     table-layout: fixed;
+}
+
+.papers-list-view thead {
+    display: table-header-group;
+}
+
+.papers-list-view tbody {
+    display: table-row-group;
+}
+
+.papers-list-view tr {
+    display: table-row;
+}
+
+.papers-list-view td,
+.papers-list-view th {
+    display: table-cell;
+}
+
+@media (max-width: 768px) {
+    .papers-list-view tr {
+        display: table-row;
+    }
+
+    .papers-list-view td,
+    .papers-list-view th {
+        display: table-cell;
+    }
+}
+
+@media (max-width: 480px) {
+    .papers-list-view tr {
+        display: table-row;
+    }
+
+    .papers-list-view td,
+    .papers-list-view th {
+        display: table-cell;
+    }
 }
 
 .papers-list-view th {

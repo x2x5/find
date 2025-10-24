@@ -667,9 +667,9 @@
         
         .papers-list-view th:first-child,
         .papers-list-view td:first-child {
-            width: 12% !important;
-            min-width: 12% !important;
-            max-width: 12% !important;
+            width: 15% !important;
+            min-width: 15% !important;
+            max-width: 15% !important;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -678,9 +678,9 @@
         
         .papers-list-view th:nth-child(2),
         .papers-list-view td:nth-child(2) {
-            width: 8% !important;
-            min-width: 8% !important;
-            max-width: 8% !important;
+            width: 10% !important;
+            min-width: 10% !important;
+            max-width: 10% !important;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -689,9 +689,9 @@
         
         .papers-list-view th:nth-child(3),
         .papers-list-view td:nth-child(3) {
-            width: 68% !important;
-            min-width: 68% !important;
-            max-width: 68% !important;
+            width: 75% !important;
+            min-width: 75% !important;
+            max-width: 75% !important;
             white-space: normal !important;
             word-wrap: break-word !important;
             overflow-wrap: break-word !important;
@@ -699,13 +699,13 @@
             vertical-align: top !important;
         }
         
-        .papers-list-view th:last-child,
-        .papers-list-view td:last-child {
-            width: 12% !important;
-            min-width: 12% !important;
-            max-width: 12% !important;
-            text-align: center;
-            overflow: hidden;
+        .papers-list-view td:nth-child(3) {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .papers-list-view td:nth-child(3):hover {
+            background-color: #f0f0f0;
         }
         
         .list-paper-title {
@@ -822,22 +822,14 @@
             
             .papers-list-view th:nth-child(3),
             .papers-list-view td:nth-child(3) {
-                width: 60% !important;
-                min-width: 60% !important;
-                max-width: 60% !important;
+                width: 75% !important;
+                min-width: 75% !important;
+                max-width: 75% !important;
                 white-space: normal !important;
                 word-wrap: break-word !important;
                 overflow-wrap: break-word !important;
                 line-height: 1.4 !important;
                 vertical-align: top !important;
-            }
-            
-            .papers-list-view th:last-child,
-            .papers-list-view td:last-child {
-                width: 15% !important;
-                min-width: 15% !important;
-                max-width: 15% !important;
-                text-align: center;
             }
             
             .list-copy-button {
@@ -925,24 +917,15 @@
             
             .papers-list-view th:nth-child(3),
             .papers-list-view td:nth-child(3) {
-                width: 60% !important;
-                min-width: 60% !important;
-                max-width: 60% !important;
+                width: 75% !important;
+                min-width: 75% !important;
+                max-width: 75% !important;
                 white-space: normal !important;
                 word-wrap: break-word !important;
                 overflow-wrap: break-word !important;
                 line-height: 1.4 !important;
                 vertical-align: top !important;
                 padding: 4px 4px !important;
-            }
-            
-            .papers-list-view th:last-child,
-            .papers-list-view td:last-child {
-                width: 15% !important;
-                min-width: 15% !important;
-                max-width: 15% !important;
-                text-align: center;
-                padding: 4px 2px !important;
             }
             
             .list-copy-button {
@@ -1449,6 +1432,10 @@
             background-color: rgba(255, 255, 255, 0.05) !important;
         }
         
+        .dark-mode .papers-list-view td:nth-child(3):hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        
         /* 夜间模式下的复制按钮样式 */
         .dark-mode .list-copy-button {
             background-color: #34495e !important;
@@ -1854,10 +1841,9 @@
                     <table id="papers-list-view" class="papers-list-view" style="width: 100% !important; min-width: 100% !important; max-width: 100% !important; table-layout: fixed !important; border-collapse: collapse;">
                         <thead>
                             <tr style="width: 100% !important;">
-                                <th style="width: 12% !important; min-width: 12% !important; max-width: 12% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Conference</th>
-                                <th style="width: 8% !important; min-width: 8% !important; max-width: 8% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Year</th>
-                                <th style="width: 68% !important; min-width: 68% !important; max-width: 68% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Title</th>
-                                <th style="width: 12% !important; min-width: 12% !important; max-width: 12% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Copy</th>
+                                <th style="width: 15% !important; min-width: 15% !important; max-width: 15% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Conference</th>
+                                <th style="width: 10% !important; min-width: 10% !important; max-width: 10% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Year</th>
+                                <th id="title-header" style="width: 75% !important; min-width: 75% !important; max-width: 75% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer;">Title (click to copy all)</th>
                             </tr>
                         </thead>
                         <tbody>

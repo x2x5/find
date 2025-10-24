@@ -1178,21 +1178,35 @@ document.addEventListener('DOMContentLoaded', function() {
     function setRecentThreeYears() {
         const startYearSelect = document.getElementById('start-year');
         const endYearSelect = document.getElementById('end-year');
+        const singleYearCheckbox = document.getElementById('single-year-checkbox');
         
-        // 设置开始年份为当前年份减2
-        const startYear = currentYear - 1;
-        for (let i = 0; i < startYearSelect.options.length; i++) {
-            if (startYearSelect.options[i].value === startYear.toString()) {
-                startYearSelect.options[i].selected = true;
-                break;
+        // 检查是否为单年份模式
+        const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
+        
+        if (isSingleYear) {
+            // 单年模式：只设置当前年份
+            for (let i = 0; i < startYearSelect.options.length; i++) {
+                if (startYearSelect.options[i].value === currentYear.toString()) {
+                    startYearSelect.options[i].selected = true;
+                    break;
+                }
             }
-        }
-        
-        // 设置结束年份为当前年份
-        for (let i = 0; i < endYearSelect.options.length; i++) {
-            if (endYearSelect.options[i].value === currentYear.toString()) {
-                endYearSelect.options[i].selected = true;
-                break;
+        } else {
+            // 年份段模式：设置从去年到今年
+            const startYear = currentYear - 1;
+            for (let i = 0; i < startYearSelect.options.length; i++) {
+                if (startYearSelect.options[i].value === startYear.toString()) {
+                    startYearSelect.options[i].selected = true;
+                    break;
+                }
+            }
+            
+            // 设置结束年份为当前年份
+            for (let i = 0; i < endYearSelect.options.length; i++) {
+                if (endYearSelect.options[i].value === currentYear.toString()) {
+                    endYearSelect.options[i].selected = true;
+                    break;
+                }
             }
         }
         

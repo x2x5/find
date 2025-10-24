@@ -696,6 +696,34 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 更新所有领域状态
             updateFieldCheckboxes();
+
+            // 如果当前点击的是 All 复选框，直接触发全选/全不选逻辑
+            if (field === 'All' && selectAllCheckbox) {
+                selectAllCheckbox.checked = isChecked;
+                selectAllCheckbox.indeterminate = false;
+
+                fieldMainCheckboxes.forEach(fieldCheckbox => {
+                    const targetField = fieldCheckbox.dataset.field;
+                    if (targetField === 'All') return;
+
+                    fieldCheckbox.checked = isChecked;
+                    fieldCheckbox.indeterminate = false;
+                    fieldsSelected[targetField] = isChecked;
+
+                    const dropdownContent = document.getElementById(`dropdown-${targetField}`);
+                    if (dropdownContent) {
+                        const conferenceCheckboxes = dropdownContent.querySelectorAll('.conference-checkbox');
+                        conferenceCheckboxes.forEach(confCheckbox => {
+                            confCheckbox.checked = isChecked;
+                            selectedConferences[confCheckbox.dataset.conference] = isChecked;
+                        });
+                    }
+                });
+
+                console.log('All checkbox toggled via field checkbox change:', isChecked);
+                console.log('Selected conferences:', Object.keys(selectedConferences).filter(c => selectedConferences[c]));
+                return;
+            }
             
             console.log('Field checkbox changed:', field, isChecked);
             console.log('Selected conferences:', Object.keys(selectedConferences).filter(c => selectedConferences[c]));

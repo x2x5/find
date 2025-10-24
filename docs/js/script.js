@@ -1150,7 +1150,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const endYearSelect = document.getElementById('end-year');
         
         // 设置开始年份为当前年份减2
-        const startYear = currentYear - 2;
+        const startYear = currentYear - 1;
         for (let i = 0; i < startYearSelect.options.length; i++) {
             if (startYearSelect.options[i].value === startYear.toString()) {
                 startYearSelect.options[i].selected = true;

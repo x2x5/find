@@ -204,7 +204,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Selected conferences:', conferences);
                 
                 const startYear = startYearSelect ? startYearSelect.value : '2023';
-                const endYear = endYearSelect ? endYearSelect.value : '2025';
+                // 检查是否为单年份模式
+                const singleYearCheckbox = document.getElementById('single-year-checkbox');
+                const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
+                const endYear = isSingleYear ? startYear : (endYearSelect ? endYearSelect.value : '2025');
                 
                 // 如果没有选中任何会议，显示提示
                 if (conferences.length === 0) {
@@ -889,10 +892,37 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // 处理单年份复选框切换
+    function toggleSingleYearMode() {
+        const singleYearCheckbox = document.getElementById('single-year-checkbox');
+        const endYearSelect = document.getElementById('end-year');
+        const yearSeparator = document.getElementById('year-separator');
+        
+        if (singleYearCheckbox && endYearSelect && yearSeparator) {
+            if (singleYearCheckbox.checked) {
+                // 单年份模式：隐藏分隔符和结束年份选择器
+                yearSeparator.style.display = 'none';
+                endYearSelect.style.display = 'none';
+            } else {
+                // 年份范围模式：显示分隔符和结束年份选择器
+                yearSeparator.style.display = '';
+                endYearSelect.style.display = '';
+            }
+        }
+    }
+    
     // 添加年份选择事件
     if (startYearSelect && endYearSelect) {
         startYearSelect.addEventListener('change', validateYearRange);
         endYearSelect.addEventListener('change', validateYearRange);
+    }
+    
+    // 添加单年份复选框事件监听器
+    const singleYearCheckbox = document.getElementById('single-year-checkbox');
+    if (singleYearCheckbox) {
+        singleYearCheckbox.addEventListener('change', toggleSingleYearMode);
+        // 初始化时设置正确的显示状态（默认不选中，显示年份范围）
+        toggleSingleYearMode();
     }
 
     // 获取会议信息

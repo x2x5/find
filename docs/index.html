@@ -1618,6 +1618,12 @@
                     
                     <!-- 年份选择 -->
                     <div class="top-bar-item" style="display: flex; align-items: center; gap: 8px; flex-shrink: 1;">
+                        <!-- 单年份复选框 -->
+                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; flex-shrink: 0;">
+                            <input type="checkbox" id="single-year-checkbox" style="cursor: pointer; width: 16px; height: 16px;">
+                            <span style="font-size: 14px; white-space: nowrap;">单年</span>
+                        </label>
+                        
                         <select id="start-year" class="top-bar-input" style="width: auto; font-size: 16px; padding: 8px; flex-shrink: 1;">
                             <option value="2019">2019</option>
                             <option value="2020">2020</option>
@@ -1627,7 +1633,7 @@
                             <option value="2024" selected>2024</option>
                             <option value="2025">2025</option>
                         </select>
-                        <span style="font-size: 18px; flex-shrink: 0;">-</span>
+                        <span id="year-separator" style="font-size: 18px; flex-shrink: 0;">-</span>
                         <select id="end-year" class="top-bar-input" style="width: auto; font-size: 16px; padding: 8px; flex-shrink: 1;">
                             <option value="2019">2019</option>
                             <option value="2020">2020</option>

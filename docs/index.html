@@ -121,6 +121,46 @@
             gap: 8px;
         }
         
+        /* 单年份复选框基础样式 */
+        .top-bar-item label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            flex-shrink: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        #single-year-checkbox {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            /* 增加触摸区域 */
+            position: relative;
+        }
+        
+        /* 增加复选框的触摸区域 */
+        #single-year-checkbox::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+        }
+        
+        .top-bar-item label span {
+            white-space: nowrap;
+        }
+        
+        #year-separator {
+            flex-shrink: 0;
+        }
+        
         .top-bar-input {
             padding: 8px 12px;
             border: 1px solid #ddd;
@@ -271,6 +311,30 @@
                 flex-shrink: 1;
             }
             
+            /* 单年份复选框移动端样式 */
+            #single-year-checkbox {
+                width: 14px !important;
+                height: 14px !important;
+                flex-shrink: 0;
+            }
+            
+            .top-bar-item label {
+                gap: 2px !important;
+            }
+            
+            .top-bar-item label span {
+                font-size: 11px !important;
+            }
+            
+            #start-year, #end-year {
+                min-width: 50px !important;
+            }
+            
+            #year-separator {
+                font-size: 14px !important;
+                margin: 0 1px !important;
+            }
+            
             .field-dropdown {
                 padding: 2px 3px !important;
                 font-size: 9px !important;
@@ -350,6 +414,35 @@
             
             .field-dropdown span {
                 font-size: 8px !important;
+            }
+            
+            /* 单年份复选框小屏幕样式 */
+            #single-year-checkbox {
+                width: 12px !important;
+                height: 12px !important;
+                flex-shrink: 0;
+                min-width: 12px !important;
+            }
+            
+            .top-bar-item label {
+                gap: 1px !important;
+                flex-shrink: 0;
+            }
+            
+            .top-bar-item label span {
+                font-size: 10px !important;
+                white-space: nowrap;
+            }
+            
+            #start-year, #end-year {
+                min-width: 42px !important;
+                padding: 2px 3px !important;
+            }
+            
+            #year-separator {
+                font-size: 12px !important;
+                margin: 0 !important;
+                padding: 0 1px !important;
             }
             
             .stats-progress {
@@ -1216,6 +1309,20 @@
         
         /* 夜间模式下的年份分隔符样式 */
         .dark-mode .year-separator span {
+            color: #ecf0f1 !important;
+        }
+        
+        /* 夜间模式下的复选框和标签样式 */
+        .dark-mode #single-year-checkbox {
+            filter: brightness(0.9);
+            accent-color: #3498db;
+        }
+        
+        .dark-mode .top-bar-item label span {
+            color: #ecf0f1 !important;
+        }
+        
+        .dark-mode #year-separator {
             color: #ecf0f1 !important;
         }
         

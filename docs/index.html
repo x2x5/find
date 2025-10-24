@@ -402,8 +402,9 @@
             }
             
             #topic-input {
-                width: 60px !important;
+                width: 50px !important;
                 flex-shrink: 1;
+                min-width: 40px !important;
             }
             
             .field-dropdown {
@@ -894,7 +895,8 @@
             }
             
             .papers-list-view th {
-                font-size: 13px;
+                font-size: 11px;
+                padding: 3px 2px !important;
             }
             
             .papers-list-view tr {
@@ -903,32 +905,35 @@
             
             .papers-list-view th:first-child,
             .papers-list-view td:first-child {
-                width: 18% !important;
-                min-width: 18% !important;
-                max-width: 18% !important;
-                font-size: 0.9em;
+                width: 15% !important;
+                min-width: 15% !important;
+                max-width: 15% !important;
+                font-size: 0.85em;
                 text-align: center;
+                padding: 4px 2px !important;
             }
             
             .papers-list-view th:nth-child(2),
             .papers-list-view td:nth-child(2) {
-                width: 12% !important;
-                min-width: 12% !important;
-                max-width: 12% !important;
-                font-size: 0.9em;
+                width: 10% !important;
+                min-width: 10% !important;
+                max-width: 10% !important;
+                font-size: 0.85em;
                 text-align: center;
+                padding: 4px 2px !important;
             }
             
             .papers-list-view th:nth-child(3),
             .papers-list-view td:nth-child(3) {
-                width: 55% !important;
-                min-width: 55% !important;
-                max-width: 55% !important;
+                width: 60% !important;
+                min-width: 60% !important;
+                max-width: 60% !important;
                 white-space: normal !important;
                 word-wrap: break-word !important;
                 overflow-wrap: break-word !important;
                 line-height: 1.4 !important;
                 vertical-align: top !important;
+                padding: 4px 4px !important;
             }
             
             .papers-list-view th:last-child,
@@ -937,11 +942,19 @@
                 min-width: 15% !important;
                 max-width: 15% !important;
                 text-align: center;
+                padding: 4px 2px !important;
             }
             
             .list-copy-button {
-                padding: 2px 4px;
+                padding: 4px 6px;
                 font-size: 0.75em;
+                min-width: auto;
+                gap: 0;
+            }
+            
+            .list-copy-button i {
+                font-size: 1.1em;
+                margin: 0;
             }
             
             .list-paper-title {
@@ -1844,7 +1857,7 @@
                                 <th style="width: 12% !important; min-width: 12% !important; max-width: 12% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Conference</th>
                                 <th style="width: 8% !important; min-width: 8% !important; max-width: 8% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Year</th>
                                 <th style="width: 68% !important; min-width: 68% !important; max-width: 68% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Title</th>
-                                <th style="width: 12% !important; min-width: 12% !important; max-width: 12% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Copy All</th>
+                                <th style="width: 12% !important; min-width: 12% !important; max-width: 12% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Copy</th>
                             </tr>
                         </thead>
                         <tbody>

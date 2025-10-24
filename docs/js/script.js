@@ -589,7 +589,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const actionCell = document.createElement('td');
             const copyBtn = document.createElement('button');
             copyBtn.className = 'list-copy-button';
-            copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+            copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+            copyBtn.title = 'Copy'; // 添加tooltip显示"Copy"
             copyBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();

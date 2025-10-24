@@ -1,0 +1,1021 @@
+Dynamic Multiple High-order Correlations Fusion with Noise Filtering for Incomplete Multi-view Noisy-label Learning Preprint
+Towards Improved Risk Bounds for Transductive Learning Preprint
+ActiveHAI: Active Collection Based Human-AI Diagnosis with Limited Expert Predictions Preprint
+Zero-Shot Machine Unlearning with Proxy Adversarial Data Generation Preprint
+Non-collective Calibrating Strategy for Time Series Forecasting Preprint
+Stability and Generalization for Stochastic (Compositional) Optimizations Preprint
+MATCH: Modality-Calibrated Hypergraph Fusion Network for Conversational Emotion Recognition Preprint
+Counterfactual Thinking Driven Emotion Regulation for Image Sentiment Recognition Preprint
+HyperTrans: Efficient Hypergraph-Driven Cross-Domain Pattern Transfer in Image Anomaly Detection Preprint
+Reliable and Diverse Hierarchical Adapter for Zero-shot Video Classification Preprint
+DriftRemover: Hybrid Energy Optimizations for Anomaly Images Synthesis and Segmentation Preprint
+LP-Based Weighted Model Integration over Non-Linear Real Arithmetic Preprint
+Interactive Multimodal Learning via Flat Gradient Modification Preprint
+Endogenous Recovery via Within-modality Prototypes for Incomplete Multimodal Hashing Preprint
+Asynchronous Credit Assignment for Multi-Agent Reinforcement Learning Preprint
+Weakly-supervised Audio Temporal Forgery Localization via Progressive Audio-language Co-learning Network Preprint
+PeSANet: Physics-encoded Spectral Attention Network for Simulating PDE-Governed Complex Systems Preprint
+Gaussian Mixture Model for Graph Domain Adaptation Preprint
+Brain-Inspired Stepwise Patch Merging for Vision Transformers Preprint
+Enhancing Multimodal Protein Function Prediction Through Dual-Branch Dynamic Selection with Reconstructive Pre-Training Preprint
+Top-I2P: Explore Open-Domain Image-to-Point Cloud Registration Using Topology Relationship Preprint
+INFP: INdustrial Video Anomaly Detection via Frequency Prioritization Preprint
+Decoupled Imbalanced Label Distribution Learning Preprint
+On the Generalization of Feature Incremental Learning Preprint
+Suit the Node Pair to the Case: A Multi-Scale Node Pair Grouping Strategy for Graph-MLP Distillation Preprint
+Efficient Differentiable Approximation of Generalized Low-rank Regularization Preprint
+Exploring the Frontiers of Animation Video Generation in the Sora Era: Method, Dataset and Benchmark Preprint
+Adaptive Language-Aware Image Reflection Removal Network Preprint
+Open-World Semi-Supervised Learning with Class Semantic Correlations Preprint
+TCDM: A Temporal Correlation-Empowered Diffusion Model for Time Series Forecasting Preprint
+Underground Diagnosis in 3D GPR Data by Learning in CuCoRes Model Space Preprint
+Fault Diagnosis in REDNet Model Space Preprint
+Stabilizing Holistic Semantics in Diffusion Bridge for Image Inpainting Preprint
+Binary Event-Driven Spiking Transformer Preprint
+Optical Flow Estimation for Tiny Objects: New Problem, Specialized Benchmark, and Bioinspired Scheme Preprint
+One-step Label Shift Adaptation via Robust Weight Estimation Preprint
+Optimizing Personalized Federated Learning Through Adaptive Layer-Wise Learning Preprint
+GRAPE: Heterogeneous Graph Representation Learning for Genetic Perturbation with Coding and Non-Coding Biotype Preprint
+Differentiable Prompt Learning for Vision Language Models Preprint
+Pre-defined Keypoints Promote Category-level Articulation Pose Estimation via Multi-Modal Alignment Preprint
+Self-Classification Enhancement and Correction for Weakly Supervised Object Detection Preprint
+QuantileFormer: Probabilistic Time Series Forecasting with a Pattern-Mixture Decomposed VAE Transformer Preprint
+CompLex: Music Theory Lexicon Constructed by Autonomous Agents for Automatic Music Generation Preprint
+CFII-Net: Explicit Class Embeddings and Feature Maps Through Iterative Interaction for Boosting Medical Image Segmentation Preprint
+Robust Graph Contrastive Learning for Incomplete Multi-view Clustering Preprint
+Misclassification-driven Fingerprinting for DNNs Using Frequency-aware GANs Preprint
+Exploiting Label Skewness for Spiking Neural Networks in Federated Learning Preprint
+Computational Complexity of Planning for Recursive Primitive Task Networks: Selective Action Nullification with State Preservation Preprint
+AdaR: An Adaptive Gradient Method with Cyclical Restarting of Moment Estimations Preprint
+Top-Down Guidance for Learning Object-Centric Representations Preprint
+Detecting Hallucination in Large Language Models Through Deep Internal Representation Analysis Preprint
+ST-USleepNet: A Spatial-Temporal Coupling Prominence Network for Multi-Channel Sleep Staging Preprint
+Initial Models and Serialisability in Abstract Dialectical Frameworks Preprint
+SCNNs: Spike-based Coupling Neural Networks for Understanding Structural-Functional Relationships in the Human Brain Preprint
+TreeKV: Smooth Key-Value Cache Compression with Tree Structures Preprint
+Airdrop Games Preprint
+ADC-GS: Anchor-Driven Deformable and Compressed Gaussian Splatting for Dynamic Scene Reconstruction Preprint
+Multimodal Inference with Incremental Tabular Attributes Preprint
+Beyond Statistical Analysis: Multimodal Framework for Time Series Forecasting with LLM-Driven Temporal Pattern Preprint
+Approximate Lifted Model Construction Preprint
+Prototype-guided Knowledge Propagation with Adaptive Learning for Lifelong Person Re-identification Preprint
+The Role of Video Generation in Enhancing Data-Limited Action Understanding Preprint
+GRAML: Goal Recognition As Metric Learning Preprint
+Reliable and Calibrated Semantic Occupancy Prediction by Hybrid Uncertainty Learning Preprint
+Transferable Relativistic Predictor: Mitigating Cross-Task Cold-Start Issue in NAS Preprint
+Few-shot Novel Category Discovery Preprint
+A Medical Image Classification Network Based on Multi-View Consistent Momentum Contrastive Learning Preprint
+Enhancing User-Oriented Proactivity in Open-Domain Dialogues with Critic Guidance Preprint
+Multi-player Multi-armed Bandits with Delayed Feedback Preprint
+Multi-modal Anchor Gated Transformer with Knowledge Distillation for Emotion Recognition in Conversation Preprint
+Collaborative Multi-LoRA Experts with Achievement-based Multi-Tasks Loss for Unified Multimodal Information Extraction Preprint
+Smoothed Online Convex Optimization with Delayed Feedback Preprint
+Device-Cloud Collaborative Correction for On-Device Recommendation Preprint
+TextMEF: Text-guided Prompt Learning for Multi-exposure Image Fusion Preprint
+Dual-Balancing for Physics-Informed Neural Networks Preprint
+Scalable Multi-Stage Influence Function for Large Language Models via Eigenvalue-Corrected Kronecker-Factored Parameterization Preprint
+Explaining Black-box Model Predictions via Two-level Nested Feature Attributions with Consistency Property Preprint
+OT-DETECTOR: Delving into Optimal Transport for Zero-shot Out-of-Distribution Detection Preprint
+Curriculum Hierarchical Knowledge Distillation for Bias-Free Survival Prediction Preprint
+An Efficient Core-Guided Solver for Weighted Partial MaxSAT Preprint
+DiffusionIMU: Diffusion-Based Inertial Navigation with Iterative Motion Refinement Preprint
+Beyond Feature Mapping GAP: Integrating Real HDRTV Priors for Superior SDRTV-to-HDRTV Conversion Preprint
+Robust Misinformation Detection by Visiting Potential Commonsense Conflict Preprint
+Progressive Prefix-Memory Tuning for Complex Logical Query Answering on Knowledge Graphs Preprint
+Causal View of Time Series Imputation: Some Identification Results on Missing Mechanism Preprint
+The Devil is in Fine-tuning and Long-tailed Problems: A New Benchmark for Scene Text Detection Preprint
+Critical Node-aware Augmentation for Hypergraph Contrastive Learning Preprint
+Visual Perturbation and Adaptive Hard Negative Contrastive Learning for Compositional Reasoning in Vision-Language Models Preprint
+Adaptive Deep Learning from Crowds Preprint
+Mixture-of-Queries Transformer: Camouflaged Instance Segmentation via Queries Cooperation and Frequency Enhancement Preprint
+BankTweak: Adversarial Attack Against Multi-Object Trackers by Manipulating Feature Banks Preprint
+Circuit-Aware d-DNNF Compilation Preprint
+Cyclic Vision-Language Manipulator: Towards Reliable and Fine-Grained Image Interpretation for Automated Report Generation Preprint
+Zero-shot Generalist Graph Anomaly Detection with Unified Neighborhood Prompts Preprint
+GLDiTalker: Speech-Driven 3D Facial Animation with Graph Latent Diffusion Transformer Preprint
+Guaranteed Top-Adaptive-K in Recommendation Preprint
+Polynomial-Time Relational Probabilistic Inference in Open Universes Preprint
+SE(3)-Equivariant Diffusion Models for 3D Object Analysis Preprint
+CASA: CNN Autoencoder-based Score Attention for Efficient Multivariate Long-term Time-series Forecasting Preprint
+Evaluating and Mitigating Linguistic Discrimination in Large Language Models: Perspectives on Safety Equity and Knowledge Equity Preprint
+Decision-Aware Preference Modeling for Multi-Behavior Recommendation Preprint
+An Out-Of-Distribution Membership Inference Attack Approach for Cross-Domain Graph Attacks Preprint
+G3PT: Unleash the Power of Autoregressive Modeling in 3D Generation via Cross-Scale Querying Transformer Preprint
+Picturized and Recited with Dialects: A Multimodal Chinese Representation Framework for Sentiment Analysis of Classical Chinese Poetry Preprint
+BTPG: A Platform and Benchmark for Behavior Tree Planning in Everyday Service Robots Preprint
+A Game-Theoretic Perspective on Inconsistency Handling Preprint
+Model Rake: A Defense Against Stealing Attacks in Split Learning Preprint
+Deep Learning-Based Pedestrian Simulation with Limited Real-World Training Data: An Evaluation Framework Preprint
+Approximately EFX and fPO Allocations for Bivalued Chores Preprint
+Long-Term Individual Causal Effect Estimation via Identifiable Latent Representation Learning Preprint
+Wave-wise Discriminative Tracking by Phase-Amplitude Separation, Augmentation and Mixture Preprint
+Asymptotic Analysis of Weighted Fair Division Preprint
+Low-Light Video Enhancement via Spatial-Temporal Consistent Decomposition Preprint
+Egocentric Object-Interaction Anticipation with Retentive and Predictive Learning Preprint
+Enhancing Sampling Protocol for Point Cloud Classification Against Corruptions Preprint
+Knowledge Editing for Multi-Hop Question Answering Using Semantic Analysis Preprint
+A Novel Local Search Algorithm for the Vertex Bisection Minimization Problem Preprint
+Few-Shot Incremental Multi-modal Learning via Touch Guidance and Imaginary Vision Synthesis Preprint
+Backdoor Attack on Vertical Federated Graph Neural Network Learning Preprint
+RLBCD: Residual-guided Latent Brownian-bridge Co-Diffusion for Anatomical-to-Metabolic Image Synthesis Preprint
+EDyGS: Event Enhanced Dynamic 3D Radiance Fields from Blurry Monocular Video Preprint
+Projection, Interaction and Fusion: A Progressive Difference Fusion Network for Salient Object Detection Preprint
+Recalling The Forgotten Class Memberships: Unlearned Models Can Be Noisy Labelers to Leak Privacy Preprint
+Progressive Modality-Adaptive Interactive Network for Multi-Modality Image Fusion Preprint
+Concentrate on Weakness: Mining Hard Prototypes for Few-Shot Medical Image Segmentation Preprint
+FGeo-HyperGNet: Geometric Problem Solving Integrating FormalGeo Symbolic System and Hypergraph Neural Network Preprint
+Open-Vocabulary Fine-Grained Hand Action Detection Preprint
+DaringFed: A Dynamic Bayesian Persuasion Pricing for Online Federated Learning Under Two-sided Incomplete Information Preprint
+AdaptPFL: Unlocking Cross-Device Palmprint Recognition via Adaptive Personalized Federated Learning with Feature Decoupling Preprint
+Credit Assignment and Fine-Tuning Enhanced Reinforcement Learning for Collaborative Spatial Crowdsourcing Preprint
+CADP: Towards Better Centralized Learning for Decentralized Execution in MARL Preprint
+BEVTrack: A Simple and Strong Baseline for 3D Single Object Tracking in Bird’s-Eye View Preprint
+VQCounter: Designing Visual Prompt Queue for Accurate Open-World Counting Preprint
+A General Framework for Representing Controlled Natural Language Sentences and Translation to KR Formalisms Preprint
+Multi Objective Quantile Based Reinforcement Learning for Modern Urban Planning Preprint
+Physical Adversarial Camouflage Through Gradient Calibration and Regularization Preprint
+DDPA-3DVG: Vision-Language Dual-Decoupling and Progressive Alignment for 3D Visual Grounding Preprint
+DONIS: Importance Sampling for Training Physics-Informed DeepONet Preprint
+SOTA: Spike-Navigated Optimal TrAnsport Saliency Region Detection in Composite-bias Videos Preprint
+Most Probable Explanation in Probabilistic Answer Set Programming Preprint
+A Dynamic Stiefel Graph Neural Network for Efficient Spatio-Temporal Time Series Forecasting Preprint
+Sanitizing Backdoored Graph Neural Networks: A Multidimensional Approach Preprint
+FreqMoE: Dynamic Frequency Enhancement for Neural PDE Solvers Preprint
+Physics-Assisted and Topology-Informed Deep Learning for Weather Prediction Preprint
+Constructive Conflict-Driven Multi-Agent Reinforcement Learning for Strategic Diversity Preprint
+Conditional Information Bottleneck-Based Multivariate Time Series Forecasting Preprint
+FreEformer: Frequency Enhanced Transformer for Multivariate Time Series Forecasting Preprint
+Bidirectional Search while Ensuring Meet-In-The-Middle via Effective and Efficient-to-Compute Termination Conditions Preprint
+Contrastive Unlearning: A Contrastive Approach to Machine Unlearning Preprint
+FCKT: Fine-Grained Cross-Task Knowledge Transfer with Semantic Contrastive Learning for Targeted Sentiment Analysis Preprint
+Multi-Objective Neural Bandits with Random Scalarization Preprint
+Leveraging Pretrained Diffusion Models for Zero-Shot Part Assembly Preprint
+Logic Distillation: Learning from Code Function by Function for Decision-making Tasks Preprint
+Trace: Structural Riemannian Bridge Matching for Transferable Source Localization in Information Propagation Preprint
+Equitable Mechanism Design for Facility Location Preprint
+A Centrality-based Graph Learning Framework Preprint
+Bridging Local and Global Knowledge via Transformer in Board Games Preprint
+SDDiff: Boosting Radar Perception via Spatial-Doppler Diffusion Preprint
+MTGIB-UNet: A Multi-Task Graph Information Bottleneck and Uncertainty Weighted Network for ADMET Prediction Preprint
+Large-Scale Trade-Off Curve Computation for Incentive Allocation with Cardinality and Matroid Constraints Preprint
+Seeing the Unseen: Composing Outliers for Compositional Zero-Shot Learning Preprint
+Automated Strategy Invention for Confluence of Term Rewrite Systems Preprint
+Enhancing Transferability of Audio Adversarial Example for Both Frequency- and Time-domain Preprint
+Model-Based Closed-Loop Control Algorithm for Stochastic Partial Differential Equation Control Preprint
+Partial Label Clustering Preprint
+Privacy Preserving Solution of DCOPs by Local Search Preprint
+fairGNN-WOD: Fair Graph Learning Without Complete Demographics Preprint
+HSRMamba: Contextual Spatial-Spectral State Space Model for Single Hyperspectral Image Super-Resolution Preprint
+MTPNet: Multi-Grained Target Perception for Unified Activity Cliff Prediction Preprint
+Steady-State Strategy Synthesis for Swarms of Autonomous Agents Preprint
+Towards Anytime Retrieval: A Benchmark for Anytime Person Re-Identification Preprint
+InstGAN: Instant Actor-Critic-Driven GAN for De Novo Molecule Generation and Property Optimization Preprint
+Screening, Rectifying, and Re-Screening: A Unified Framework for Tuning Vision-Language Models with Noisy Labels Preprint
+Inverse Game Theory: An Incenter-Based Approach Preprint
+DcDsDiff: Dual-Conditional and Dual-Stream Diffusion Model for Generative Image Tampering Localization Preprint
+RotateKV: Accurate and Robust 2-Bit KV Cache Quantization for LLMs via Outlier-Aware Adaptive Rotations Preprint
+Accurate Sublayer Pruning for Large Language Models by Exploiting Latency and Tunability Information Preprint
+Q-MiniSAM2: A Quantization-based Benchmark for Resource-Efficient Video Segmentation Preprint
+ARPDL: Adaptive Relational Prior Distribution Loss as an Adapter for Document-Level Relation Extraction Preprint
+EFX Feasible Scheduling for Time-dependent Resources Preprint
+A Correlation Manifold Self-Attention Network for EEG Decoding Preprint
+Exploiting Text Semantics for Few and Zero Shot Node Classification on Text-attributed Graph Preprint
+Unleashing the Semantic Adaptability of Controlled Diffusion Model for Image Colorization Preprint
+TsCA: On the Semantic Consistency Alignment via Conditional Transport for Compositional Zero-Shot Learning Preprint
+Point Cloud Mixture-of-Domain-Experts Model for 3D Self-supervised Learning Preprint
+Leveraging Peer-Informed Label Consistency for Robust Graph Neural Networks with Noisy Labels Preprint
+Zero-shot Federated Unlearning via Transforming from Data-Dependent to Personalized Model-Centric Preprint
+Training-free Fourier Phase Diffusion for Style Transfer Preprint
+Risk-Aware Task Migration for Multiplex Unmanned Swarm Networks in Adversarial Environments Preprint
+Expanding the Category of Classifiers with LLM Supervision Preprint
+DHTAGK: Deep Hierarchical Transitive-Aligned Graph Kernels for Graph Classification Preprint
+A Structural Complexity Analysis of Hierarchical Task Network Planning Preprint
+POLO: An LLM-Powered Project-Level Code Performance Optimization Framework Preprint
+AKBR: Learning Adaptive Kernel-based Representations for Graph Classification Preprint
+Sentiment-enhanced Multi-hop Connected Graph Attention Network for Multimodal Aspect-Based Sentiment Analysis Preprint
+Improved Rank Aggregation Under Fairness Constraint Preprint
+A Dual Stream Visual Tokenizer for LLM Image Generation Preprint
+Graph Embedded Contrastive Learning for Multi-View Clustering Preprint
+Exploiting Self-Refining Normal Graph Structures for Robust Defense against Unsupervised Adversarial Attacks Preprint
+GBGC: Efficient and Adaptive Graph Coarsening via Granular-ball Computing Preprint
+CFDONEval: A Comprehensive Evaluation of Operator-Learning Neural Network Models for Computational Fluid Dynamics Preprint
+Enhanced Graph Similarity Learning via Adaptive Multi-scale Feature Fusion Preprint
+Rolling in Classical Planning with Conditional Effects and Constraints Preprint
+Simulating Misinformation Diffusion on Social Media Through CoNVaI: A Textual- and Agent-Based Diffusion Model Preprint
+ST-TAR: An Efficient Spatio-Temporal Learning Framework for Traffic Accident Risk Forecasting Preprint
+ProMEA: Prompt-driven Expansion and Alignment for Single Domain Generalization Preprint
+DisPIM: Distilling PreTrained Image Models for Generalizable Visuo-Motor Control Preprint
+HA-SCN: Learning Hierarchical Aligned Subtree Convolutional Networks for Graph Classification Preprint
+Towards Micro-Action Recognition with Limited Annotations: An Asynchronous Pseudo Labeling and Training Approach Preprint
+TESTN: A Triad-Enhanced Spatio-Temporal Network for Multi-Temporal POI Relationship Inference Preprint
+Mitigating Message Imbalance in Fraud Detection with Dual-View Graph Representation Learning Preprint
+Granular-Ball-Induced Multiple Kernel K-Means Preprint
+Settling the Complexity of Popularity in Additively Separable and Fractional Hedonic Games Preprint
+Modality-Fair Preference Optimization for Trustworthy MLLM Alignment Preprint
+Towards Recognizing Spatial-temporal Collaboration of EEG Phase Brain Networks for Emotion Understanding Preprint
+Towards Regularized Mixture of Predictions for Class-Imbalanced Semi-Supervised Facial Expression Recognition Preprint
+Preventing Latent Diffusion Model-Based Image Mimicry via Angle Shifting and Ensemble Learning Preprint
+Template3D-AD: Point Cloud Template Matching Method Based on Center Points for 3D Anomaly Detection Preprint
+Adversarial Training for Graph Convolutional Networks: Stability and Generalization Analysis Preprint
+Strategies, Credences, and Shannon Entropy: Reasoning about Strategic Uncertainty in Stochastic Environments Preprint
+Identifying and Reusing Learnwares Across Different Label Spaces Preprint
+SALE-MLP: Structure Aware Latent Embeddings for GNN to Graph-free MLP Distillation Preprint
+RLMiniStyler: Light-weight RL Style Agent for Arbitrary Sequential Neural Style Generation Preprint
+Unveiling the Power of Noise Priors: Enhancing Diffusion Models for Mobile Traffic Prediction Preprint
+Self-Consistent Model-based Adaptation for Visual Reinforcement Learning Preprint
+CMFS: CLIP-Guided Modality Interaction for Mitigating Noise in Multi-Modal Image Fusion and Segmentation Preprint
+Exact Algorithms with New Upper Bounds for the Maximum k-plex Problem Preprint
+Modality-Guided Dynamic Graph Fusion and Temporal Diffusion for Self-Supervised RGB-T Tracking Preprint
+Enhancing Semantic Clarity: Discriminative and Fine-grained Information Mining for Remote Sensing Image-Text Retrieval Preprint
+Trajectory-Dependent Generalization Bounds for Pairwise Learning with φ-mixing Samples Preprint
+Self-calibration Enhanced Whole Slide Pathology Image Analysis Preprint
+RDPA: Real-Time Distributed-Concentrated Penetration Attack for Point Cloud Learning Preprint
+S-EPOA: Overcoming the Indistinguishability of Segments with Skill-Driven Preference-Based Reinforcement Learning Preprint
+Improved Approximation Ratio for Strategyproof Facility Location on a Cycle Preprint
+Online Planning in MDPs with Stochastic Durative Actions Preprint
+Non-expansive Fuzzy ALC Preprint
+Enhancing Chemical Reaction and Retrosynthesis Prediction with Large Language Model and Dual-task Learning Preprint
+Accelerating Diffusion-based Super-Resolution with Dynamic Time-Spatial Sampling Preprint
+KP-PINNs: Kernel Packet Accelerated Physics Informed Neural Networks Preprint
+Multimodal Cancer Survival Analysis via Hypergraph Learning with Cross-Modality Rebalance Preprint
+SyncAnimation: A Real-Time End-to-End Framework for Audio-Driven Human Pose and Talking Head Animation Preprint
+Denoising Diffusion Models are Good General Gaze Feature Learners Preprint
+An Inverse Optimization Approach to Contextual Inverse Optimization Preprint
+KnowRA: Knowledge Retrieval Augmented Method for Document-level Relation Extraction with Comprehensive Reasoning Abilities Preprint
+An End-to-End Simple Clustering Hierarchical Pooling Operation for Graph Learning Based on Top-K Node Selection Preprint
+SIFAR: A Simple Faster Accelerated Variance-Reduced Gradient Method Preprint
+Label Distribution Learning with Biased Annotations Assisted by Multi-Label Learning Preprint
+Causal Learning Meet Covariates: Empowering Lightweight and Effective Nationwide Air Quality Forecasting Preprint
+Multi-Agent Corridor Generating Algorithm Preprint
+Deep Opinion-Unaware Blind Image Quality Assessment by Learning and Adapting from Multiple Annotators Preprint
+RoLocMe: A Robust Multi-agent Source Localization System with Learning-based Map Estimation Preprint
+Diffusion-aware Censored Gaussian Processes for Demand Modelling Preprint
+Towards Fairness with Limited Demographics via Disentangled Learning Preprint
+Probabilistic Multimodal Learning with von Mises-Fisher Distributions Preprint
+Imitation Learning via Focused Satisficing Preprint
+FAST: A Lightweight Mechanism Unleashing Arbitrary Client Participation in Federated Learning Preprint
+Human-Readable Neuro-Fuzzy Networks from Frequent Yet Discernible Patterns in Reward-Based Environments Preprint
+Interval Selection with Binary Predictions Preprint
+Parallel Belief Contraction via Order Aggregation Preprint
+Parallel Belief Revision via Order Aggregation Preprint
+Balans: Multi-Armed Bandits-based Adaptive Large Neighborhood Search for Mixed-Integer Programming Problems Preprint
+Combining Deep Reinforcement Learning and Search with Generative Models for Game-Theoretic Opponent Modeling Preprint
+Consensus-Guided Incomplete Multi-view Clustering via Cross-view Affinities Learning Preprint
+A Multi-view Fusion Approach for Enhancing Speech Signals via Short-time Fractional Fourier Transform Preprint
+Enhancing Counterfactual Estimation: A Focus on Temporal Treatments Preprint
+Prototype-based Optimal Transport for Out-of-Distribution Detection Preprint
+Variational Offline Multi-agent Skill Discovery Preprint
+POMP: Pathology-omics Multimodal Pre-training Framework for Cancer Survival Prediction Preprint
+How to Mitigate Information Loss in Knowledge Graphs for GraphRAG: Leveraging Triple Context Restoration and Query-Driven Feedback Preprint
+Inconsistency-Based Federated Active Learning Preprint
+CSF-GAN: Cross-modal Semantic Fusion-based Generative Adversarial Network for Text-guided Image Inpainting Preprint
+K-Buffers: A Plug-in Method for Enhancing Neural Fields with Multiple Buffers Preprint
+From Sparse to Complete: Semantic Understanding Based on Stroke Evolution in On-the-fly Sketch-based Image Retrieval Preprint
+Strategyproofness and Monotone Allocation of Auction in Social Networks Preprint
+Higher-order Logical Knowledge Representation Learning Preprint
+Viral Marketing and Convergence Properties in Generalised Voter Model Preprint
+Hybrid Mesh-Gaussian Representation for Efficient Indoor Scene Reconstruction Preprint
+TrajCogn: Leveraging LLMs for Cognizing Movement Patterns and Travel Purposes from Trajectories Preprint
+M4Bench: A Benchmark of Multi-domain Multi-granularity Multi-image Understanding for Multi-modal Large Language Models Preprint
+Optimized View and Geometry Distillation from Multi-view Diffuser Preprint
+Neuron Similarity-Based Neural Network Verification via Abstraction and Refinement Preprint
+PALA: Class-imbalanced Graph Domain Adaptation via Prototype-anchored Learning and Alignment Preprint
+Mask Does Not Matter: A Unified Latent Diffusion-Enhanced Framework for Mask-Free Virtual Try-On Preprint
+Accelerating Adversarial Training on Under-Utilized GPU Preprint
+Beyond Low-rankness: Guaranteed Matrix Recovery via Modified Nuclear Norm Preprint
+Theoretical Insights into Fine-Tuning Attention Mechanism: Generalization and Optimization Preprint
+TP-Eval: Tap Multimodal LLMs’ Potential in Evaluation by Customizing Prompts Preprint
+Multi-Task Curriculum Graph Contrastive Learning with Clustering Entropy Guidance Preprint
+Template-based Uncertainty Multimodal Fusion Network for RGBT Tracking Preprint
+Rethinking Graph Contrastive Learning Through Relative Similarity Preservation Preprint
+Poisoning-based Backdoor Attacks for Arbitrary Target Label with Positive Triggers Preprint
+A Simple yet Effective Hypergraph Clustering Network Preprint
+Wavelet Multi-scale Region-Enhanced Network for Medical Image Segmentation Preprint
+Meta Label Correction with Generalization Regularizer Preprint
+Learning from Logical Constraints with Lower- and Upper-Bound Arithmetic Circuits Preprint
+Inter3D: A Benchmark and Strong Baseline for Human-Interactive 3D Object Reconstruction Preprint
+Find and Perceive: Tell Visual Change with Fine-Grained Comparison Preprint
+MCF-Spouse: A Multi-Label Causal Feature Selection Method with Optimal Spouses Discovery Preprint
+Disentangled and Personalized Representation Learning for Next Point-of-Interest Recommendation Preprint
+Do You Steal My Model? Signature Diffusion Embedded Dual-Verification Watermarking for Protecting Intellectual Property of Hyperspectral Image Classification Models Preprint
+Bi-DiffCD: Bidirectional Diffusion Guided Collaborative Change Detection for Arbitrary-Modal Remote Sensing Images Preprint
+Prompt-Free Conditional Diffusion for Multi-object Image Augmentation Preprint
+Can Retelling Have Adequate Information for Reasoning? An Enhancement Method for Imperfect Video Understanding with Large Language Model Preprint
+FedBG: Proactively Mitigating Bias in Cross-Domain Graph Federated Learning Using Background Data Preprint
+Enhancing the Performance of Global Model by Improving the Adaptability of Local Models in Federated Learning Preprint
+LLM-TPF: Multiscale Temporal Periodicity-Semantic Fusion LLMs for Time Series Forecasting Preprint
+Guiding LLM-based Smart Contract Generation with Finite State Machine Preprint
+Hybrid Relational Graphs with Sentiment-laden Semantic Alignment for Multimodal Emotion Recognition in Conversation Preprint
+Pseudo-Label Reconstruction for Partial Multi-Label Learning Preprint
+DiffFERV: Diffusion-based Facial Editing of Real Videos Preprint
+Spatially Resolved Transcriptomics Data Clustering with Tailored Spatial-scale Modulation Preprint
+On Middle Grounds for Preference Statements Preprint
+IE-PMMA:Point Cloud Completion Through Inverse Edge-aware Upsampling and Precise Multi-Modal Feature Alignment Preprint
+Interpretable DNFs Preprint
+Exploring Transferable Homogenous Groups for Compositional Zero-Shot Learning Preprint
+Indirect Online Preference Optimization via Reinforcement Learning Preprint
+Enhancing Long-Tail Bundle Recommendations Utilizing Composition Pattern Modeling Preprint
+INT: Instance-Specific Negative Mining for Task-Generic Promptable Segmentation Preprint
+Learning to Extrapolate and Adjust: Two-Stage Meta-Learning for Concept Drift in Online Time Series Forecasting Preprint
+Relational Decomposition for Program Synthesis Preprint
+BRIGHT-VO: Brightness-Guided Hybrid Transformer for Visual Odometry with Multi-modality Refinement Module Preprint
+Structure-Aware Handwritten Text Recognition via Graph-Enhanced Cross-Modal Mutual Learning Preprint
+Richer Semantics, Better Alignment: Aligning Visual Features with Explicit and Enriched Semantics for Visible-Infrared Person Re-Identification Preprint
+Wisdom from Diversity: Bias Mitigation Through Hybrid Human-LLM Crowds Preprint
+Pixel-wise Divide and Conquer for Federated Vessel Segmentation Preprint
+MMGIA: Gradient Inversion Attack Against Multimodal Federated Learning via Intermodal Correlation Preprint
+Solving MDPs with LTLf+ and PPLTL+ Temporal Objectives Preprint
+LTLf+ and PPLTL+: Extending LTLf and PPLTL to Infinite Traces Preprint
+Robust Finite-Memory Policy Gradients for Hidden-Model POMDPs Preprint
+Secure and Efficient Watermarking for Latent Diffusion Models in Model Distribution Scenarios Preprint
+HiTuner: Hierarchical Semantic Fusion Model Fine-Tuning on Text-Attributed Graphs Preprint
+Responsibility Anticipation and Attribution in LTLf Preprint
+Multi-Sourced Compositional Generalization in Visual Question Answering Preprint
+MsRAG: Knowledge Augumented Image Captioning with Object-level Multi-source RAG Preprint
+MiniMal: Hard-Label Adversarial Attack Against Static Malware Detection with Minimal Perturbation Preprint
+CrossVTON: Mimicking the Logic Reasoning on Cross-Category Virtual Try-On Guided by Tri-Zone Priors Preprint
+Beyond the Known: Decision Making with Counterfactual Reasoning Decision Transformer Preprint
+Continuous Diffusive Prediction Network for Multi-Station Weather Prediction Preprint
+DenseSAM: Semantic Enhance SAM for Efficient Dense Object Segmentation Preprint
+FedSaaS: Class-Consistency Federated Semantic Segmentation via Global Prototype Supervision and Local Adversarial Harmonization Preprint
+A Theoretical Perspective on Why Stochastic Population Update Needs an Archive in Evolutionary Multi-objective Optimization Preprint
+Dual-level Fuzzy Learning with Patch Guidance for Image Ordinal Regression Preprint
+GraphAD: Interaction Scene Graph for End-to-end Autonomous Driving Preprint
+Dyn-D^2P: Dynamic Differentially Private Decentralized Learning with Provable Utility Guarantee Preprint
+Cost-Effective On-Device Sequential Recommendation with Spiking Neural Networks Preprint
+Fine-grained Prompt Screening: Defending Against Backdoor Attack on Text-to-Image Diffusion Models Preprint
+TEST-V: TEst-time Support-set Tuning for Zero-shot Video Classification Preprint
+SocialMP: Learning Social Aware Motion Patterns via Additive Fusion for Pedestrian Trajectory Prediction Preprint
+ECC-SNN: Cost-Effective Edge-Cloud Collaboration for Spiking Neural Networks Preprint
+A Priori Estimation of the Approximation, Optimization and Generalization Errors of Random Neural Networks for Solving Partial Differential Equations Preprint
+LRGR: Self-Supervised Incomplete Multi-View Clustering via Local Refinement and Global Realignment Preprint
+Single-Node Trigger Backdoor Attacks in Graph-Based Recommendation Systems Preprint
+CorrDetail: Visual Detail Enhanced Self-Correction for Face Forgery Detection Preprint
+Antibody Design and Optimization with Multi-scale Equivariant Graph Diffusion Models for Accurate Complex Antigen Binding Preprint
+MPPQ: Enhancing Post-Training Quantization for LLMs via Mixed Supervision, Proxy Rounding, and Pre-Searching Preprint
+Exploring the Over-smoothing Problem of Graph Neural Networks for Graph Classification: An Entropy-based Viewpoint Preprint
+Improvements to the Generate-and-Complete Approach to Conformant Planning Preprint
+Unlocking the Potential of Lightweight Quantized Models for Deepfake Detection Preprint
+Directing Mamba to Complex Textures: An Efficient Texture-Aware State Space Model for Image Restoration Preprint
+MedualTime: A Dual-Adapter Language Model for Medical Time Series-Text Multimodal Learning Preprint
+Flow-based Time-aware Causal Structure Learning for Sequential Recommendation Preprint
+IterMeme: Expert-Guided Multimodal LLM for Interactive Meme Creation with Layout-Aware Generation Preprint
+Linear Trading Position with Sparse Spectrum Preprint
+Flow Matching Based Sequential Recommender Model Preprint
+LogiCase: Effective Test Case Generation from Logical Description in Competitive Programming Preprint
+State Revisit and Re-explore: Bridging Sim-to-Real Gaps in Offline-and-Online Reinforcement Learning with An Imperfect Simulator Preprint
+A Multi-Granularity Clustering Approach for Federated Backdoor Defense with the Adam Optimizer Preprint
+Multi-Scale Temporal Neural Network for Stock Trend Prediction Enhanced by Temporal Hyepredge Learning Preprint
+Volumetric Axial Disentanglement Enabling Advancing in Medical Image Segmentation Preprint
+SSTrack: Sample-interval Scheduling for Lightweight Visual Object Tracking Preprint
+UniCT Depth: Event-Image Fusion Based Monocular Depth Estimation with Convolution-Compensated ViT Dual SA Block Preprint
+A Primal-dual Perspective for Distributed TD-learning Preprint
+ElaD-Net: An Elastic Semantic Decoupling Network for Lesion Segmentation in Breast Ultrasound Images Preprint
+AdvGrasp: Adversarial Attacks on Robotic Grasping from a Physical Perspective Preprint
+Boost Embodied AI Models with Robust Compression Boundary Preprint
+Reasoning About Causal Knowledge in Nondeterministic Domains Preprint
+Inference of Human-derived Specifications of Object Placement via Demonstration Preprint
+Optimal Transport on Categorical Data for Conterfactuals Using Compositional Data and Dirichlet Transport Preprint
+KIPPO: Koopman-Inspired Proximal Policy Optimization Preprint
+PanComplex: Leveraging Complex-Valued Neural Networks for Enhanced Pansharpening Preprint
+EfficientPIE: Real-Time Prediction on Pedestrian Crossing Intention with Sole Observation Preprint
+Improved MMS Approximations for Few Agent Types Preprint
+On the Discrimination and Consistency for Exemplar-Free Class Incremental Learning Preprint
+Situational-Constrained Sequential Resources Allocation via Reinforcement Learning Preprint
+FedDLAD: A Federated Learning Dual-Layer Anomaly Detection Framework for Enhancing Resilience Against Backdoor Attacks Preprint
+T2S: High-resolution Time Series Generation with Text-to-Series Diffusion Models Preprint
+MMET: A Multi-Input and Multi-Scale Transformer for Efficient PDEs Solving Preprint
+LEKA: LLM-Enhanced Knowledge Augmentation Preprint
+New Sequence-Independent Lifting Techniques for Cover Inequalities and When They Induce Facets Preprint
+Distance Preservation Games Preprint
+GSDet: Gaussian Splatting for Oriented Object Detection Preprint
+Distributed Cascaded Manifold Hashing Network for Compact Image Set Representation Preprint
+Rotation Invariant Spatial Networks for Single-View Point Cloud Classification Preprint
+ASCENT-ViT: Attention-based Scale-aware Concept Learning Framework for Enhanced Alignment in Vision Transformers Preprint
+Semantic-Guided Diffusion Model for Single-Step Image Super-Resolution Preprint
+Counterfactual Knowledge Maintenance for Unsupervised Domain Adaptation Preprint
+Where and How to Enhance: Discovering Bit-Width Contribution for Mixed Precision Quantization Preprint
+Dual-Agent Reinforcement Learning for Automated Feature Generation Preprint
+LLM-enhanced Score Function Evolution for Causal Structure Learning Preprint
+Aggregation Mechanism Based Graph Heterogeneous Networks Distillation Preprint
+Frequency-Aware Deep Depth from Focus Preprint
+Towards Debiased Generalized Category Discovery Preprint
+Boosting Zero-shot Stereo Matching Using Large-Scale Mixed Images Sources in the Real World Preprint
+Going Beyond Consistency: Target-oriented Multi-view Graph Neural Network Preprint
+kgMBQA: Quality Knowledge Graph-driven Multimodal Blind Image Assessment Preprint
+BMIP: Bi-directional Modality Interaction Prompt Learning for VLM Preprint
+Learn from Global Rather Than Local: Consistent Context-Aware Representation Learning for Multi-View Graph Clustering Preprint
+On the Learning with Augmented Class via Forests Preprint
+Noise-Resistant Label Reconstruction Feature Selection for Partial Multi-Label Learning Preprint
+FS-KEN: Few-shot Knowledge Graph Reasoning by Adversarial Negative Enhancing Preprint
+Multi-granularity Knowledge Transfer for Continual Reinforcement Learning Preprint
+Two-Stage Feature Generation with Transformer and Reinforcement Learning Preprint
+R2DQG: A Quality Meets Diversity Framework for Question Generation over Knowledge Bases Preprint
+STLSP: Integrating Structure and Text with Large Language Models for Link Sign Prediction of Networks Preprint
+PNAct: Crafting Backdoor Attacks in Safe Reinforcement Learning Preprint
+Injecting Imbalance Sensitivity for Multi-Task Learning Preprint
+Optimal Policy Adaptation Under Covariate Shift Preprint
+TSTAI: A Time-varying Brain Effective Connectivity Network Construction Method Combining with Brain Active Information Preprint
+Efficient Inter-Operator Scheduling for Concurrent Recommendation Model Inference on GPU Preprint
+FBQuant: FeedBack Quantization for Large Language Models Preprint
+Distilling A Universal Expert from Clustered Federated Learning Preprint
+Exploring Efficient and Effective Sequence Learning for Visual Object Tracking Preprint
+RAMer: Reconstruction-based Adversarial Model for Multi-party Multi-modal Multi-label Emotion Recognition Preprint
+Beyond Symmetry in Repeated Games with Restarts Preprint
+Responsibility Gap in Collective Decision Making Preprint
+Where and When: Predict Next POI and Its Explicit Timestamp in Sequential Recommendation Preprint
+Metapath and Hypergraph Structure-based Multi-Channel Graph Contrastive Learning for Student Performance Prediction Preprint
+ShortcutProbe: Probing Prediction Shortcuts for Learning Robust Models Preprint
+Approximated Behavioral Metric-based State Projection for Federated Reinforcement Learning Preprint
+GarmentDiffusion: 3D Garment Sewing Pattern Generation with Multimodal Diffusion Transformers Preprint
+Learning Advanced Self-Attention for Linear Transformers in the Singular Value Domain Preprint
+Automated Superscalar Processor Design by Learning Data Dependencies Preprint
+Efficient Diversity-based Experience Replay for Deep Reinforcement Learning Preprint
+Graph Random Walk with Feature-Label Space Alignment: A Multi-Label Feature Selection Method Preprint
+Unveiling Maternity and Infant Care Conversations: A Chinese Dialogue Dataset for Enhanced Parenting Support Preprint
+Unlocking Dark Vision Potential for Medical Image Segmentation Preprint
+Dividing Conflicting Items Fairly Preprint
+Endowing Interpretability for Neural Cognitive Diagnosis by Efficient Kolmogorov-Arnold Networks Preprint
+Reliable Disentanglement Multi-view Learning Against View Adversarial Attacks Preprint
+RePST: Language Model Empowered Spatio-Temporal Forecasting via Semantic-Oriented Reprogramming Preprint
+Graph Prompts: Adapting Video Graph for Video Question Answering Preprint
+Smart Contracts for Trustless Sampling of Correlated Equilibria Preprint
+From Individual to Universal: Regularized Multi-view Joint Representation for Multi-view Subspace-Preserving Recovery Preprint
+HIPP: Protecting Image Privacy via High-Quality Reversible Protected Version Preprint
+Adaptive Wizard for Removing Cross-Tier Misconfigurations in Active Directory Preprint
+Human-Imperceptible, Machine-Recognizable Images Preprint
+DANCE: Resource-Efficient Neural Architecture Search with Data-Aware and Continuous Adaptation Preprint
+Towards Generalizable Neural Simulators: Addressing Distribution Shifts Induced by Environmental and Temporal Variations Preprint
+Dual Encoder Contrastive Learning with Augmented Views for Graph Anomaly Detection Preprint
+Graph OOD Detection via Plug-and-Play Energy-based Evaluation and Propagation Preprint
+Efficient Quantum Approximate kNN Algorithm via Granular-Ball Computing Preprint
+A Reduction-Based Algorithm for the Clique Interdiction Problem Preprint
+State Feedback Enhanced Graph Differential Equations for Multivariate Time Series Forecasting Preprint
+SCOUT: Semi-supervised Camouflaged Object Detection by Utilizing Text and Adaptive Data Selection Preprint
+LoD: Loss-difference OOD Detection by Intentionally Label-Noisifying Unlabeled Wild Data Preprint
+Rethinking Removal Attack and Fingerprinting Defense for Model Intellectual Property Protection: A Frequency Perspective Preprint
+Enabling Visual Foundation Models to Teach Compact Students via Mixture of Distillation Preprint
+Priority Guided Explanation for Knowledge Tracing with Dual Ranking and Similarity Consistency Preprint
+Public Signaling in Markets with Information Asymmetry Using a Limited Number of Signals Preprint
+Advancing Community Detection with Graph Convolutional Neural Networks: Bridging Topological and Attributive Cohesion Preprint
+Dynamic Anchor-based Ensemble Clustering via Hypergraph Reconstruction Preprint
+EVICheck: Evidence-Driven Independent Reasoning and Combined Verification Method for Fact-Checking Preprint
+Unleashing the Potential of Transformer Flow for Photorealistic Face Restoration Preprint
+DPMamba: Distillation Prompt Mamba for Multimodal Remote Sensing Image Classification with Missing Modalities Preprint
+2D Gaussian Splatting for Outdoor Scene Decomposition and Relighting Preprint
+Multi-Source Collaborative Style Augmentation and Domain-Invariant Learning for Federated Domain Generalization Preprint
+CAN-ST: Clustering Adaptive Normalization for Spatio-temporal OOD Learning Preprint
+Balancing Invariant and Specific Knowledge for Domain Generalization with Online Knowledge Distillation Preprint
+Dynamic Higher-Order Relations and Event-Driven Temporal Modeling for Stock Price Forecasting Preprint
+CD^2: Constrained Dataset Distillation for Few-Shot Class-Incremental Learning Preprint
+PatternCIR Benchmark and TisCIR: Advancing Zero-Shot Composed Image Retrieval in Remote Sensing Preprint
+Counterfactual Strategies for Markov Decision Processes Preprint
+DO-CoLM: Dynamic 3D Conformation Relationships Capture with Self-Adaptive Ordering Molecular Relational Modeling in Language Models Preprint
+Facets in Argumentation: A Formal Approach to Argument Significance Preprint
+Spatio-temporal Prototype-based Hierarchical Learning for OD Demand Prediction Preprint
+Semi-Clairvoyant Scheduling of Speculative Decoding Requests to Minimize LLM Inference Latency Preprint
+Squeezing Context into Patches: Towards Memory-Efficient Ultra-High Resolution Semantic Segmentation Preprint
+Identifying Causal Mechanism Shifts Under Additive Models with Arbitrary Noise Preprint
+Verifying Quantized Graph Neural Networks is PSPACE-complete Preprint
+Breaking the Self-Evaluation Barrier: Reinforced Neuro-Symbolic Planning with Large Language Models Preprint
+MAGE: Multimodal Alignment and Generation Enhancement via Bridging Visual and Semantic Spaces Preprint
+Capturing Individuality and Commonality Between Anchor Graphs for Multi-View Clustering Preprint
+Balancing User-Item Structure and Interaction with Large Language Models and Optimal Transport for Multimedia Recommendation Preprint
+Rethinking Federated Graph Learning: A Data Condensation Perspective Preprint
+Soft Reasoning Paths for Knowledge Graph Completion Preprint
+A Neuro-Symbolic Framework for Sequence Classification with Relational and Temporal Knowledge Preprint
+ADPFedGNN: Adaptive Decoupling Personalized Federated Graph Neural Network Preprint
+Multimodal Prior Learning with Double Constraint Alignment for Snapshot Spectral Compressive Imaging Preprint
+GATES: Cost-aware Dynamic Workflow Scheduling via Graph Attention Networks and Evolution Strategy Preprint
+Simulate, Refine and Integrate: Strategy Synthesis for Efficient SMT Solving Preprint
+Dynamic Network Discovery via Infection Tracing Preprint
+AccCtr: Accelerating Training-Free Conditional Control For Diffusion Models Preprint
+Multimodal Regression for Enzyme Turnover Rates Prediction Preprint
+MASTER: A Multi-granularity Invariant Structure Clustering Scheme for Multi-view Clustering Preprint
+COGRASP: Co-Occurrence Graph Based Stock Price Forecasting Preprint
+Towards Region-Adaptive Feature Disentanglement and Enhancement for Small Object Detection Preprint
+TOTF: Missing-Aware Encoders for Clustering on Multi-View Incomplete Attributed Graphs Preprint
+SecV: LLM-based Secure Verilog Generation with Clue-Guided Exploration on Hardware-CWE Knowledge Graph Preprint
+Sketch Decompositions for Classical Planning via Deep Reinforcement Learning Preprint
+Not All Layers of LLMs Are Necessary During Inference Preprint
+High-Fidelity Road Network Generation with Latent Diffusion Models Preprint
+Localizing Before Answering: A Benchmark for Grounded Medical Visual Question Answering Preprint
+Global Information Compensation Network for Image Denoising Preprint
+Modular Deep Reinforcement Learning for Multi-Workload Offloading in Edge Networks Preprint
+CoderAgent: Simulating Student Behavior for Personalized Programming Learning with Large Language Models Preprint
+Fast Second-Order Online Kernel Learning Through Incremental Matrix Sketching and Decomposition Preprint
+Seeking Proxy Point via Stable Feature Space for Noisy Correspondence Learning Preprint
+Balance-Aware Sequence Sampling Makes Multi-Modal Learning Better Preprint
+Hierarchy Knowledge Graph for Parameter-Efficient Entity Embedding Preprint
+EF1 and EFX Orientations Preprint
+SeqPose: An End-to-End Framework to Unify Single-frame and Video-based RGB Category-Level Pose Estimation Preprint
+Leveraging MLLM Embeddings and Attribute Smoothing for Compositional Zero-Shot Learning Preprint
+Hybrid Local Causal Discovery Preprint
+FreqLLM: Frequency-Aware Large Language Models for Time Series Forecasting Preprint
+GCTAM: Global and Contextual Truncated Affinity Combined Maximization Model For Unsupervised Graph Anomaly Detection Preprint
+KnowMDD: Knowledge-guided Cross Contrastive Learning for Major Depressive Disorder Diagnosis Preprint
+Coming Out of the Dark: Human Pose Estimation in Low-light Conditions Preprint
+A Fine-Grained Complexity View on Propositional Abduction – Algorithms and Lower Bounds Preprint
+InfVC: An Inference-Enhanced Local Search Algorithm for the Minimum Vertex Cover Problem in Massive Graphs Preprint
+A Case for Validation Buffer in Pessimistic Actor-Critic Preprint
+Language-Conditioned Open-Vocabulary Mobile Manipulation with Pretrained Models Preprint
+Fusion of Granular-Ball Visual Spatial Representations for Enhanced Facial Expression Recognition Preprint
+Efficient Constraint-based Window Causal Graph Discovery in Time Series with Multiple Time Lags Preprint
+Multi-view Clustering via Multi-granularity Ensemble Preprint
+Let’s Group: A Plug-and-Play SubGraph Learning Method for Memory-Efficient Spatio-Temporal Graph Modeling Preprint
+Instructing Text-to-Image Diffusion Models via Classifier-Guided Semantic Optimization Preprint
+DERI: Cross-Modal ECG Representation Learning with Deep ECG-Report Interaction Preprint
+Multimodal Image Matching Based on Cross-Modality Completion Pre-training Preprint
+Resistance is Futile: Gradually Declining Immunity Retains the Exponential Duration of Immunity-Free Diffusion Preprint
+NAAST-GNN: Neighborhood Adaptive Aggregation and Spectral Tuning for Graph Anomaly Detection Preprint
+FedCM: Client Clustering and Migration in Federated Learning via Gradient Path Similarity and Update Direction Deviation Preprint
+DiffSQL: Leveraging Diffusion Model for Zero-Shot Self-Supervised Monocular Depth Estimation Preprint
+ILIF: Temporal Inhibitory Leaky Integrate-and-Fire Neuron for Overactivation in Spiking Neural Networks Preprint
+RRG-Mamba: Efficient Radiology Report Generation with State Space Model Preprint
+Keypoints as Dynamic Centroids for Unified Human Pose and Segmentation Preprint
+MSCI: Addressing CLIP’s Inherent Limitations for Compositional Zero-Shot Learning Preprint
+Concurrent Planning and Execution Using Dispatch-Dependent Values Preprint
+Adversarial Attacks on Both Face Recognition and Face Anti-spoofing Models Preprint
+Instantiation-based Formalization of Logical Reasoning Tasks Using Language Models and Logical Solvers Preprint
+APIMig: A Project-Level Cross-Multi-Version API Migration Framework Based on Evolution Knowledge Graph Preprint
+Hyper-graph Video Object Segmentation via Text-depth Collaborative Reasoning Preprint
+Online 3D Gaussian Splatting Modeling with Novel View Selection Preprint
+DFMU: Distribution-based Framework for Modeling Aleatoric Uncertainty in Multimodal Sentiment Analysis Preprint
+Reinforced In-Context Black-Box Optimization Preprint
+Hypernetwork Aggregation for Decentralized Personalized Federated Learning Preprint
+VimGeo: Efficient Cross-View Geo-Localization with Vision Mamba Architecture Preprint
+ForgDiffuser: General Image Forgery Localization with Diffusion Models Preprint
+Discrete Budget Aggregation: Truthfulness and Proportionality Preprint
+VeRecycle: Reclaiming Guarantees from Probabilistic Certificates for Stochastic Dynamical Systems after Change Preprint
+Towards a Unified View of Social Laws with Instantaneous Actions Preprint
+Deduction with Induction: Combining Knowledge Discovery and Reasoning for Interpretable Deep Reinforcement Learning Preprint
+L2M2: A Hierarchical Framework Integrating Large Language Model and Multi-agent Reinforcement Learning Preprint
+Problem-dependent Regret for Lexicographic Multi-Armed Bandits with Adversarial Corruptions Preprint
+A Symmetric Relative-Error Loss Function for Intermittent Multiscale Signal Modelling Preprint
+Decentralized Online Learning by Selfish Agents in Coalition Formation Preprint
+EFormer: An Effective Edge-based Transformer for Vehicle Routing Problems Preprint
+GraphProt: Certified Black-Box Shielding Against Backdoored Graph Models Preprint
+All Roads Lead to Rome: Exploring Edge Distribution Shifts for Heterophilic Graph Learning Preprint
+SetKE: Knowledge Editing for Knowledge Elements Overlap Preprint
+PAMol: Pocket-Aware Drug Design Method with Hypergraph Representation of Protein Pocket Structure and Feature Fusion Preprint
+Multi-Omics Analysis for Cancer Subtype Inference via Unrolling Graph Smoothness Priors Preprint
+T-T: Table Transformer for Tagging-based Aspect Sentiment Triplet Extraction Preprint
+A Logic-based Framework for Decoding Enthymemes in Argument Maps Involving Implicitness in Premises and Claims Preprint
+Learn Multi-task Anchor: Joint View Imputation and Label Generation for Incomplete Multi-view Clustering Preprint
+Asymptotic Fair Division: Chores Are Easier Than Goods Preprint
+In-Context Meta LoRA Generation Preprint
+Inconsistency Handling in DatalogMTL Preprint
+Prompt-Aware Controllable Shadow Removal Preprint
+Integrating Answer Set Programming and Large Language Models for Enhanced Structured Representation of Complex Knowledge in Natural Language Preprint
+Diffusion Guided Propagation Augmentation for Popularity Prediction Preprint
+Universal Backdoor Defense via Label Consistency in Vertical Federated Learning Preprint
+Uncertainty-guided Graph Contrastive Learning from a Unified Perspective Preprint
+Interaction-Data-guided Conditional Instrumental Variables for Debiasing Recommender Systems Preprint
+Preference Elicitation for Multi-objective Combinatorial Optimization with Active Learning and Maximum Likelihood Estimation Preprint
+Learning Probabilistic Temporal Logic Specifications for Stochastic Systems Preprint
+Not in My Backyard! Temporal Voting Over Public Chores Preprint
+InnateCoder: Learning Programmatic Options with Foundation Models Preprint
+X-KAN: Optimizing Local Kolmogorov-Arnold Networks via Evolutionary Rule-Based Machine Learning Preprint
+A Unifying Framework for Semiring-Based Constraint Logic Programming With Negation Preprint
+QiMeng-TensorOp: One-Line Prompt is Enough for High-Performance Tensor Operator Generation with Hardware Primitives Preprint
+Spatial-Spectral Similarity-Guided Fusion Network for Pansharpening Preprint
+Improving Prediction Certainty Estimation for Reliable Early Exiting via Null Space Projection Preprint
+Bimodal Depth-First Search for Scalable GAC for AllDifferent Preprint
+Argument-based Multi-Issue Negotiation Preprint
+PDDFormer: Pairwise Distance Distribution Graph Transformer for Crystal Material Property Prediction Preprint
+Exploiting Position Information in Convolutional Kernels for Structural Re-parameterization Preprint
+Probabilistic Analysis of Stable Matching in Large Markets with Siblings Preprint
+Dynamic and Adaptive Feature Generation with LLM Preprint
+Incorporating Visual Experts to Resolve the Information Loss in Multimodal Large Language Models Preprint
+Base-Detail Feature Learning Framework for Visible-Infrared Person Re-Identification Preprint
+EnergyCompress: A General Case Base Learning Strategy Preprint
+From End-to-end to Step-by-step: Learning to Abstract via Abductive Reinforcement Learning Preprint
+Language-Based Bayesian Optimization Research Assistant (BORA) Preprint
+Synthesising Minimum Cost Dynamic Norms Preprint
+Asset Pricing with Contrastive Adversarial Variational Bayes Preprint
+Think Twice Before Adaptation: Improving Adaptability of DeepFake Detection via Online Test-Time Adaptation Preprint
+Fast Explanations via Policy Gradient-Optimized Explainer Preprint
+Randomised Optimism via Competitive Co-Evolution for Matrix Games with Bandit Feedback Preprint
+Online Housing Market Preprint
+Unsupervised Feature Transformation via In-context Generation, Generator-critic LLM Agents, and Duet-play Teaming Preprint
+Fast and Stronger Lower Bounds for Planar Euclidean Shortest Paths Preprint
+MS-DPPs: Multi-Source Determinantal Point Processes for Contextual Diversity Refinement of Composite Attributes in Text to Image Retrieval Preprint
+View-Association-Guided Dynamic Multi-View Classification Preprint
+Multimodal Inverse Attention Network with Intrinsic Discriminant Feature Exploitation for Fake News Detection Preprint
+Phenotypic Profile-Informed Generation of Drug-Like Molecules via Dual-Channel Variational Autoencoders Preprint
+LLM4VKG: Leveraging Large Language Models for Virtual Knowledge Graph Construction Preprint
+Constrained Preferential Bayesian Optimization and Its Application in Banner Ad Design Preprint
+Fast Guaranteed Tensor Recovery with Adaptive Tensor Nuclear Norm Preprint
+Efficient Multi-view Clustering via Reinforcement Contrastive Learning Preprint
+Fair Incomplete Multi-View Clustering via Distribution Alignment Preprint
+MIRROR: Multi-agent Intra- and Inter-Reflection for Optimized Reasoning in Tool Learning Preprint
+Learning Neural Vocoder from Range-Null Space Decomposition Preprint
+Boosting Few-Shot Open-Set Object Detection via Prompt Learning and Robust Decision Boundary Preprint
+Why the Agent Made that Decision: Contrastive Explanation Learning for Reinforcement Learning Preprint
+Causal-aware Large Language Models: Enhancing Decision-Making Through Learning, Adapting and Acting Preprint
+STAMImputer: Spatio-Temporal Attention MoE for Traffic Data Imputation Preprint
+SEP: A General Lossless Compression Framework with Semantics Enhancement and Multi-Stream Pipelines Preprint
+A Hybrid Multi-Factor Network with Dynamic Sequence Modeling for Early Warning of Intraoperative Hypotension Preprint
+In-context Learning Demonstration Generation with Text Distillation Preprint
+ExpertDiff: Head-less Model Reprogramming with Diffusion Classifiers for Out-of-Distribution Generalization Preprint
+ABNet: Mitigating Sample Imbalance in Anomaly Detection Within Dynamic Graphs Preprint
+Understanding Visual Detail Hallucinations of Large Vision-Language Models Preprint
+Learning Causally Disentangled Representations for Fair Personality Detection Preprint
+Drafting and Revision: Advancing High-Fidelity Video Inpainting Preprint
+Conditional Causal Representation Learning for Heterogeneous Single-cell RNA Data Integration and Prediction Preprint
+Two-stage Risk Control with Application to Ranked Retrieval Preprint
+A Cross-Modal Densely Guided Knowledge Distillation Based on Modality Rebalancing Strategy for Enhanced Unimodal Emotion Recognition Preprint
+Divide and Conquer: Coordinating Multiplex Mixture of Graph Learners to Handle Multi-Omics Analysis Preprint
+OMS: One More Step Noise Searching to Enhance Membership Inference Attacks for Diffusion Models Preprint
+SCVBench: A Benchmark with Multi-turn Dialogues for Story-Centric Video Understanding Preprint
+Query-Based and Unnoticeable Graph Injection Attack from Neighborhood Perspective Preprint
+Federated Multi-view Graph Clustering with Incomplete Attribute Imputation Preprint
+Tensorial Multi-view Clustering with Deep Anchor Graph Projection Preprint
+CRAFT: Time Series Forecasting with Cross-Future Behavior Awareness Preprint
+Improving Consistency Identification in Task-oriented Dialogue Through Multi-Agent Collaboration Preprint
+MMNet: Missing-Aware and Memory-Enhanced Network for Multivariate Time Series Imputation Preprint
+WenyanGPT: A Large Language Model for Classical Chinese Tasks Preprint
+Generic Adversarial Attack Framework Against Vertical Federated Learning Preprint
+ReplayCAD: Generative Diffusion Replay for Continual Anomaly Detection Preprint
+ListenNet: A Lightweight Spatio-Temporal Enhancement Nested Network for Auditory Attention Detection Preprint
+NS4S: Neighborhood Search for Scheduling Problems Via Large Language Models Preprint
+Federated Stochastic Bilevel Optimization with Fully First-Order Gradients Preprint
+Explainable Graph Neural Networks via Structural Externalities Preprint
+Witnesses for Answer Sets of Basic Logic Programs Preprint
+CABIN: Debiasing Vision-Language Models Using Backdoor Adjustments Preprint
+App2Exa: Accelerating Exact kNN Search via Dynamic Cache-Guided Approximation Preprint
+Constrained Sequential Inference in Machine Learning Using Constraint Programming Preprint
+HPDM: A Hierarchical Popularity-aware Debiased Modeling Approach for Personalized News Recommender Preprint
+Community-Aware Graph Transformer for Brain Disorder Identification Preprint
+Feint and Attack: Jailbreaking and Protecting LLMs via Attention Distribution Modeling Preprint
+MGCA-Net: Multi-Graph Contextual Attention Network for Two-View Correspondence Learning Preprint
+Optimal Planning to Coordinate Science Data Collection and Downlink for a Constellation of Agile Satellites with Limited Storage Preprint
+Counterfactual Explanations for Continuous Action Reinforcement Learning Preprint
+Consistency-Aware Padding for Incomplete Multi-Modal Alignment Clustering Based on Self-Repellent Greedy Anchor Search Preprint
+Electron Density-enhanced Molecular Geometry Learning Preprint
+Denoise-then-Retrieve: Text-Conditioned Video Denoising for Video Moment Retrieval Preprint
+BridgeVoC: Neural Vocoder with Schrödinger Bridge Preprint
+Test-Time Adaptation on Recommender System with Data-Centric Graph Transformation Preprint
+Joint-Perturbation Simultaneous Pseudo-Gradient Preprint
+Predicting Spectral Information for Self-Supervised Signal Classification Preprint
+HLMTrans: A Sim-to-Real Transfer Framework for Spatial Crowdsourcing with Human-Guided Language Models Preprint
+DIIN: Diffusion Iterative Implicit Networks for Arbitrary-scale Super-resolution Preprint
+Preference Identification by Interaction Overlap for Bundle Recommendation Preprint
+Adaptive Graph Unlearning Preprint
+An Association-based Fusion Method for Speech Enhancement Preprint
+Fully Test-Time Adaptation for Feature Decrement in Tabular Data Preprint
+HGMP: Heterogeneous Graph Multi-Task Prompt Learning Preprint
+Integration of Old and New Knowledge for Generalized Intent Discovery: A Consistency-driven Prototype-Prompting Framework Preprint
+Odyssey : Empowering Minecraft Agents with Open-World Skills Preprint
+MultiDreamer3D: Multi-concept 3D Customization with Concept-Aware Diffusion Guidance Preprint
+Preference-based Deep Reinforcement Learning for Historical Route Estimation Preprint
+On the Power of Optimism in Constrained Online Convex Optimization Preprint
+A SAT-based Method for Counting All Singleton Attractors in Boolean Networks Preprint
+Wrapped Partial Label Dimensionality Reduction via Dependence Maximization Preprint
+On Definite Iterated Belief Revision with Belief Algebras Preprint
+Navigating Social Dilemmas with LLM-based Agents via Consideration of Future Consequences Preprint
+Instance Relation Learning Network with Label Knowledge Propagation for Few-shot Multi-label Intent Detection Preprint
+Guiding Large Language Models in Modeling Optimization Problems via Question Partitioning Preprint
+A Weighted-Based Fast Local Search for α-Neighbor p-Center Problem Preprint
+Negative Metric Learning for Graphs Preprint
+FedAPA: Server-side Gradient-Based Adaptive Personalized Aggregation for Federated Learning on Heterogeneous Data Preprint
+Self-supervised End-to-end ToF Imaging Based on RGB-D Cross-modal Dependency Preprint
+D3: Diversity, Difficulty, and Dependability-Aware Data Selection for Sample-Efficient LLM Instruction Tuning Preprint
+LiBOG: Lifelong Learning for Black-Box Optimizer Generation Preprint
+SRA-MCTS: Self-driven Reasoning Augmentation with Monte Carlo Tree Search for Code Generation Preprint
+VidEvo: Evolving Video Editing through Exhaustive Temporal Modeling Preprint
+Integrating Independent Layer-Wise Rank Selection with Low-Rank SVD Training for Model Compression: A Theory-Driven Approach Preprint
+New Algorithms for #2-SAT and #3-SAT Preprint
+Tight Runtime Guarantees From Understanding the Population Dynamics of the GSEMO Multi-Objective Evolutionary Algorithm Preprint
+Outstanding Orthodontist: No More Artifactual Teeth in Talking Face Preprint
+HeTa: Relation-wise Heterogeneous Graph Foundation Attack Model Preprint
+Time-Frequency Disentanglement Boosted Pre-Training: A Universal Spatio-Temporal Modeling Framework Preprint
+DiffECG: Diffusion Model-Powered Label-Efficient and Personalized Arrhythmia Diagnosis Preprint
+Gradient-based Causal Feature Selection Preprint
+SketchAgent: Generating Structured Diagrams from Hand-Drawn Sketches Preprint
+Categorical Attention: Fine-grained Language-guided Noise Filtering Network for Occluded Person Re-Identification Preprint
+Conditional Denoising Meets Polynomial Modeling: A Flexible Decoupled Framework for Time Series Forecasting Preprint
+ChronoFact: Timeline-based Temporal Fact Verification Preprint
+Beyond Fixed Length: Bucket Pre-training is All You Need Preprint
+Iterated Belief Change as Learning Preprint
+Learning Robust Multi-view Representation Using Dual-masked VAEs Preprint
+Lazy Testing of Machine-Learning Models Preprint
+EchoGPT: An Interactive Cardiac Function Assessment Model for Echocardiogram Videos Preprint
+Explainable Graph Representation Learning via Graph Pattern Analysis Preprint
+Code-BT: A Code-Driven Approach to Behavior Tree Generation for Robot Tasks Planning with Large Language Models Preprint
+StarFT: Robust Fine-tuning of Zero-shot Models via Spuriosity Alignment Preprint
+Learnable Frequency Decomposition for Image Forgery Detection and Localization Preprint
+Token-Level Accept or Reject: A Micro Alignment Approach for Large Language Models Preprint
+Non-Obvious Manipulability in Additively Separable and Fractional Hedonic Games Preprint
+Leveraging Personalized PageRank and Higher-Order Topological Structures for Heterophily Mitigation in Graph Neural Networks Preprint
+MC3D-AD: A Unified Geometry-aware Reconstruction Model for Multi-category 3D Anomaly Detection Preprint
+Heterogeneous Temporal Hypergraph Neural Network Preprint
+Performance Guaranteed Poisoning Attacks in Federated Learning: A Sliding Mode Approach Preprint
+Improving Efficiency of Answer Set Planning with Rough Solutions from Large Language Models for Robotic Task Planning Preprint
+No Regret Reinforcement Learning Algorithms for Online Scheduling with Multi-Stage Tasks Preprint
+Logarithmic Approximations for Fair k-Set Selection Preprint
+AttentionDrag: Exploiting Latent Correlation Knowledge in Pre-trained Diffusion Models for Image Editing Preprint
+Spotlighting Partially Visible Cinematic Language for Video-to-Audio Generation via Self-distillation Preprint
+Active Multimodal Distillation for Few-shot Action Recognition Preprint
+MaskDGNN: Self-Supervised Dynamic Graph Neural Networks with Activeness-aware Temporal Masking Preprint
+Enhanced Unsupervised Discriminant Dimensionality Reduction for Nonlinear Data Preprint
+Solving Copyright Infringement on Short Video Platforms: Novel Datasets and an Audio Restoration Deep Learning Pipeline Preprint
+Learning to Explain: Towards Human-Aligned Explainability in Deep Reinforcement Learning via Attention Guidance Preprint
+FissionVAE: Federated Non-IID Image Generation with Latent Space and Decoder Decomposition Preprint
+Fair Submodular Maximization over a Knapsack Constraint Preprint
+MSMAR-RL: Multi-Step Masked-Attention Recovery Reinforcement Learning for Safe Maneuver Decision in High-Speed Pursuit-Evasion Game Preprint
+Multi-View Learning with Context-Guided Receptance for Image Denoising Preprint
+Contrastive Cross-Course Knowledge Tracing via Concept Graph Guided Knowledge Transfer Preprint
+Exploring Semantic Masked Autoencoder for Self-supervised Point Cloud Understanding Preprint
+Dual Robust Unbiased Multi-View Clustering for Incomplete and Unpaired Information Preprint
+SAP: Privacy-Preserving Fine-Tuning on Language Models with Split-and-Privatize Framework Preprint
+Learning Neural Jump Stochastic Differential Equations with Latent Graph for Multivariate Temporal Point Processes Preprint
+Multi-Label Text Classification with Label Attention Aware and Correlation Aware Contrastive Learning Preprint
+Towards Automatic Sampling of User Behaviors for Sequential Recommender Systems Preprint
+Requirement Patterns for Engineering Multiagent Interaction Protocols Preprint
+Enhancing Mixture of Experts with Independent and Collaborative Learning for Long-Tail Visual Recognition Preprint
+Data Poisoning Attack Defense and Evolutionary Domain Adaptation for Federated Medical Image Segmentation Preprint
+Language-Guided Hybrid Representation Learning for Visual Grounding on Remote Sensing Images Preprint
+Learn to Think: Bootstrapping LLM Logic Through Graph Representation Learning Preprint
+DUQ: Dual Uncertainty Quantification for Text-Video Retrieval Preprint
+A Fast and Accurate ANN-SNN Conversion Algorithm with Negative Spikes Preprint
+RobustHAR: Multi-scale Spatial-temporal Masked Self-supervised Pre-training for Robust Human Activity Recognition Preprint
+Stackelberg vs. Nash in the Lottery Colonel Blotto Game Preprint
+First-Order Coalition Logic Preprint
+DToMA: Training-free Dynamic Token MAnipulation for Long Video Understanding Preprint
+Conditional Independent Test in the Presence of Measurement Error with Causal Structure Learning Preprint
+Empowering Multimodal Road Traffic Profiling with Vision Language Models and Frequency Spectrum Fusion Preprint
+Optimal Distributed Training With Co-Adaptive Data Parallelism in Heterogeneous Environments Preprint
+DGCPL: Dual Graph Distillation for Concept Prerequisite Relation Learning Preprint
+FedCCH: Automatic Personalized Graph Federated Learning for Inter-Client and Intra-Client Heterogeneity Preprint
+FedCPD:Personalized Federated Learning with Prototype-Enhanced Representation and Memory Distillation Preprint
+DGraFormer: Dynamic Graph Learning Guided Multi-Scale Transformer for Multivariate Time Series Forecasting Preprint
+Robustness to Spurious Correlations via Dynamic Knowledge Transfer Preprint
+Block Circulant Adapter for Large Language Models Preprint
+Revisiting Proportional Allocation with Subsidy: Simplification and Improvements Preprint
+Causality-Inspired Disentanglement for Fair Graph Neural Networks Preprint
+Learning Heterogeneous Performance-Fairness Trade-offs in Federated Learning Preprint
+Advancing Embodied Agent Security: From Safety Benchmarks to Input Moderation Preprint
+Enhancing Multimodal Model Robustness Under Missing Modalities via Memory-Driven Prompt Learning Preprint
+A Little Subsidy Ensures MMS Allocation for Three Agents Preprint
+Efficient Hi-Fi Style Transfer via Statistical Attention and Modulation Preprint
+ADFormer: Aggregation Differential Transformer for Passenger Demand Forecasting Preprint
+ID-RemovalNet: Identity Removal Network for EEG Privacy Protection with Enhancing Decoding Tasks Preprint
+GPL4SRec: Graph Multi-Level Aware Prompt Learning for Streaming Recommendation Preprint
+MVP-CBM: Multi-layer Visual Preference-enhanced Concept Bottleneck Model for Explainable Medical Image Classification Preprint
+DualCast: A Model to Disentangle Aperiodic Events from Traffic Series Preprint
+On Temporal ASP with Eager Unfoldable Operators Preprint
+DFCA: Disentangled Feature Contrastive Learning and Augmentation for Fairer Dermatological Diagnostics Preprint
+Omni-Dimensional State Space Model-driven SAM for Pixel-level Anomaly Detection Preprint
+Multimodal Knowledge Retrieval-Augmented Iterative Alignment for Satellite Commonsense Conversation Preprint
+A Generalized Diffusion Framework with Learnable Propagation Dynamics for Source Localization Preprint
+Object-Level Backdoor Attacks in RGB-T Semantic Segmentation with Cross-Modality Trigger Optimization Preprint
+CoLA-Former: Graph Transformer Using Communal Linear Attention for Lightweight Sequential Recommendation Preprint
+Variational Multi-Modal Hypergraph Attention Network for Multi-Modal Relation Extraction Preprint
+Automated Detection of Pre-training Text in Black-box LLMs Preprint
+Good Advisor for Source Localization: Using Large Language Model to Guide the Source Inference Process Preprint
+High-Confident Local Structure Guided Consensus Graph Learning For Incomplete Multi-view Clustering Preprint
+AlphaGAT: A Two-Stage Learning Approach for Adaptive Portfolio Selection Preprint
+RegionMatch: Pixel-Region Collaboration for Semi-Supervised Semantic Segmentation in Remote Sensing Images Preprint
+MHANet: Multi-scale Hybrid Attention Network for Auditory Attention Detection Preprint
+Generate or Re-Weight? A Mutual-Guidance Method for Class-Imbalanced Graphs Preprint
+Efficient Dynamic Graphs Learning with Refined Batch Parallel Training Preprint
+Generalized Safe Conditional Syntax Splitting of Belief Bases Preprint
+Robustness in Single-Audience Value-based Abstract Argumentation: Complexity Results Preprint
+UltraModel: A Modeling Paradigm for Industrial Objects Preprint
+A Prior-based Discrete Diffusion Model for Social Graph Generation Preprint
+Co-Learning of Strategy and Structure Achieves Full Cooperation in Complex Networks with Dynamical Linking Preprint
+Free Lunch of Image-mask Alignment for Anomaly Image Generation and Segmentation Preprint
+Universal Graph Self-Contrastive Learning Preprint
+Image-Enhanced Hybrid Encoding with Reinforced Contrastive Learning for Spatial Domain Identification in Spatial Transcriptomics Preprint
+MCD-CLIP: Multi-view Chest Disease Diagnosis with Disentangled CLIP Preprint
+A Fast-Adaptive Cognitive Diagnosis Framework for Computerized Adaptive Testing Systems Preprint
+MA-RAG: Automating Role Engineering for RESTful APIs with Multi-Head Attention and Retrieval-Augmented Generation Preprint
+Mamba-Based Graph Convolutional Networks: Tackling Over-smoothing with Selective State Space Preprint
+EDGE: Efficient Data Selection for LLM Agents via Guideline Effectiveness Preprint
+Multimodal Fake News Detection: MFND Dataset and Shallow-Deep Multitask Learning Preprint
+LensNet: An End-to-End Learning Framework for Empirical Point Spread Function Modeling and Lensless Imaging Reconstruction Preprint
+Can Large Models Teach Student Models to Solve Mathematical Problems Like Human Beings? A Reasoning Distillation Method via Multi-LoRA Interaction Preprint
+Disentangling Multi-view Representations via Curriculum Learning with Learnable Prior Preprint
+FADE: Towards Fairness-aware Data Generation for Domain Generalization via Classifier-Guided Score-based Diffusion Models Preprint
+Cross-modal Collaborative Representation Learning for Text-to-Image Person Retrieval Preprint
+OS-GCL: A One-Shot Learner in Graph Contrastive Learning Preprint
+Federated Domain Generalization with Decision Insight Matrix Preprint
+Flexible Generalized Low-Rank Regularizer for Tensor RPCA Preprint
+Bridging Generative and Discriminative Learning: Few-Shot Relation Extraction via Two-Stage Knowledge-Guided Pre-training Preprint
+Relation-Augmented Dueling Bayesian Optimization via Preference Propagation Preprint
+Variational Graph Auto-Encoder Driven Graph Enhancement for Sequential Recommendation Preprint
+PerfSeer: An Efficient and Accurate Deep Learning Models Performance Predictor Preprint
+Approximation Fixpoint Theory as a Unifying Framework for Fuzzy Logic Programming Semantics Preprint
+RPMIL: Rethinking Uncertainty-Aware Probabilistic Multiple Instance Learning for Whole Slide Pathology Diagnosis Preprint
+Participatory Budgeting Project Strength via Candidate Control Preprint
+SourceDetMamba: A Graph-aware State Space Model for Source Detection in Sequential Hypergraphs Preprint
+An Approach to Quantify Plans Robustness in Real-world Applications Preprint
+Human Motion Capture from Loose and Sparse Inertial Sensors with Garment-aware Diffusion Models Preprint
+HyperDet: Source Detection in Hypergraphs via Interactive Relationship Construction and Feature-rich Attention Fusion Preprint
+How to Resolve Envy by Adding Goods Preprint
+A Timestep-Adaptive Frequency-Enhancement Framework for Diffusion-based Image Super-Resolution Preprint
+Towards Robust Incremental Learning Under Ambiguous Supervision Preprint
+Combining MORL with Restraining Bolts to Learn Normative Behaviour Preprint
+NeuBM: Mitigating Model Bias in Graph Neural Networks Through Neutral Input Calibration Preprint
+Disconfounding Fake News Video Explanation with Causal Inference Preprint
+Proactive Data-driven Scheduling of Business Processes Preprint
+Theoretical Analysis of Evolutionary Algorithms with Quality Diversity for a Classical Path Planning Problem Preprint
+More Efforts Towards Fixed-Parameter Approximability of Multiwinner Rules Preprint
+The First Theoretical Approximation Guarantees for the Non-Dominated Sorting Genetic Algorithm III (NSGA-III) Preprint
+Minimizing Polarization and Disagreement in the Friedkin–Johnsen Model with Unknown Innate Opinions Preprint
+Proven Approximation Guarantees in Multi-Objective Optimization: SPEA2 Beats NSGA-II Preprint
+CGI: Identifying Conditional Generative Models with Example Images Preprint
+Noise Optimized Conditional Diffusion for Domain Adaptation Preprint
+Synthesis of Communication Policies for Multi-Agent Systems Robust to Communication Restrictions Preprint
+FedHAN: A Cache-Based Semi-Asynchronous Federated Learning Framework Defending Against Poisoning Attacks in Heterogeneous Clients Preprint
+VideoHumanMIB: Unlocking Appearance Decoupling for Video Human Motion In-betweening Preprint
+On Independence and SCC-Recursiveness in Assumption-Based Argumentation Preprint
+Boosting Visual Knowledge-Intensive Training for LVLMs Through Causality-Driven Visual Object Completion Preprint
+A Finite-State Controller Based Offline Solver for Deterministic POMDPs Preprint
+FSDFormer: Progressive Rain Removal Network Based on Fourier-Spatial Dual Transformer Preprint
+Tree-of-AdEditor: Heuristic Tree Reasoning for Automated Video Advertisement Editing with Large Language Model Preprint
+Strategy-Architecture Synergy: A Multi-View Graph Contrastive Paradigm for Consistent Representations Preprint
+Finite-Time Analysis of Heterogeneous Federated Temporal Difference Learning Preprint
+Quantifying the Self-Interest Level of Markov Social Dilemmas Preprint
+Avoiding Undesired Future with Sequential Decisions Preprint
+Most General Explanations of Tree Ensembles Preprint
+Attention-based Conditional Random Field for Financial Fraud Detection Preprint
+Constrained Serial Dictatorships Can Be Fair Preprint
+Distribution-Aware Online Learning for Urban Spatiotemporal Forecasting on Streaming Data Preprint
+A Novel Sparse Active Online Learning Framework for Fast and Accurate Streaming Anomaly Detection Over Data Streams Preprint
+Multi-Organizational Scheduling: Individual Rationality, Optimality, and Complexity Preprint
+A Logic of General Attention Using Edge-Conditioned Event Models Preprint
+Efficient Visual Representation Learning with Heat Conduction Equation Preprint
+Optimizing Parameters of Quantum Circuits with Sparsity-Inducing Coordinate Descent Preprint
+A Non-Interventionist Approach to Causal Reasoning Based on Lewisian Counterfactuals Preprint
+Α Descent-based Method on the Duality Gap for Solving Zero-sum Games Preprint
+A Sequent Calculus for Answer Set Entailment Preprint
+Riding the Wave: Multi-Scale Spatial-Temporal Graph Learning for Highway Traffic Flow Prediction Under Overload Scenarios Preprint
+Scalable Speed-ups for the SMS-EMOA from a Simple Aging Strategy Preprint
+The Core of Approval-Based Committee Elections with Few Seats Preprint
+Are Large Language Models Fluent in Declarative Process Mining? Preprint
+Heterophily-Aware Personalized PageRank for Node Classification Preprint
+What Can We Learn From MIMO Graph Convolutions? Preprint
+Incorporating Legal Logic into Deep Learning: An Intelligent Approach to Probation Prediction Preprint
+Curriculum Abductive Learning for Mitigating Reasoning Shortcuts Preprint
+GCNT: Graph-Based Transformer Policies for Morphology-Agnostic Reinforcement Learning Preprint
+SepALM: Audio Language Models Are Error Correctors for Robust Speech Separation Preprint
+Toward Reliable Scientific Hypothesis Generation: Evaluating Truthfulness and Hallucination in Large Language Models Preprint
+Cap-and-Penalize: Competitive Mechanisms for Multi-Phase Regularized Online Allocation Preprint
+Subgraph Information Bottleneck with Causal Dependency for Stable Molecular Relational Learning Preprint
+Grounding Methods for Neural-Symbolic AI Preprint
+Efficient Algorithms for Electing Successive Committees Preprint
+Beyond the Map: Learning to Navigate Unseen Urban Dynamics Using Diffusion-Guided Deep Reinforcement Learning Preprint
+Optimal Metric Distortion for Matching on the Line Preprint
+Optimal Capacity Modification for Stable Matchings with Ties Preprint
+Beyond Winning Strategies: Admissible and Admissible Winning Strategies for Quantitative Reachability Games Preprint
+Counterfactual Explanations Under Model Multiplicity and Their Use in Computational Argumentation Preprint
+Rule-Guided Reinforcement Learning Policy Evaluation and Improvement Preprint
+Adversarial Propensity Weighting for Debiasing in Collaborative Filtering Preprint
+SPoRt – Safe Policy Ratio: Certified Training and Deployment of Task Policies in Model-Free RL Preprint
+Speeding Up Hyper-Heuristics With Markov-Chain Operator Selection and the Only-Worsening Acceptance Operator Preprint
+A-I-RAVEN and I-RAVEN-Mesh: Two New Benchmarks for Abstract Visual Reasoning Preprint
+Advancing Generalization Across a Variety of Abstract Visual Reasoning Tasks Preprint
+Dynamic Seed-GrowthCM: A Dynamic Benefit-Oriented Algorithm for Core Maximization on Large Graphs Preprint
+SpectralGap: Graph-Level Out-of-Distribution Detection via Laplacian Eigenvalue Gaps Preprint
+HGEN: Heterogeneous Graph Ensemble Networks Preprint
+On Integrating Logical Analysis of Data into Random Forests Preprint
+Assessing the Exposure to Public Knowledge in Policy-Protected Description Logic Ontologies Preprint
+MonoMixer: Marrying Convolution and Vision Transformer for Efficient Self-Supervised Monocular Depth Estimation Preprint
+Online Resource Sharing: Better Robust Guarantees via Randomized Strategies Preprint
+Featured Argumentation Framework: Semantics and Complexity Preprint
+Efficient and Rigorous Model-Agnostic Explanations Preprint
+Evolutionary Algorithms Are Significantly More Robust to Noise When They Ignore It Preprint
+GSDNet: Revisiting Incomplete Multimodality-Diffusion Emotion Recognition from the Perspective of Graph Spectrum Preprint
+Rewarding Explainability in Drug Repurposing with Knowledge Graphs Preprint
+A First Runtime Analysis of NSGA-III on a Many-Objective Multimodal Problem: Provable Exponential Speedup via Stochastic Population Update Preprint
+Continuous-Time Reward Machines Preprint
+Finding Possible Winners in Spatial Voting with Incomplete Information Preprint
+Implicitly Aligning Humans and Autonomous Agents through Shared Task Abstractions Preprint
+Revealing Concept Shift in Spatio-Temporal Graphs via State Learning Preprint
+Decomposing Inconsistencies: Marginal Contributions and Pooling Techniques Preprint
+The Proportional Veto Principle for Approval Ballots Preprint
+Efficient Counterexample-Guided Fairness Verification and Repair of Neural Networks Using Satisfiability Modulo Convex Programming Preprint
+Dynamic Replanning for Improved Public Transport Routing Preprint
+Towards Robust Deterministic and Probabilistic Modeling for Predictive Learning Preprint
+Coalition Obstruction Temporal Logic: A New Obstruction Logic to Reason About Demon Coalitions Preprint
+Sample-Efficient Behavior Cloning Using General Domain Knowledge Preprint
+RetroMoE: A Mixture-of-Experts Latent Translation Framework for Single-step Retrosynthesis Preprint
+A Logic-Based Approach to Causal Discovery: Signal Temporal Logic Perspective Preprint
+Partially Observable Reference Policy Programming Preprint
+Latte: Transfering LLMs’ Latent-level Knowledge for Few-shot Tabular Learning Preprint
+Advancing Stain Transfer for Multi-Biomarkers: A Human Annotation-Free Method Based on Auxiliary Task Supervision Preprint
+A Methodological Framework for Measuring Spatial Labeling Similarity Preprint
+FairSMOE: Mitigating Multi-Attribute Fairness Problem with Sparse Mixture-of-Experts Preprint
+Decoupling and Reconstructing: A Multimodal Sentiment Analysis Framework Towards Robustness Preprint
+Learning Optimal Oblique Decision Trees with (Max)SAT Preprint
+Stochasticity-aware No-Reference Point Cloud Quality Assessment Preprint
+Solving QNP and FOND+ with Generating, Testing and Forbidding Preprint
+Enhancing Table Recognition with Vision LLMs: A Benchmark and Neighbor-Guided Toolchain Reasoner Preprint
+MSVIT: Improving Spiking Vision Transformer Using Multi-scale Attention Fusion Preprint
+Connecting Giants: Synergistic Knowledge Transfer of Large Multimodal Models for Few-Shot Learning Preprint
+RTdetector: Deep Transformer Networks for Time Series Anomaly Detection Based on Reconstruction Trend Preprint
+Beyond Individual and Point: Next POI Recommendation via Region-aware Dynamic Hypergraph with Dual-level Modeling Preprint
+Neuromorphic Sequential Arena: A Benchmark for Neuromorphic Temporal Processing Preprint
+DASS: A Dual-Branch Attention-based Framework for Trajectory Similarity Learning with Spatial and Semantic Fusion Preprint
+RepObE: Representation Learning-Enhanced Obfuscation Encryption Modular Semantic Task Framework Preprint
+Attribute Association Driven Multi-Task Learning for Session-based Recommendation Preprint
+CSAHFL:Clustered Semi-Asynchronous Hierarchical Federated Learning for Dual-layer Non-IID in Heterogeneous Edge Computing Networks Preprint
+Coupling Category Alignment for Graph Domain Adaptation Preprint
+Fine-Grained and Efficient Self-Unlearning with Layered Iteration Preprint
+scSiameseClu: A Siamese Clustering Framework for Interpreting Single-cell RNA Sequencing Data Preprint
+From General Relation Patterns to Task-Specific Decision-Making in Continual Multi-Agent Coordination Preprint
+Run Like a Neural Network, Explain Like k-Nearest Neighbor Preprint
+Sharpness-aware Zeroth-order Optimization for Graph Transformers Preprint
+M^2LLM: Multi-view Molecular Representation Learning with Large Language Models Preprint
+Category-aware EEG Image Generation Based on Wavelet Transform and Contrast Semantic Loss Preprint
+Escaping Saddle Point Efficiently in Minimax and Bilevel Optimizations Preprint
+CLLMRec: Contrastive Learning with LLMs-based View Augmentation for Sequential Recommendation Preprint
+Towards Equilibrium: An Instantaneous Probe-and-Rebalance Multimodal Learning Approach Preprint
+MEGAD: A Memory-Efficient Framework for Large-Scale Attributed Graph Anomaly Detection Preprint
+Attractor-based Closed List Search: Sparsifying the Closed List for Efficient Memory-Constrained Planning Preprint
+BinMetric: A Comprehensive Binary Code Analysis Benchmark for Large Language Models Preprint
+GPI-Net: Gestalt-Guided Parallel Interaction Network via Orthogonal Geometric Consistency for Robust Point Cloud Registration Preprint
+Incentivizing Safer Actions in Policy Optimization for Constrained Reinforcement Learning Preprint
+Temporal Consistency Constrained Transferable Adversarial Attacks with Background Mixup for Action Recognition Preprint
+External Memory Matters: Generalizable Object-Action Memory for Retrieval-Augmented Long-Term Video Understanding Preprint
+Multi-Agent Communication with Information Preserving Graph Contrastive Learning Preprint
+Dirichlet Process-Based Robust Clustering Using the Median-of-Means Estimator Preprint
+Diff-LMM: Diffusion Teacher-Guided Spatio-Temporal Perception for Video Large Multimodal Models Preprint
+ARMR: Adaptively Responsive Network for Medication Recommendation Preprint
+M3ANet: Multi-scale and Multi-Modal Alignment Network for Brain-Assisted Target Speaker Extraction Preprint
+WDMIR: Wavelet-Driven Multimodal Intent Recognition Preprint
+Where Does This Data Come From? Enhanced Source Inference Attacks in Federated Learning Preprint
+Inferring Causal Protein Signaling Networks with Reinforcement Learning via Artificial Bee Colony Neural Architecture Search Preprint
+BILE: An Effective Behavior-based Latent Exploration Scheme for Deep Reinforcement Learning Preprint
+Always Clear Depth: Robust Monocular Depth Estimation Under Adverse Weather Preprint
+Contamination Budget: Trade-offs Between Breadth, Depth and Difficulty Preprint
+Imputation-free Incomplete Multi-view Clustering via Knowledge Distillation Preprint
+Aligning Contrastive Multiple Clusterings with User Interests Preprint
+Robult: Leveraging Redundancy and Modality-Specific Features for Robust Multimodal Learning Preprint
+Diffuse&Refine: Intrinsic Knowledge Generation and Aggregation for Incremental Object Detection Preprint
+ExpTalk: Diverse Emotional Expression via Adaptive Disentanglement and Refined Alignment for Speech-Driven 3D Facial Animation Preprint
+Cause-Effect Driven Optimization for Robust Medical Visual Question Answering with Language Biases Preprint
+Balancing Imbalance: Data-Scarce Urban Flow Prediction via Spatio-Temporal Balanced Transfer Learning Preprint
+Enhancing Nighttime Semantic Segmentation with Visual-Linguistic Priors and Wavelet Transform Preprint
+Representation Learning with Mutual Influence of Modalities for Node Classification in Multi-Modal Heterogeneous Networks Preprint
+Mitigating Over-Smoothing in Graph Neural Networks via Separation Coefficient-Guided Adaptive Graph Structure Adjustment Preprint
+Adaptive Gradient Learning for Spiking Neural Networks by Exploiting Membrane Potential Dynamics Preprint
+Semantic-Space-Intervened Diffusive Alignment for Visual Classification Preprint
+Variety-Seeking Jump Games on Graphs Preprint
+General Incomplete Time Series Analysis via Patch Dropping Without Imputation Preprint
+NeSyA: Neurosymbolic Automata Preprint
+Do Mentioned Items Truly Matter? Enhancing Conversational Recommender Systems with Causal Intervention and Large Language Models Preprint
+Empowering Vision Transformers with Multi-Scale Causal Intervention for Long-Tailed Image Classification Preprint
+AriGraph: Learning Knowledge Graph World Models with Episodic Memory for LLM Agents Preprint
+Identifying Drivers of Predictive Aleatoric Uncertainty Preprint
+Indirect Alignment and Relationship Preservation for Domain Generalization Preprint
+Maximum Entropy Softmax Policy Gradient via Entropy Advantage Estimation Preprint
+Tackling Long-Tailed Data Challenges in Spiking Neural Networks via Heterogeneous Knowledge Distillation Preprint
+Federated Deconfounding and Debiasing Learning for Out-of-Distribution Generalization Preprint
+Can We Translate Code Better with LLMs and Call Graph Analysis? Preprint
+Approximate Verification of Strategic Abilities under Imperfect Information Using Local Models Preprint
+DepthART: Monocular Depth Estimation as Autoregressive Refinement Task Preprint
+Abstraction Heuristics for Classical Planning Tasks with Conditional Effects Preprint
+Dual-Perspective United Transformer for Object Segmentation in Optical Remote Sensing Images Preprint
+Wave-driven Graph Neural Networks with Energy Dynamics for Over-smoothing Mitigation Preprint
+ESBN: Estimation Shift of Batch Normalization for Source-free Universal Domain Adaptation Preprint
+A Fast Neural Architecture Search Method for Multi-Modal Classification via Knowledge Sharing Preprint
+Handling Infinite Domain Parameters in Planning Through Best-First Search with Delayed Partial Expansions Preprint
+DGL: Dynamic Global-Local Information Aggregation for Scalable VRP Generalization with Self-Improvement Learning Preprint
+Improving Generalization in Meta-Learning via Meta-Gradient Augmentation Preprint
+Learning Real Facial Concepts for Independent Deepfake Detection Preprint
+Rethinking Contrastive Learning in Graph Anomaly Detection: A Clean-View Perspective Preprint
+DM-POSA: Enhancing Open-World Test-Time Adaptation with Dual-Mode Matching and Prompt-Based Open Set Adaptation Preprint
+A Datalog Rewriting Algorithm for Warded Ontologies Preprint
+Parameterized Approximation Algorithm for Doubly Constrained Fair Clustering Preprint
+Towards Safer Pretraining: Analyzing and Filtering Harmful Content in Webscale Datasets for Responsible LLMs Preprint
+AdaMixT: Adaptive Weighted Mixture of Multi-Scale Expert Transformers for Time Series Forecasting Preprint
+Filling the Missings: Spatiotemporal Data Imputation by Conditional Diffusion Preprint
+Towards VLM-based Hybrid Explainable Prompt Enhancement for Zero-Shot Industrial Anomaly Detection Preprint
+DGExplainer: Explaining Dynamic Graph Neural Networks via Relevance Back-propagation Preprint
+What Makes You Special? Contrastive Heuristics Based on Qualified Dominance Preprint
+Maximin Share Guarantees for Few Agents with Subadditive Valuations Preprint
+Formal Synthesis of Safe Kolmogorov-Arnold Network Controllers with Barrier Certificates Preprint
+LPDetective: Dusting the LLM Chats for Prompt Template Abusers Preprint
+Understanding Matters: Semantic-Structural Determined Visual Relocalization for Large Scenes Preprint
+Q-Detection: A Quantum-Classical Hybrid Poisoning Attack Detection Method Preprint
+Evolvable Conditional Diffusion Preprint
+Can We Verify Step by Step for Incorrect Answer Detection? Preprint
+Shaping a Stabilized Video by Mitigating Unintended Changes for Concept-Augmented Video Editing Preprint
+Streaming Multi-agent Pathfinding Preprint
+SyncGaussian: Stable 3D Gaussian-Based Talking Head Generation with Enhanced Lip Sync via Discriminative Speech Features Preprint
+METOR: A Unified Framework for Mutual Enhancement of Objects and Relationships in Open-vocabulary Video Visual Relationship Detection Preprint
+Efficient Dynamic Ensembling for Multiple LLM Experts Preprint
+A Dynamic Knowledge Update-Driven Model with Large Language Models for Fake News Detection Preprint
+Set-Based Retrograde Analysis: Precomputing the Solution to 28-card Bridge Double Dummy Deals Preprint
+Exploring the Trade-Offs: Quantization Methods, Task Difficulty, and Model Size in Large Language Models From Edge to Giant Preprint
+NuMDS: An Efficient Local Search Algorithm for Minimum Dominating Set Problem Preprint
+Imagination-Limited Q-Learning for Offline Reinforcement Learning Preprint
+Vi3D-LLaMA: Observe and Understand the 3D Scene with A Video Sequence Preprint
+Verified Certificates via SAT and Computer Algebra Systems for the Ramsey R(3,8) and R(3,9) Problems Preprint
+EAVIT: Efficient and Accurate Human Value Identification From Text Data via LLMs Preprint
+EyeSeg: An Uncertainty-Aware Eye Segmentation Framework for AR/VR Preprint
+Heterogeneous Federated Learning with Scalable Server Mixture-of-Experts Preprint
+Multi-Modal Point Cloud Completion with Interleaved Attention Enhanced Transformer Preprint

@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const papersList = document.getElementById('papers-list-view');
     const loading = document.getElementById('loading');
     const noResults = document.getElementById('no-results');
-    const themeToggle = document.getElementById('theme-toggle-input');
     const toggleIcon = document.querySelector('.toggle-icon');
+    const versionBadge = document.querySelector('.version-badge');
     const searchBtn = document.getElementById('search-btn');
     const topicInput = document.getElementById('topic-input');
     const themeToggleContainer = document.querySelector('.theme-toggle-top');
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     const startYearSelect = document.getElementById('start-year');
     const endYearSelect = document.getElementById('end-year');
+    const recentCheckbox = document.getElementById('recent-checkbox');
     const fieldMainCheckboxes = document.querySelectorAll('.field-main-checkbox');
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
     const paginationContainer = document.getElementById('pagination-container');
@@ -462,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
         appendPapersToList(papers);
     }
     
-    // 设置Copy All按钮
+        // 设置Copy All按钮
     function setupCopyAllButton() {
         const titleHeader = document.getElementById('title-header');
         if (titleHeader) {
@@ -484,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     navigator.clipboard.writeText(formattedText)
                         .then(() => {
                             console.log('All text copied successfully using Clipboard API');
-                            showCopySuccess(this);
+                            showToast('已复制当前页标题');
                         })
                         .catch(err => {
                             console.error('Failed to copy using Clipboard API:', err);
@@ -614,7 +615,7 @@ document.addEventListener('DOMContentLoaded', function() {
             titleCell.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                handleCopyButtonClick(this, paper.title);
+                handleCopyTitleClick(this, paper.title);
             });
             
             // 将所有单元格添加到行
@@ -633,16 +634,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 显示复制成功的UI反馈
-    function showCopySuccess(button) {
-        button.classList.add('copy-success');
-        const originalHTML = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        
+    // 轻提示（toast）
+    function showToast(message) {
+        const existing = document.getElementById('global-toast');
+        const toast = existing || document.createElement('div');
+        toast.id = 'global-toast';
+        toast.textContent = message;
+        toast.style.position = 'fixed';
+        toast.style.left = '50%';
+        toast.style.top = '20px';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.background = 'rgba(0,0,0,0.75)';
+        toast.style.color = '#fff';
+        toast.style.padding = '8px 14px';
+        toast.style.borderRadius = '8px';
+        toast.style.fontSize = '14px';
+        toast.style.zIndex = '100000';
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.2s ease';
+        if (!existing) document.body.appendChild(toast);
+        requestAnimationFrame(() => { toast.style.opacity = '1'; });
         setTimeout(() => {
-            button.innerHTML = originalHTML;
-            button.classList.remove('copy-success');
-        }, 2000);
+            toast.style.opacity = '0';
+            setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
+        }, 1200);
     }
     
     // 备用复制方法
@@ -660,7 +675,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const successful = document.execCommand('copy');
             if (successful) {
                 console.log('Text copied successfully using fallback method');
-                showCopySuccess(button);
+                showToast('已复制');
             } else {
                 console.error('Fallback copy failed');
                 alert('复制失败，请手动复制');
@@ -878,7 +893,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Current selected conferences:', Object.keys(selectedConferences).filter(c => selectedConferences[c]));
     }
 
-    console.log("Theme toggle loaded:", themeToggle); // 调试信息
+    console.log("Theme toggle loaded:", versionBadge); // 调试信息
 
     // 主题切换功能
     function setTheme(isDark) {
@@ -886,11 +901,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isDark) {
             document.body.classList.add('dark-mode');
             if (toggleIcon) toggleIcon.textContent = '☀️';
-            if (themeToggle) themeToggle.checked = true;
         } else {
             document.body.classList.remove('dark-mode');
             if (toggleIcon) toggleIcon.textContent = '🌙';
-            if (themeToggle) themeToggle.checked = false;
         }
         localStorage.setItem('darkMode', isDark);
         console.log("Theme applied, body classes:", document.body.className); // 调试信息
@@ -908,9 +921,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setTheme(savedDarkMode !== null ? savedDarkMode : prefersDarkMode);
     
     // 添加主题切换事件监听器
-    if (themeToggleContainer) {
-        themeToggleContainer.addEventListener('click', function(e) {
-            console.log("Theme toggle container clicked!"); // 调试信息
+    if (versionBadge) {
+        versionBadge.addEventListener('click', function() {
             const isDarkMode = document.body.classList.contains('dark-mode');
             setTheme(!isDarkMode);
         });
@@ -960,8 +972,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 添加年份选择事件
     if (startYearSelect && endYearSelect) {
-        startYearSelect.addEventListener('change', validateYearRange);
-        endYearSelect.addEventListener('change', validateYearRange);
+        startYearSelect.addEventListener('change', function() {
+            validateYearRange();
+            updateRecentCheckboxState();
+        });
+        endYearSelect.addEventListener('change', function() {
+            validateYearRange();
+            updateRecentCheckboxState();
+        });
     }
     
     // 添加单年份复选框事件监听器
@@ -970,6 +988,68 @@ document.addEventListener('DOMContentLoaded', function() {
         singleYearCheckbox.addEventListener('change', toggleSingleYearMode);
         // 初始化时设置正确的显示状态（默认不选中，显示年份范围）
         toggleSingleYearMode();
+    }
+
+    // 处理“最近”复选框：选中后自动恢复到（单年=今年；非单年=去年—今年）
+    function applyRecentRange() {
+        const currentYear = new Date().getFullYear();
+        const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
+        if (!startYearSelect || !endYearSelect) return;
+        if (isSingleYear) {
+            // 单年：都设为今年
+            startYearSelect.value = String(currentYear);
+            endYearSelect.value = String(currentYear);
+        } else {
+            // 非单年：去年到今年
+            startYearSelect.value = String(currentYear - 1);
+            endYearSelect.value = String(currentYear);
+        }
+        // 触发校验与UI更新
+        validateYearRange();
+        startYearSelect.dispatchEvent(new Event('change'));
+        endYearSelect.dispatchEvent(new Event('change'));
+        flashYearSelector();
+        updateRecentCheckboxState();
+    }
+
+    function flashYearSelector() {
+        const el = document.querySelector('.year-selector');
+        if (!el) return;
+        const original = el.style.boxShadow;
+        const originalTransition = el.style.transition;
+        el.style.transition = 'box-shadow 0.3s ease';
+        el.style.boxShadow = '0 0 0 2px #3498db inset';
+        setTimeout(() => {
+            el.style.boxShadow = original || '';
+            el.style.transition = originalTransition || '';
+        }, 600);
+    }
+
+    // 计算“最近”应当对应的年份区间
+    function computeRecentRange() {
+        const currentYear = new Date().getFullYear();
+        const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
+        return isSingleYear ? [currentYear, currentYear] : [currentYear - 1, currentYear];
+    }
+
+    function isRecentRangeSelected() {
+        if (!startYearSelect || !endYearSelect) return false;
+        const [s, e] = computeRecentRange();
+        return parseInt(startYearSelect.value, 10) === s && parseInt(endYearSelect.value, 10) === e;
+    }
+
+    function updateRecentCheckboxState() {
+        if (!recentCheckbox) return;
+        recentCheckbox.checked = isRecentRangeSelected();
+    }
+
+    if (recentCheckbox) {
+        recentCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                applyRecentRange();
+            }
+            updateRecentCheckboxState();
+        });
     }
 
     // 获取会议信息
@@ -1129,23 +1209,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Function to handle the copy button UI feedback
-    function handleCopyButtonClick(button, title) {
-        // Copy the title to clipboard
+    // 标题点击复制：不替换文字，显示toast
+    function handleCopyTitleClick(button, title) {
         copyToClipboard(title);
-        
-        // Change button style to show success
-        button.classList.add('copy-success');
-        
-        // Change button text and icon temporarily
-        const originalHTML = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        
-        // Reset button after 2 seconds
-        setTimeout(() => {
-            button.innerHTML = originalHTML;
-            button.classList.remove('copy-success');
-        }, 2000);
+        showToast('已复制标题');
     }
 
     // Topic标签已移除，不再需要相关处理代码
@@ -1289,15 +1356,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 更新年份选项
     updateYearOptions();
+    // 初始化“最近”状态
+    updateRecentCheckboxState();
     
-    // 为"Recent Years"按钮添加点击事件
-    const recentYearsBtn = document.getElementById('recent-years-btn');
-    if (recentYearsBtn) {
-        recentYearsBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            setRecentThreeYears();
-        });
-    }
+    // 移除旧的Recent按钮逻辑（已由复选框替代）
     
     // 为"All Years"按钮添加点击事件
     const allYearsBtn = document.getElementById('all-years-btn');
@@ -1346,9 +1408,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // 动态设置内容区域顶部内边距，避免固定顶栏遮挡
+    function applyDynamicTopPadding() {
+        const topBar = document.querySelector('.top-bar');
+        const contentWrapper = document.querySelector('.content-wrapper');
+        if (!topBar || !contentWrapper) return;
+        const computedPos = window.getComputedStyle(topBar).position;
+        if (computedPos === 'fixed') {
+            const topBarHeight = topBar.offsetHeight || 0;
+            contentWrapper.style.paddingTop = (topBarHeight + 8) + 'px';
+        } else {
+            // sticky/relative 情况不需要额外 padding
+            contentWrapper.style.paddingTop = '';
+        }
+    }
+
     // 初始化时调用
     setupSidebarToggle();
     handleResponsiveLayout();
+    applyDynamicTopPadding();
 
     // 监听窗口大小变化
     window.addEventListener('resize', function() {
@@ -1359,6 +1437,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (sidebar) {
             sidebar.classList.remove('collapsed');
         }
+        applyDynamicTopPadding();
     });
 
     // 返回顶部按钮功能

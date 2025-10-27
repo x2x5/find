@@ -1,5 +1,8 @@
 # Top AI Papers - 顶级AI论文检索系统
 
+
+nips 25: https://neurips.cc/virtual/2025/papers.html
+
 ## 🚀 快速开始
 
 ### 1. 克隆项目

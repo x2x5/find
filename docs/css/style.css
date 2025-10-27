@@ -916,13 +916,13 @@ footer {
 /* No Results Message Styling */
 .no-results {
     text-align: center;
-    padding: 50px 0;
+    padding: 20px 0;
     font-style: italic;
     color: var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50vh;
+    min-height: 100px;
     font-size: 1.2em;
     line-height: 1.5;
 }

@@ -46,23 +46,226 @@
         }
         
         .top-bar {
-            position: fixed;
+            position: sticky;
             top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            right: 0;
             z-index: 10000;
-            background-color: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 10px;
+            background-color: transparent;
+        }
+
+        .top-bar-inner {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 18px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-sizing: border-box;
+            background-color: #ffffff; /* 使输入选择区成为白色圆角矩形 */
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .top-bar-row {
             display: flex;
             align-items: center;
-            gap: 15px;
+            width: 100%;
+        }
+
+        .version-badge {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background-color: #f2f2f2;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-icon {
+            font-size: 18px;
+        }
+
+        .dark-mode .version-badge {
+            background-color: #3a3a3a;
+            color: #ecf0f1;
+        }
+
+        .search-input {
+            width: 320px;
+            flex: 0 0 320px;
+        }
+
+        .year-single, .year-recent {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .year-selector {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: 16px;
             flex-wrap: wrap;
-            width: calc(100% - 40px);
-            max-width: 1200px;
-            box-sizing: border-box;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            flex: 1 1 auto;
+            justify-content: flex-start;
+        }
+
+        .year-selector select {
+            width: 110px;
+        }
+
+        #year-separator {
+            font-size: 18px;
+        }
+
+        .field-dropdown {
+            background-color: #ce93d8;
+            padding: 4px 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 160px;
+            flex: 1 1 0;
+            flex-basis: 0;
+        }
+
+        .field-group {
+            display: flex;
+            align-items: stretch;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .field-dropdown[data-field="CV"] { background-color: #8bc34a; }
+        .field-dropdown[data-field="AI"] { background-color: #ff9a9a; }
+        .field-dropdown[data-field="Other"] { background-color: #d4a76a; }
+        .field-dropdown[data-field="All"] { background-color: #333; }
+
+        .field-label {
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            gap: 4px;
+            white-space: nowrap;
+            justify-content: center;
+        }
+
+        .field-label i {
+            font-size: 10px;
+        }
+
+        .dark-mode .top-bar-button {
+            background-color: #1f4f7a;
+        }
+
+        .dark-mode .top-bar-button.secondary {
+            background-color: #4a4a4a;
+        }
+
+        .dark-mode .top-bar-input {
+            background-color: #2d2d2d;
+            color: #ecf0f1;
+            border-color: #444;
+        }
+
+        .dark-mode #year-separator,
+        .dark-mode .year-selector span {
+            color: #ecf0f1;
+        }
+
+        .dark-mode .field-dropdown[data-field="All"] {
+            background-color: #111;
+        }
+
+        .dark-mode .field-label {
+            color: #ecf0f1;
+        }
+
+        @media (max-width: 768px) {
+            .top-bar-inner {
+                padding: 16px;
+                gap: 14px;
+            }
+
+            .top-bar-row-1,
+            .top-bar-row-3 {
+                gap: 12px;
+            }
+
+            .search-input {
+                flex: 1 1 200px;
+            }
+
+            .year-selector select {
+                width: 100px;
+            }
+
+            .field-dropdown {
+                min-width: 120px;
+            }
+
+            .search-group {
+                margin-left: 0;
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .top-bar-inner {
+                padding: 14px;
+            }
+
+            .top-bar-row-1,
+            .top-bar-row-2,
+            .top-bar-row-3 {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .year-selector {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .year-selector select {
+                width: 100%;
+            }
+
+            .field-dropdown {
+                width: 100%;
+                min-width: 0;
+                justify-content: flex-start;
+            }
+
+            .search-group {
+                margin-left: 0;
+            }
         }
         
         /* 确保顶部栏中的下拉框具有最高优先级 */
@@ -87,27 +290,37 @@
         }
         
         .dark-mode .top-bar {
+            background-color: transparent; /* 顶部栏底色透明，由内部白卡片/深色卡片呈现 */
+            border-bottom-color: transparent;
+            box-shadow: none;
+        }
+
+        /* 夜间模式下的顶部白卡片改为深色卡片 */
+        .dark-mode .top-bar-inner {
             background-color: #2d2d2d;
-            border-bottom-color: #444;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border-color: #444;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
         }
         
+        .content-wrapper {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 0 28px;
+            box-sizing: border-box;
+        }
+
         .paper-container {
             flex: 1;
             overflow: auto;
-            padding: 20px;
-            width: 100% !important;
-            max-width: 100vw !important;
-            min-width: 100% !important;
+            padding: 12px 0;
+            width: 100%;
             box-sizing: border-box;
-            margin-top: 80px; /* 为固定顶部栏留出空间 */
+            margin-top: 0;
         }
         
         /* 确保表格容器始终占满整个paper-container */
         .paper-container > .table-container {
             width: 100% !important;
-            min-width: 100% !important;
-            max-width: 100% !important;
         }
         
         .sidebar {
@@ -385,7 +598,7 @@
             }
             
             .paper-container {
-                margin-top: 75px; /* 手机端调整顶部间距 */
+                margin-top: 0;
             }
             
             .top-bar-row {
@@ -761,7 +974,7 @@
             }
             
             .paper-container {
-                margin-top: 85px; /* 平板端调整顶部间距 */
+                margin-top: 0;
             }
             .sidebar {
                 width: 100%;
@@ -1665,9 +1878,6 @@
         }
         
         /* 确保不会因为内容少而收缩 */
-        .paper-container {
-            min-width: 100% !important;
-        }
     </style>
     <style>
         /* 额外的移动端适配样式 */
@@ -1729,104 +1939,82 @@
         <div class="main-content">
             <!-- 顶部导航栏 -->
             <div class="top-bar">
-                <!-- 单行布局：所有控件在一行 -->
-                <div class="top-bar-row" style="display: flex; align-items: center; gap: 12px; justify-content: flex-start; width: 100%; max-width: 100%; flex-wrap: nowrap; padding: 8px; box-sizing: border-box; overflow: visible;">
-                    <!-- 夜间模式切换 -->
-                    <div class="theme-toggle-top" style="font-size: 24px; flex-shrink: 0;">
-                        <span class="toggle-icon">🌙</span>
-                    </div>
-                    
-                    <!-- Recent按钮 -->
-                    <button id="recent-years-btn" class="top-bar-button secondary" style="font-size: 16px; padding: 8px 15px;">Recent</button>
-                    
-                    <!-- 年份选择 -->
-                    <div class="top-bar-item" style="display: flex; align-items: center; gap: 8px; flex-shrink: 1;">
-                        <!-- 单年份复选框 -->
-                        <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; flex-shrink: 0;">
-                            <input type="checkbox" id="single-year-checkbox" style="cursor: pointer; width: 16px; height: 16px;">
-                            <span style="font-size: 14px; white-space: nowrap;">单年</span>
-                        </label>
-                        
-                        <select id="start-year" class="top-bar-input" style="width: auto; font-size: 16px; padding: 8px; flex-shrink: 1;">
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
-                            <option value="2021">2021</option>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024" selected>2024</option>
-                            <option value="2025">2025</option>
-                        </select>
-                        <span id="year-separator" style="font-size: 18px; flex-shrink: 0;">-</span>
-                        <select id="end-year" class="top-bar-input" style="width: auto; font-size: 16px; padding: 8px; flex-shrink: 1;">
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
-                            <option value="2021">2021</option>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025" selected>2025</option>
-                        </select>
-                    </div>
-                    
-                    <!-- 搜索框 -->
-                    <input type="text" id="topic-input" class="top-bar-input" placeholder="flow matching" style="width: 200px; font-size: 16px; padding: 8px 12px;">
-                    
-                    <!-- 搜索按钮 -->
-                    <button id="search-btn" class="top-bar-button" style="font-size: 16px; padding: 8px 16px;">搜索</button>
-
-                    <!-- ML按钮 -->
-                    <div class="field-dropdown" data-field="ML" style="background-color: #ce93d8; padding: 6px 8px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0; display: inline-block; width: 70px !important; max-width: 70px !important;">
-                        <div class="field-label dropdown-toggle" data-field="ML" style="color: white; font-weight: bold; display: flex; align-items: center; font-size: 14px; gap: 2px; white-space: nowrap; width: 100% !important; justify-content: center;">
-                            <input type="checkbox" class="field-main-checkbox" data-field="ML" checked style="margin-right: 2px; transform: scale(0.8);">
-                            <span>ML</span>
-                            <i class="fas fa-caret-down" style="font-size: 10px;"></i>
-                        </div>
-                        <div class="dropdown-content" id="dropdown-ML" style="display: none; position: absolute; left: 0; right: 0; flex-wrap: wrap; flex-direction: row; justify-content: start; gap: 10px; padding: 10px; z-index: 9999; top: 100%;">
-                            <!-- ML会议选项将动态添加 -->
+                <div class="top-bar-inner">
+                    <div class="top-bar-row top-bar-row-1">
+                        <span class="version-badge"><span>v10.27</span><span class="toggle-icon">🌙</span></span>
+                        <input type="text" id="topic-input" class="top-bar-input search-input" placeholder="flow matching">
+                        <button id="search-btn" class="top-bar-button">搜索</button>
+                        <div class="search-group">
+                            <label class="year-single">
+                                <input type="checkbox" id="single-year-checkbox">
+                                <span>单年</span>
+                            </label>
+                            <label class="year-recent">
+                                <input type="checkbox" id="recent-checkbox">
+                                <span>最近</span>
+                            </label>
+                            <div class="year-selector">
+                                <select id="start-year" class="top-bar-input">
+                                    <option value="2025">2025</option>
+                                    <option value="2024" selected>2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2019">2019</option>
+                                </select>
+                                <span id="year-separator">-</span>
+                                <select id="end-year" class="top-bar-input">
+                                    <option value="2025" selected>2025</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2019">2019</option>
+                                </select>
+                            </div>
+                            
                         </div>
                     </div>
-                    
-                    <!-- CV按钮 -->
-                    <div class="field-dropdown" data-field="CV" style="background-color: #8bc34a; padding: 6px 8px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0; display: inline-block; width: 70px !important; max-width: 70px !important;">
-                        <div class="field-label dropdown-toggle" data-field="CV" style="color: white; font-weight: bold; display: flex; align-items: center; font-size: 14px; gap: 2px; white-space: nowrap; width: 100% !important; justify-content: center;">
-                            <input type="checkbox" class="field-main-checkbox" data-field="CV" checked style="margin-right: 2px; transform: scale(0.8);">
-                            <span>CV</span>
-                            <i class="fas fa-caret-down" style="font-size: 10px;"></i>
+                    <div class="top-bar-row top-bar-row-3 field-group">
+                        <div class="field-dropdown" data-field="ML">
+                            <div class="field-label dropdown-toggle" data-field="ML">
+                                <input type="checkbox" class="field-main-checkbox" data-field="ML" checked>
+                                <span>ML</span>
+                                <i class="fas fa-caret-down"></i>
+                            </div>
+                            <div class="dropdown-content" id="dropdown-ML"></div>
                         </div>
-                        <div class="dropdown-content" id="dropdown-CV" style="display: none; position: absolute; left: 0; right: 0; flex-wrap: wrap; flex-direction: row; justify-content: start; gap: 10px; padding: 10px; z-index: 9999; top: 100%;">
-                            <!-- CV会议选项将动态添加 -->
+                        <div class="field-dropdown" data-field="CV">
+                            <div class="field-label dropdown-toggle" data-field="CV">
+                                <input type="checkbox" class="field-main-checkbox" data-field="CV" checked>
+                                <span>CV</span>
+                                <i class="fas fa-caret-down"></i>
+                            </div>
+                            <div class="dropdown-content" id="dropdown-CV"></div>
                         </div>
-                    </div>
-                    
-                    <!-- AI按钮 -->
-                    <div class="field-dropdown" data-field="AI" style="background-color: #ff9a9a; padding: 6px 8px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0; display: inline-block; width: 70px !important; max-width: 70px !important;">
-                        <div class="field-label dropdown-toggle" data-field="AI" style="color: white; font-weight: bold; display: flex; align-items: center; font-size: 14px; gap: 2px; white-space: nowrap; width: 100% !important; justify-content: center;">
-                            <input type="checkbox" class="field-main-checkbox" data-field="AI" style="margin-right: 2px; transform: scale(0.8);">
-                            <span>AI</span>
-                            <i class="fas fa-caret-down" style="font-size: 10px;"></i>
+                        <div class="field-dropdown" data-field="AI">
+                            <div class="field-label dropdown-toggle" data-field="AI">
+                                <input type="checkbox" class="field-main-checkbox" data-field="AI">
+                                <span>AI</span>
+                                <i class="fas fa-caret-down"></i>
+                            </div>
+                            <div class="dropdown-content" id="dropdown-AI"></div>
                         </div>
-                        <div class="dropdown-content" id="dropdown-AI" style="display: none; position: absolute; left: 0; right: 0; flex-wrap: wrap; flex-direction: row; justify-content: start; gap: 10px; padding: 10px; z-index: 9999; top: 100%;">
-                            <!-- AI会议选项将动态添加 -->
+                        <div class="field-dropdown" data-field="Other">
+                            <div class="field-label dropdown-toggle" data-field="Other">
+                                <input type="checkbox" class="field-main-checkbox" data-field="Other">
+                                <span>Other</span>
+                                <i class="fas fa-caret-down"></i>
+                            </div>
+                            <div class="dropdown-content" id="dropdown-Other"></div>
                         </div>
-                    </div>
-                    
-                    <!-- X按钮（原Other） -->
-                    <div class="field-dropdown" data-field="Other" style="background-color: #d4a76a; padding: 6px 8px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0; display: inline-block; width: 50px !important; max-width: 50px !important;">
-                        <div class="field-label dropdown-toggle" data-field="Other" style="color: white; font-weight: bold; display: flex; align-items: center; font-size: 14px; gap: 2px; white-space: nowrap; width: 100% !important; justify-content: center;">
-                            <input type="checkbox" class="field-main-checkbox" data-field="Other" style="margin-right: 2px; transform: scale(0.8);">
-                            <span>X</span>
-                            <i class="fas fa-caret-down" style="font-size: 10px;"></i>
-                        </div>
-                        <div class="dropdown-content" id="dropdown-Other" style="display: none; position: absolute; left: 0; right: 0; flex-wrap: wrap; flex-direction: row; justify-content: start; gap: 10px; padding: 10px; z-index: 9999; top: 100%;">
-                            <!-- 其他会议选项将动态添加 -->
-                        </div>
-                    </div>
-                    
-                    <!-- All按钮（放在最右边） -->
-                    <div class="field-dropdown" data-field="All" style="background-color: #333; padding: 6px 8px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0; display: inline-block; width: 70px !important; max-width: 70px !important; margin-left: auto;">
-                        <div class="field-label" data-field="All" style="color: white; font-weight: bold; display: flex; align-items: center; font-size: 14px; white-space: nowrap; width: 100% !important; justify-content: center;">
-                            <input type="checkbox" id="select-all-checkbox" class="field-main-checkbox" data-field="All" style="margin-right: 4px; transform: scale(0.8);">
-                            <span>All</span>
+                        <div class="field-dropdown" data-field="All">
+                            <div class="field-label" data-field="All">
+                                <input type="checkbox" id="select-all-checkbox" class="field-main-checkbox" data-field="All">
+                                <span>All</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1837,6 +2025,7 @@
             </div>
             
             <!-- 主要内容区域 -->
+            <div class="content-wrapper">
             <div class="paper-container">
                 
                 <div id="loading" class="loading" style="display: none;">Loading papers...</div>
@@ -1892,6 +2081,7 @@
                         显示第 <span id="page-start">1</span> - <span id="page-end">50</span> 篇，共 <span id="total-papers-pagination">0</span> 篇论文
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>

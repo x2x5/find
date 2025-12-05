@@ -28,6 +28,14 @@ manifest = {
 
 papers_dir = "./papers"
 
+# 目录名和展示名的别名映射
+CONFERENCE_ALIASES = {
+    "acmmm": "mm"
+}
+
+def get_conference_alias(conf_name: str) -> str:
+    return CONFERENCE_ALIASES.get(conf_name, conf_name)
+
 def read_conference_papers(conf_name: str, conf_path: str):
     entries = []
     for year_file in os.listdir(conf_path):
@@ -56,15 +64,16 @@ if os.path.exists(papers_dir) and os.path.isdir(papers_dir):
         if not papers:
             continue
 
-        output_path = os.path.join(DATA_DIR, f"{conf_dir}.json")
+        alias_name = get_conference_alias(conf_dir)
+        output_path = os.path.join(DATA_DIR, f"{alias_name}.json")
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump({
                 "conference": conf_dir,
                 "papers": papers
             }, f, separators=(',', ':'))
 
-        manifest["conferences"][conf_dir] = {
-            "file": f"data/{conf_dir}.json",
+        manifest["conferences"][alias_name] = {
+            "file": f"data/{alias_name}.json",
             "count": len(papers)
         }
 
@@ -74,15 +83,12 @@ with open(manifest_path, 'w', encoding='utf-8') as f:
     json.dump(manifest, f, separators=(',', ':'))
 
 # 创建conferences.json文件，用于静态网站的会议和年份数据
-# 定义会议分类到不同领域
+# 定义会议分类到不同领域（仅限顶级三大类）
 CONFERENCE_CATEGORIES = {
     "CV": ["cvpr", "eccv", "iccv"],
-    "AI": ["aaai", "ijcai", "mm", "acmmm"],
+    "AI": ["aaai", "ijcai", "mm"],
     "ML": ["nips", "icml", "iclr"]
 }
-
-# 其他会议分类到Other类别
-OTHER_CONFERENCES = ["wacv", "siggraph", "siggraphasia", "emnlp", "aistats", "corl", "colm", "www"]
 
 conferences = {}
 
@@ -105,7 +111,8 @@ if os.path.exists(papers_dir) and os.path.isdir(papers_dir):
         years.sort(reverse=True)
         
         if years:  # 只添加有论文的会议
-            conferences[conf_dir] = years
+            alias_name = get_conference_alias(conf_dir)
+            conferences[alias_name] = years
 
 # 将会议分到各个领域
 categorized_conferences = {}
@@ -118,19 +125,6 @@ for field, confs in CONFERENCE_CATEGORIES.items():
     
     if field_confs:  # 只添加有会议的领域
         categorized_conferences[field] = field_confs
-
-# 处理其他未分类会议
-other_confs = {}
-for conf in OTHER_CONFERENCES:
-    if conf in conferences:
-        other_confs[conf] = conferences.pop(conf, [])
-
-# 将剩余会议添加到其他类别
-for conf, years in conferences.items():
-    other_confs[conf] = years
-
-if other_confs:
-    categorized_conferences["Other"] = other_confs
 
 # 获取当前年份计算最近5年
 current_year = datetime.datetime.now().year

@@ -1,5 +1,0 @@
-Modeling Clothing as a Separate Layer for an Animatable Human Avatar
-Motion Recommendation for Online Character Control
-PBNS: Physically Based Neural Simulation for Unsupervised Garment Pose Space Deformation
-SuperTrack: Motion Tracking for Physically Simulated Characters using Supervised Learning
-Transflower: probabilistic autoregressive dance generation with multimodal attention

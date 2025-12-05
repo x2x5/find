@@ -514,8 +514,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // ML领域
             'icml': 'ml', 'nips': 'ml', 'iclr': 'ml', 'neurips': 'ml',
             // AI领域 
-            'aaai': 'ai', 'ijcai': 'ai', 'acl': 'ai', 'naacl': 'ai', 'emnlp': 'ai',
-            // 默认为Other
+            'aaai': 'ai', 'ijcai': 'ai', 'mm': 'ai'
         };
         
         // 计算标题的单词数（考虑连字符）
@@ -551,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function() {
         papers.forEach(paper => {
             // 确定会议所属领域
             const confLower = paper.conference.toLowerCase();
-            const field = conferenceFieldMap[confLower] || 'other';
+            const field = conferenceFieldMap[confLower] || 'ml';
             const conferenceClass = `${field}-conference`;
             
             // 确定年份类别
@@ -694,8 +693,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let fieldsSelected = {
         'CV': true,
         'AI': false,
-        'ML': true,
-        'Other': false
+        'ML': true
     };
     
     // 全选/全不选功能
@@ -786,7 +784,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 更新全选复选框状态
     function updateSelectAllCheckbox() {
         if (selectAllCheckbox) {
-            const fields = ['CV', 'AI', 'ML', 'Other'];
+            const fields = ['CV', 'AI', 'ML'];
             const fieldCheckboxes = fields.map(field => 
                 document.querySelector(`.field-main-checkbox[data-field="${field}"]`)
             ).filter(checkbox => checkbox !== null);
@@ -839,7 +837,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 更新领域复选框状态
     function updateFieldCheckboxes() {
-        const fields = ['CV', 'AI', 'ML', 'Other'];
+        const fields = ['CV', 'AI', 'ML'];
         
         // 遍历每个领域
         fields.forEach(field => {
@@ -1070,6 +1068,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 如果加载失败，尝试使用默认会议数据
                 const defaultCategories = {
                     "CV": {"cvpr": ["2023", "2024"], "eccv": ["2022", "2024"], "iccv": ["2023"]},
+                    "AI": {"aaai": ["2023", "2024"], "ijcai": ["2023", "2024"], "mm": ["2023", "2024"]},
                     "ML": {"nips": ["2023", "2024"], "icml": ["2023", "2024"], "iclr": ["2023", "2024"]}
                 };
                 conferencesData = {
@@ -1083,7 +1082,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化下拉菜单
     function initializeDropdowns(categories) {
         // 为每个领域设置会议选项
-        const fields = ['CV', 'AI', 'ML', 'Other'];
+        const fields = ['CV', 'AI', 'ML'];
         
         fields.forEach(field => {
             if (categories[field]) {

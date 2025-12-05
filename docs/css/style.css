@@ -690,10 +690,6 @@ button:disabled {
     background-color: #d4a5ff; /* ML领域浅紫色 */
 }
 
-.conference-badge.other-conference {
-    background-color: #d4ad7d; /* Other领域浅棕色 */
-}
-
 /* 根据年份距离设置标签颜色 */
 .year-badge {
     color: white;
@@ -771,13 +767,6 @@ button:disabled {
     color: white;
 }
 
-.field-dropdown[data-field="Other"] .field-label,
-.dropdown-toggle[data-field="Other"] {
-    background-color: #d4ad7d; /* 浅棕色 */
-    border-color: #c49b6d;
-    color: white;
-}
-
 .field-dropdown:hover .field-label {
     filter: brightness(1.1);
 }
@@ -810,12 +799,6 @@ button:disabled {
 .dark-mode .dropdown-toggle[data-field="ML"] {
     background-color: #be8ee7; /* 深一点的浅紫色 */
     border-color: #aa7ad0;
-}
-
-.dark-mode .field-dropdown[data-field="Other"] .field-label,
-.dark-mode .dropdown-toggle[data-field="Other"] {
-    background-color: #c49b6d; /* 深一点的浅棕色 */
-    border-color: #b3895d;
 }
 
 footer {

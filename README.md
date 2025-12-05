@@ -1,30 +1,17 @@
-# Top AI Papers - 顶级AI论文检索系统
+# Top AI Papers - 顶会AI论文检索系统
 
+🚀 快速开始：
 
-nips 25: https://neurips.cc/virtual/2025/papers.html
-
-## 🚀 快速开始
-
-### 1. 克隆项目
 ```bash
-git clone <repository-url>
+git clone https://github.com/x2x5/top.git
 cd top
-```
-
-### 2. 数据预处理
-```bash
 python pre_data.py
 ```
 
-### 3. 上传到 github
-
-如果想要本地调试，可以启动本地服务器
-        
+👀 本地预览：
 ```bash
-# 使用Python内置服务器
 cd docs
+# 使用Python内置服务器
 python -m http.server 8000
+# 打开浏览器访问 `http://localhost:8000`
 ```
-
-### 4. 访问应用
-打开浏览器访问 `http://localhost:8000`

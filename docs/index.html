@@ -98,8 +98,16 @@
         }
 
         .search-input {
-            width: 320px;
-            flex: 0 0 320px;
+            width: 140px;
+            flex: 0 1 140px;
+            min-width: 140px;
+        }
+
+        .search-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 0 0 auto;
         }
 
         .year-single, .year-recent {
@@ -119,15 +127,16 @@
         .search-group {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-left: 16px;
-            flex-wrap: wrap;
+            gap: 10px;
+            margin-left: 12px;
             flex: 1 1 auto;
             justify-content: flex-start;
+            flex-wrap: nowrap;
+            min-width: 0;
         }
 
         .year-selector select {
-            width: 110px;
+            width: 100px;
         }
 
         #year-separator {
@@ -142,23 +151,31 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 160px;
-            flex: 1 1 0;
-            flex-basis: 0;
+            min-width: 120px;
+            flex: 0 1 120px;
         }
 
         .field-group {
             display: flex;
-            align-items: stretch;
-            gap: 12px;
-            width: 100%;
+            align-items: center;
+            gap: 10px;
+            flex: 0 1 auto;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+
+        .field-group .field-dropdown {
+            flex: 1 1 120px;
+            min-width: 110px;
+            max-width: 160px;
+            margin-bottom: 0;
         }
 
         .field-dropdown[data-field="CV"] { background-color: #8bc34a; }
         .field-dropdown[data-field="AI"] { background-color: #ff9a9a; }
         .field-dropdown[data-field="All"] { 
             background-color: #333;
-            min-width: 90px;
+            min-width: 80px;
             flex: 0 0 auto;
             padding: 4px 14px;
         }
@@ -232,6 +249,7 @@
                 margin-left: 0;
                 width: 100%;
                 justify-content: flex-start;
+                flex-wrap: wrap;
             }
         }
 
@@ -269,6 +287,8 @@
 
             .search-group {
                 margin-left: 0;
+                width: 100%;
+                flex-wrap: wrap;
             }
         }
         
@@ -1933,6 +1953,30 @@
             }
         }
     </style>
+    <style>
+        .site-footer {
+            max-width: 1160px;
+            margin: 20px auto 0;
+            padding: 20px 28px 30px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .site-footer .version-note {
+            margin-top: 6px;
+            font-size: 13px;
+            color: #9aa0a6;
+        }
+
+        .dark-mode .site-footer {
+            color: #a0a0a0;
+        }
+
+        .dark-mode .site-footer .version-note {
+            color: #c7ced3;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -1941,9 +1985,10 @@
             <div class="top-bar">
                 <div class="top-bar-inner">
                     <div class="top-bar-row top-bar-row-1">
-                        <span class="version-badge"><span>v10.27</span><span class="toggle-icon">🌙</span></span>
-                        <input type="text" id="topic-input" class="top-bar-input search-input" placeholder="flow matching">
-                        <button id="search-btn" class="top-bar-button">搜索</button>
+                        <div class="search-controls">
+                            <input type="text" id="topic-input" class="top-bar-input search-input" placeholder="flow matching">
+                            <button id="search-btn" class="top-bar-button">搜索</button>
+                        </div>
                         <div class="search-group">
                             <label class="year-single">
                                 <input type="checkbox" id="single-year-checkbox">
@@ -1974,38 +2019,37 @@
                                     <option value="2019">2019</option>
                                 </select>
                             </div>
-                            
-                        </div>
-                    </div>
-                    <div class="top-bar-row top-bar-row-3 field-group">
-                        <div class="field-dropdown" data-field="ML">
-                            <div class="field-label dropdown-toggle" data-field="ML">
-                                <input type="checkbox" class="field-main-checkbox" data-field="ML" checked>
-                                <span>ML</span>
-                                <i class="fas fa-caret-down"></i>
-                            </div>
-                            <div class="dropdown-content" id="dropdown-ML"></div>
-                        </div>
-                        <div class="field-dropdown" data-field="CV">
-                            <div class="field-label dropdown-toggle" data-field="CV">
-                                <input type="checkbox" class="field-main-checkbox" data-field="CV" checked>
-                                <span>CV</span>
-                                <i class="fas fa-caret-down"></i>
-                            </div>
-                            <div class="dropdown-content" id="dropdown-CV"></div>
-                        </div>
-                        <div class="field-dropdown" data-field="AI">
-                            <div class="field-label dropdown-toggle" data-field="AI">
-                                <input type="checkbox" class="field-main-checkbox" data-field="AI">
-                                <span>AI</span>
-                                <i class="fas fa-caret-down"></i>
-                            </div>
-                            <div class="dropdown-content" id="dropdown-AI"></div>
-                        </div>
-                        <div class="field-dropdown" data-field="All">
-                            <div class="field-label" data-field="All">
-                                <input type="checkbox" id="select-all-checkbox" class="field-main-checkbox" data-field="All">
-                                <span>All</span>
+                            <div class="field-group">
+                                <div class="field-dropdown" data-field="ML">
+                                    <div class="field-label dropdown-toggle" data-field="ML">
+                                        <input type="checkbox" class="field-main-checkbox" data-field="ML" checked>
+                                        <span>ML</span>
+                                        <i class="fas fa-caret-down"></i>
+                                    </div>
+                                    <div class="dropdown-content" id="dropdown-ML"></div>
+                                </div>
+                                <div class="field-dropdown" data-field="CV">
+                                    <div class="field-label dropdown-toggle" data-field="CV">
+                                        <input type="checkbox" class="field-main-checkbox" data-field="CV" checked>
+                                        <span>CV</span>
+                                        <i class="fas fa-caret-down"></i>
+                                    </div>
+                                    <div class="dropdown-content" id="dropdown-CV"></div>
+                                </div>
+                                <div class="field-dropdown" data-field="AI">
+                                    <div class="field-label dropdown-toggle" data-field="AI">
+                                        <input type="checkbox" class="field-main-checkbox" data-field="AI">
+                                        <span>AI</span>
+                                        <i class="fas fa-caret-down"></i>
+                                    </div>
+                                    <div class="dropdown-content" id="dropdown-AI"></div>
+                                </div>
+                                <div class="field-dropdown" data-field="All">
+                                    <div class="field-label" data-field="All">
+                                        <input type="checkbox" id="select-all-checkbox" class="field-main-checkbox" data-field="All">
+                                        <span>All</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2077,6 +2121,11 @@
             </div>
         </div>
     </div>
+
+    <footer class="site-footer">
+        <div class="version-info">Top AI Papers · v10.27 🌙</div>
+        <div class="version-note">最近更新：将 ML / CV / AI 筛选条移动到顶部同一行，方便快速切换。</div>
+    </footer>
 
     <!-- 移动端侧边栏切换按钮 -->
 

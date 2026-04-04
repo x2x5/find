@@ -11,6 +11,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     const startYearSelect = document.getElementById('start-year');
     const endYearSelect = document.getElementById('end-year');
+    const yearSlider = document.getElementById('year-slider');
+    const startYearRange = document.getElementById('start-year-range');
+    const endYearRange = document.getElementById('end-year-range');
+    const startYearValue = document.getElementById('start-year-value');
+    const endYearValue = document.getElementById('end-year-value');
+    const startYearLabel = document.getElementById('start-year-label');
+    const endYearLabel = document.getElementById('end-year-label');
+    const yearSliderFill = document.getElementById('year-slider-fill');
+    const singleYearCheckbox = document.getElementById('single-year-checkbox');
     const recentCheckbox = document.getElementById('recent-checkbox');
     const fieldMainCheckboxes = document.querySelectorAll('.field-main-checkbox');
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
@@ -24,9 +33,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalPapersPagination = document.getElementById('total-papers-pagination');
 
     const DATA_MANIFEST_URL = 'data/manifest.json';
+    const currentYear = new Date().getFullYear();
 
     const manifestCache = { loaded: false, data: null };
     const conferenceDataCache = new Map();
+    let availableYears = [];
+    let isSyncingYearControls = false;
 
     async function loadManifest() {
         if (manifestCache.loaded) {
@@ -939,49 +951,220 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Browser does not support matchMedia listener');
     }
 
+    function ensureYearExistsInSelect(selectEl, year) {
+        if (!selectEl || !Number.isFinite(year)) return;
+        const yearStr = String(year);
+        const exists = Array.from(selectEl.options).some(option => option.value === yearStr);
+        if (!exists) {
+            const option = document.createElement('option');
+            option.value = yearStr;
+            option.textContent = yearStr;
+            selectEl.appendChild(option);
+        }
+    }
+
+    function collectAvailableYears() {
+        const years = new Set();
+        [startYearSelect, endYearSelect].forEach(selectEl => {
+            if (!selectEl) return;
+            Array.from(selectEl.options).forEach(option => {
+                const yearValue = parseInt(option.value, 10);
+                if (Number.isFinite(yearValue)) {
+                    years.add(yearValue);
+                }
+            });
+        });
+        years.add(currentYear);
+        return Array.from(years).sort((a, b) => a - b);
+    }
+
+    function rebuildYearSliderModel() {
+        if (!startYearSelect || !endYearSelect) return;
+        const years = collectAvailableYears();
+        if (years.length === 0) return;
+
+        years.forEach(year => {
+            ensureYearExistsInSelect(startYearSelect, year);
+            ensureYearExistsInSelect(endYearSelect, year);
+        });
+
+        availableYears = years;
+        if (startYearRange && endYearRange) {
+            const maxIndex = Math.max(availableYears.length - 1, 0);
+            startYearRange.min = '0';
+            startYearRange.max = String(maxIndex);
+            startYearRange.step = '1';
+            endYearRange.min = '0';
+            endYearRange.max = String(maxIndex);
+            endYearRange.step = '1';
+        }
+    }
+
+    function yearToSliderIndex(year) {
+        if (availableYears.length === 0) return 0;
+        const exactIndex = availableYears.indexOf(year);
+        if (exactIndex !== -1) return exactIndex;
+        if (year <= availableYears[0]) return 0;
+        if (year >= availableYears[availableYears.length - 1]) return availableYears.length - 1;
+        for (let i = 1; i < availableYears.length; i++) {
+            if (year < availableYears[i]) {
+                return i - 1;
+            }
+        }
+        return availableYears.length - 1;
+    }
+
+    function sliderIndexToYear(index) {
+        if (availableYears.length === 0) return currentYear;
+        const clampedIndex = Math.min(Math.max(index, 0), availableYears.length - 1);
+        return availableYears[clampedIndex];
+    }
+
+    function clampSliderIndices(source = 'start') {
+        if (!startYearRange || !endYearRange) return [0, 0, 0];
+        const maxIndex = Math.max(availableYears.length - 1, 0);
+        let startIndex = parseInt(startYearRange.value, 10);
+        let endIndex = parseInt(endYearRange.value, 10);
+
+        if (!Number.isFinite(startIndex)) startIndex = 0;
+        if (!Number.isFinite(endIndex)) endIndex = maxIndex;
+
+        startIndex = Math.min(Math.max(startIndex, 0), maxIndex);
+        endIndex = Math.min(Math.max(endIndex, 0), maxIndex);
+
+        if (singleYearCheckbox && singleYearCheckbox.checked) {
+            endIndex = startIndex;
+        } else if (startIndex > endIndex) {
+            if (source === 'end') {
+                startIndex = endIndex;
+            } else {
+                endIndex = startIndex;
+            }
+        }
+
+        startYearRange.value = String(startIndex);
+        endYearRange.value = String(endIndex);
+        return [startIndex, endIndex, maxIndex];
+    }
+
+    function renderYearSlider(source = 'start') {
+        if (!startYearRange || !endYearRange || !yearSliderFill) return;
+        const [startIndex, endIndex, maxIndex] = clampSliderIndices(source);
+        const startYear = sliderIndexToYear(startIndex);
+        const endYear = sliderIndexToYear(endIndex);
+
+        if (startYearValue) startYearValue.textContent = String(startYear);
+        if (endYearValue) endYearValue.textContent = String(endYear);
+
+        const startPct = maxIndex === 0 ? 0 : (startIndex / maxIndex) * 100;
+        const endPct = maxIndex === 0 ? 100 : (endIndex / maxIndex) * 100;
+        yearSliderFill.style.left = `${startPct}%`;
+        yearSliderFill.style.width = `${Math.max(endPct - startPct, 0)}%`;
+
+        if (startYearLabel) startYearLabel.style.left = `${startPct}%`;
+        if (endYearLabel) endYearLabel.style.left = `${endPct}%`;
+    }
+
+    function syncYearSliderFromSelects() {
+        if (!startYearSelect || !endYearSelect || !startYearRange || !endYearRange) return;
+        rebuildYearSliderModel();
+        if (availableYears.length === 0) return;
+
+        let startYear = parseInt(startYearSelect.value, 10);
+        let endYear = parseInt(endYearSelect.value, 10);
+
+        if (!Number.isFinite(startYear)) startYear = availableYears[0];
+        if (!Number.isFinite(endYear)) endYear = availableYears[availableYears.length - 1];
+
+        if (singleYearCheckbox && singleYearCheckbox.checked) {
+            endYear = startYear;
+            endYearSelect.value = String(endYear);
+        } else if (startYear > endYear) {
+            endYear = startYear;
+            endYearSelect.value = String(endYear);
+        }
+
+        startYearRange.value = String(yearToSliderIndex(startYear));
+        endYearRange.value = String(yearToSliderIndex(endYear));
+        renderYearSlider();
+    }
+
+    function syncSelectsFromYearSlider(source = 'start') {
+        if (!startYearSelect || !endYearSelect || !startYearRange || !endYearRange) return;
+        rebuildYearSliderModel();
+        if (availableYears.length === 0) return;
+
+        const [startIndex, endIndex] = clampSliderIndices(source);
+        const startYear = sliderIndexToYear(startIndex);
+        const endYear = sliderIndexToYear(endIndex);
+
+        isSyncingYearControls = true;
+        startYearSelect.value = String(startYear);
+        endYearSelect.value = String(endYear);
+        isSyncingYearControls = false;
+
+        renderYearSlider(source);
+        updateRecentCheckboxState();
+    }
+
     // 确保开始年份不大于结束年份
     function validateYearRange() {
-        const startYear = parseInt(startYearSelect.value);
-        const endYear = parseInt(endYearSelect.value);
-        
-        if (startYear > endYear) {
+        if (!startYearSelect || !endYearSelect) return;
+        const startYear = parseInt(startYearSelect.value, 10);
+        const endYear = parseInt(endYearSelect.value, 10);
+
+        if (Number.isFinite(startYear) && Number.isFinite(endYear) && startYear > endYear) {
+            endYearSelect.value = startYearSelect.value;
+        }
+        if (singleYearCheckbox && singleYearCheckbox.checked) {
             endYearSelect.value = startYearSelect.value;
         }
     }
     
     // 处理单年份复选框切换
     function toggleSingleYearMode() {
-        const singleYearCheckbox = document.getElementById('single-year-checkbox');
-        const endYearSelect = document.getElementById('end-year');
         const yearSeparator = document.getElementById('year-separator');
-        
-        if (singleYearCheckbox && endYearSelect && yearSeparator) {
-            if (singleYearCheckbox.checked) {
-                // 单年份模式：隐藏分隔符和结束年份选择器
-                yearSeparator.style.display = 'none';
-                endYearSelect.style.display = 'none';
-            } else {
-                // 年份范围模式：显示分隔符和结束年份选择器
-                yearSeparator.style.display = '';
-                endYearSelect.style.display = '';
-            }
+        const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
+
+        if (yearSlider) {
+            yearSlider.classList.toggle('single-year-mode', isSingleYear);
         }
+        if (yearSeparator) {
+            yearSeparator.style.display = isSingleYear ? 'none' : '';
+        }
+        if (isSingleYear && startYearSelect && endYearSelect) {
+            endYearSelect.value = startYearSelect.value;
+        }
+        syncYearSliderFromSelects();
+        updateRecentCheckboxState();
     }
     
     // 添加年份选择事件
     if (startYearSelect && endYearSelect) {
         startYearSelect.addEventListener('change', function() {
+            if (isSyncingYearControls) return;
             validateYearRange();
+            syncYearSliderFromSelects();
             updateRecentCheckboxState();
         });
         endYearSelect.addEventListener('change', function() {
+            if (isSyncingYearControls) return;
             validateYearRange();
+            syncYearSliderFromSelects();
             updateRecentCheckboxState();
+        });
+    }
+
+    if (startYearRange && endYearRange) {
+        startYearRange.addEventListener('input', function() {
+            syncSelectsFromYearSlider('start');
+        });
+        endYearRange.addEventListener('input', function() {
+            syncSelectsFromYearSlider('end');
         });
     }
     
     // 添加单年份复选框事件监听器
-    const singleYearCheckbox = document.getElementById('single-year-checkbox');
     if (singleYearCheckbox) {
         singleYearCheckbox.addEventListener('change', toggleSingleYearMode);
         // 初始化时设置正确的显示状态（默认不选中，显示年份范围）
@@ -1254,107 +1437,58 @@ document.addEventListener('DOMContentLoaded', function() {
         // We're not using tables anymore, but this prevents errors from old code
     });
 
-    // 获取当前年份
-    const currentYear = new Date().getFullYear();
-
-    // 更新年份下拉框选项
+    // 更新年份选项（确保包含当前年份，并同步滑块）
     function updateYearOptions() {
-        // 更新结束年份选项，确保包含当前年份
-        const endYearSelect = document.getElementById('end-year');
-        const options = endYearSelect.options;
-        
-        // 检查是否需要更新选项
-        let maxYear = 0;
-        for (let i = 0; i < options.length; i++) {
-            const yearValue = parseInt(options[i].value);
-            maxYear = Math.max(maxYear, yearValue);
+        if (!startYearSelect || !endYearSelect) return;
+        ensureYearExistsInSelect(startYearSelect, currentYear);
+        ensureYearExistsInSelect(endYearSelect, currentYear);
+        rebuildYearSliderModel();
+
+        if (!Number.isFinite(parseInt(startYearSelect.value, 10))) {
+            const fallbackStart = Math.max(currentYear - 1, availableYears[0] || currentYear);
+            startYearSelect.value = String(fallbackStart);
         }
-        
-        // 如果当前年份大于最大年份，添加新选项
-        if (currentYear > maxYear) {
-            for (let year = maxYear + 1; year <= currentYear; year++) {
-                const option = document.createElement('option');
-                option.value = year.toString();
-                option.textContent = year.toString();
-                endYearSelect.appendChild(option);
-            }
+        if (!Number.isFinite(parseInt(endYearSelect.value, 10))) {
+            endYearSelect.value = String(currentYear);
         }
-        
-        // 默认选择当前年份作为结束年份
-        for (let i = 0; i < options.length; i++) {
-            if (options[i].value === currentYear.toString()) {
-                options[i].selected = true;
-                break;
-            }
-        }
+
+        validateYearRange();
+        syncYearSliderFromSelects();
     }
 
     // 设置最近三年
     function setRecentThreeYears() {
-        const startYearSelect = document.getElementById('start-year');
-        const endYearSelect = document.getElementById('end-year');
-        const singleYearCheckbox = document.getElementById('single-year-checkbox');
-        
-        // 检查是否为单年份模式
+        if (!startYearSelect || !endYearSelect) return;
         const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
-        
-        if (isSingleYear) {
-            // 单年模式：只设置当前年份
-            for (let i = 0; i < startYearSelect.options.length; i++) {
-                if (startYearSelect.options[i].value === currentYear.toString()) {
-                    startYearSelect.options[i].selected = true;
-                    break;
-                }
-            }
-        } else {
-            // 年份段模式：设置从去年到今年
-            const startYear = currentYear - 1;
-            for (let i = 0; i < startYearSelect.options.length; i++) {
-                if (startYearSelect.options[i].value === startYear.toString()) {
-                    startYearSelect.options[i].selected = true;
-                    break;
-                }
-            }
-            
-            // 设置结束年份为当前年份
-            for (let i = 0; i < endYearSelect.options.length; i++) {
-                if (endYearSelect.options[i].value === currentYear.toString()) {
-                    endYearSelect.options[i].selected = true;
-                    break;
-                }
-            }
-        }
-        
-        // 修复：确保选择框视觉上更新
-        startYearSelect.dispatchEvent(new Event('change'));
-        endYearSelect.dispatchEvent(new Event('change'));
+        const startYear = isSingleYear ? currentYear : currentYear - 1;
+
+        ensureYearExistsInSelect(startYearSelect, startYear);
+        ensureYearExistsInSelect(endYearSelect, currentYear);
+        startYearSelect.value = String(startYear);
+        endYearSelect.value = String(currentYear);
+
+        validateYearRange();
+        syncYearSliderFromSelects();
+        updateRecentCheckboxState();
     }
 
     // 设置全部年份
     function setAllYears() {
-        const startYearSelect = document.getElementById('start-year');
-        const endYearSelect = document.getElementById('end-year');
-        
-        // 设置开始年份为最早的年份选项
-        if (startYearSelect.options.length > 0) {
-            startYearSelect.options[0].selected = true;
-        }
-        
-        // 设置结束年份为当前年份
-        for (let i = 0; i < endYearSelect.options.length; i++) {
-            if (endYearSelect.options[i].value === currentYear.toString()) {
-                endYearSelect.options[i].selected = true;
-                break;
-            }
-        }
-        
-        // 确保选择框视觉上更新
-        startYearSelect.dispatchEvent(new Event('change'));
-        endYearSelect.dispatchEvent(new Event('change'));
+        if (!startYearSelect || !endYearSelect) return;
+        rebuildYearSliderModel();
+        if (availableYears.length === 0) return;
+
+        startYearSelect.value = String(availableYears[0]);
+        endYearSelect.value = String(availableYears[availableYears.length - 1]);
+
+        validateYearRange();
+        syncYearSliderFromSelects();
+        updateRecentCheckboxState();
     }
 
-    // 更新年份选项
+    // 更新年份选项并初始化滑块状态
     updateYearOptions();
+    syncYearSliderFromSelects();
     // 初始化“最近”状态
     updateRecentCheckboxState();
     

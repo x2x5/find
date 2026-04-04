@@ -121,7 +121,7 @@
         .year-selector {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            min-width: 320px;
         }
 
         .search-group {
@@ -135,12 +135,134 @@
             min-width: 0;
         }
 
-        .year-selector select {
-            width: 100px;
+        .year-select-hidden {
+            display: none !important;
         }
 
-        #year-separator {
-            font-size: 18px;
+        .year-slider {
+            position: relative;
+            width: min(360px, 62vw);
+            min-width: 250px;
+            height: 58px;
+            padding-top: 16px;
+        }
+
+        .year-slider-track,
+        .year-slider-fill {
+            position: absolute;
+            top: 34px;
+            height: 6px;
+            border-radius: 999px;
+        }
+
+        .year-slider-track {
+            left: 0;
+            right: 0;
+            background: #d9e2ec;
+        }
+
+        .year-slider-fill {
+            left: 0;
+            width: 100%;
+            background: linear-gradient(90deg, #3498db 0%, #2ecc71 100%);
+        }
+
+        .year-range-input {
+            position: absolute;
+            left: 0;
+            top: 25px;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            height: 20px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .year-range-input::-webkit-slider-runnable-track {
+            height: 6px;
+            background: transparent;
+        }
+
+        .year-range-input::-moz-range-track {
+            height: 6px;
+            background: transparent;
+            border: none;
+        }
+
+        .year-range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            margin-top: -5px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            background: #1f78d1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .year-range-input::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            background: #1f78d1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .year-range-input:focus {
+            outline: none;
+        }
+
+        .year-range-input:focus::-webkit-slider-thumb {
+            box-shadow: 0 0 0 3px rgba(31, 120, 209, 0.28);
+        }
+
+        .year-range-input:focus::-moz-range-thumb {
+            box-shadow: 0 0 0 3px rgba(31, 120, 209, 0.28);
+        }
+
+        .year-handle-label {
+            position: absolute;
+            top: 0;
+            transform: translateX(-50%);
+            font-size: 11px;
+            line-height: 1;
+            padding: 4px 7px;
+            border-radius: 999px;
+            color: #1c3b56;
+            background: #e6f2ff;
+            border: 1px solid #c8ddf2;
+            white-space: nowrap;
+            user-select: none;
+            pointer-events: none;
+            font-weight: 600;
+            z-index: 3;
+        }
+
+        .year-handle-label span {
+            margin-left: 4px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .year-handle-label-end {
+            background: #effaf0;
+            border-color: #cde8cf;
+            color: #20592b;
+        }
+
+        .year-slider.single-year-mode .year-handle-label-end,
+        .year-slider.single-year-mode #end-year-range {
+            display: none;
         }
 
         .field-dropdown {
@@ -209,9 +331,36 @@
             border-color: #444;
         }
 
-        .dark-mode #year-separator,
-        .dark-mode .year-selector span {
+        .dark-mode #year-separator {
             color: #ecf0f1;
+        }
+
+        .dark-mode .year-slider-track {
+            background: #3c4959;
+        }
+
+        .dark-mode .year-slider-fill {
+            background: linear-gradient(90deg, #4ea8de 0%, #57cc99 100%);
+        }
+
+        .dark-mode .year-handle-label {
+            background: #213449;
+            border-color: #345272;
+            color: #d7e8f6;
+        }
+
+        .dark-mode .year-handle-label-end {
+            background: #233b33;
+            border-color: #356350;
+            color: #d8f1e1;
+        }
+
+        .dark-mode .year-range-input::-webkit-slider-thumb {
+            border-color: #1f2a38;
+        }
+
+        .dark-mode .year-range-input::-moz-range-thumb {
+            border-color: #1f2a38;
         }
 
         .dark-mode .field-dropdown[data-field="All"] {
@@ -237,8 +386,8 @@
                 flex: 1 1 200px;
             }
 
-            .year-selector select {
-                width: 100px;
+            .year-slider {
+                width: min(360px, 70vw);
             }
 
             .field-dropdown {
@@ -275,8 +424,9 @@
                 flex-wrap: wrap;
             }
 
-            .year-selector select {
+            .year-slider {
                 width: 100%;
+                min-width: 0;
             }
 
             .field-dropdown {
@@ -1999,7 +2149,19 @@
                                 <span>最近</span>
                             </label>
                             <div class="year-selector">
-                                <select id="start-year" class="top-bar-input">
+                                <div class="year-slider" id="year-slider">
+                                    <div class="year-handle-label year-handle-label-start" id="start-year-label">
+                                        start-year <span id="start-year-value">2024</span>
+                                    </div>
+                                    <div class="year-handle-label year-handle-label-end" id="end-year-label">
+                                        end-year <span id="end-year-value">2025</span>
+                                    </div>
+                                    <div class="year-slider-track"></div>
+                                    <div class="year-slider-fill" id="year-slider-fill"></div>
+                                    <input type="range" id="start-year-range" class="year-range-input" min="0" max="1" step="1" value="0" aria-label="start year slider">
+                                    <input type="range" id="end-year-range" class="year-range-input" min="0" max="1" step="1" value="1" aria-label="end year slider">
+                                </div>
+                                <select id="start-year" class="top-bar-input year-select-hidden">
                                     <option value="2026">2026</option>
                                     <option value="2025">2025</option>
                                     <option value="2024" selected>2024</option>
@@ -2009,8 +2171,8 @@
                                     <option value="2020">2020</option>
                                     <option value="2019">2019</option>
                                 </select>
-                                <span id="year-separator">-</span>
-                                <select id="end-year" class="top-bar-input">
+                                <span id="year-separator" class="year-select-hidden">-</span>
+                                <select id="end-year" class="top-bar-input year-select-hidden">
                                     <option value="2025" selected>2025</option>
                                     <option value="2024">2024</option>
                                     <option value="2023">2023</option>

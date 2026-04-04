@@ -143,14 +143,14 @@
             position: relative;
             width: min(360px, 62vw);
             min-width: 250px;
-            height: 58px;
+            height: 80px;
             padding-top: 16px;
         }
 
         .year-slider-track,
         .year-slider-fill {
             position: absolute;
-            top: 34px;
+            top: 36px;
             height: 6px;
             border-radius: 999px;
         }
@@ -170,7 +170,7 @@
         .year-range-input {
             position: absolute;
             left: 0;
-            top: 25px;
+            top: 27px;
             width: 100%;
             margin: 0;
             padding: 0;
@@ -232,7 +232,6 @@
 
         .year-handle-label {
             position: absolute;
-            top: 0;
             transform: translateX(-50%);
             font-size: 11px;
             line-height: 1;
@@ -248,6 +247,10 @@
             z-index: 3;
         }
 
+        .year-handle-label-start {
+            top: 0;
+        }
+
         .year-handle-label span {
             margin-left: 4px;
             font-size: 12px;
@@ -255,14 +258,10 @@
         }
 
         .year-handle-label-end {
+            top: 48px;
             background: #effaf0;
             border-color: #cde8cf;
             color: #20592b;
-        }
-
-        .year-slider.single-year-mode .year-handle-label-end,
-        .year-slider.single-year-mode #end-year-range {
-            display: none;
         }
 
         .field-dropdown {
@@ -2127,60 +2126,752 @@
             color: #c7ced3;
         }
     </style>
+    <style>
+        .conference-timeline-card {
+            position: fixed;
+            top: 88px;
+            right: 18px;
+            width: 248px;
+            max-height: calc(100vh - 108px);
+            margin: 0;
+            padding: 14px 14px 12px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            box-sizing: border-box;
+            overflow: hidden;
+            z-index: 9000;
+        }
+
+        .conference-timeline-head {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .conference-timeline-title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .conference-timeline-note {
+            margin: 0;
+            font-size: 11px;
+            color: #6f7b86;
+            line-height: 1.4;
+        }
+
+        .conference-timeline-scroll {
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-height: calc(100vh - 170px);
+            padding-right: 4px;
+        }
+
+        .conference-timeline-track {
+            position: relative;
+            width: 100%;
+            height: 960px;
+            min-height: 960px;
+            padding: 20px 0;
+            box-sizing: border-box;
+        }
+
+        .conference-timeline-line {
+            position: absolute;
+            top: 20px;
+            bottom: 20px;
+            left: 50%;
+            width: 3px;
+            transform: translateX(-50%);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #8fb6e8 0%, #5d9ce5 55%, #3f82d6 100%);
+        }
+
+        .conference-timeline-today {
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            height: 0;
+            border-top: 2px dashed #ff8c42;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .conference-timeline-today-label {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #a85314;
+            background: #ffe9db;
+            border: 1px solid #ffd0b0;
+            border-radius: 999px;
+            padding: 2px 8px;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .conference-timeline-node {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+        }
+
+        .conference-timeline-dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            background: #3f82d6;
+            box-shadow: 0 0 0 3px rgba(63, 130, 214, 0.18);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .conference-timeline-content {
+            position: absolute;
+            width: 92px;
+            background: #f8fbff;
+            border: 1px solid #d5e7fa;
+            border-radius: 8px;
+            padding: 6px 7px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        .conference-timeline-node.left .conference-timeline-content {
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: right;
+        }
+
+        .conference-timeline-node.right .conference-timeline-content {
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: left;
+        }
+
+        .conference-timeline-conf {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 3px;
+            color: #17395f;
+        }
+
+        .conference-timeline-date,
+        .conference-timeline-result {
+            font-size: 10px;
+            line-height: 1.3;
+            color: #4f5f70;
+        }
+
+        .conference-timeline-node.is-today .conference-timeline-dot {
+            background: #ff8c42;
+            box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.24);
+        }
+
+        .conference-timeline-node.is-today .conference-timeline-content {
+            border-color: #ffbc8b;
+            background: #fff5ed;
+        }
+
+        .conference-timeline-node.is-today .conference-timeline-conf {
+            color: #a85314;
+        }
+
+        @media (max-width: 1100px) {
+            .conference-timeline-card {
+                position: static;
+                width: 100%;
+                max-width: 1160px;
+                max-height: none;
+                margin: 0 auto 12px;
+                top: auto;
+                right: auto;
+            }
+
+            .conference-timeline-track {
+                height: 920px;
+                min-height: 920px;
+            }
+
+            .conference-timeline-scroll {
+                max-height: 500px;
+            }
+        }
+
+        @media (min-width: 1101px) {
+            .container {
+                padding-right: 290px;
+            }
+        }
+
+        .dark-mode .conference-timeline-card {
+            background: #2d2d2d;
+            border-color: #444;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .dark-mode .conference-timeline-title {
+            color: #ecf0f1;
+        }
+
+        .dark-mode .conference-timeline-note {
+            color: #b8c2cc;
+        }
+
+        .dark-mode .conference-timeline-line {
+            background: linear-gradient(180deg, #53779d 0%, #4f84be 55%, #4f88c5 100%);
+        }
+
+        .dark-mode .conference-timeline-dot {
+            border-color: #1f2a38;
+            background: #5ea2ee;
+            box-shadow: 0 0 0 3px rgba(94, 162, 238, 0.2);
+        }
+
+        .dark-mode .conference-timeline-content {
+            background: #1f2b37;
+            border-color: #395069;
+        }
+
+        .dark-mode .conference-timeline-conf {
+            color: #d7e7f9;
+        }
+
+        .dark-mode .conference-timeline-date,
+        .dark-mode .conference-timeline-result {
+            color: #b8cbdf;
+        }
+
+        .dark-mode .conference-timeline-today {
+            border-top-color: #ffad74;
+        }
+
+        .dark-mode .conference-timeline-today-label {
+            background: #5c3a21;
+            border-color: #8d5b36;
+            color: #ffe4cf;
+        }
+
+        .dark-mode .conference-timeline-node.is-today .conference-timeline-dot {
+            background: #ffad74;
+            box-shadow: 0 0 0 4px rgba(255, 173, 116, 0.22);
+        }
+
+        .dark-mode .conference-timeline-node.is-today .conference-timeline-content {
+            background: #453123;
+            border-color: #7a553a;
+        }
+
+        .dark-mode .conference-timeline-node.is-today .conference-timeline-conf {
+            color: #ffd8bb;
+        }
+    </style>
+    <style>
+        /* Final layout overrides: classic 75/25 two-column */
+        .main-content {
+            display: grid !important;
+            grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
+            grid-template-areas:
+                "top top"
+                "content timeline";
+            align-items: start;
+            gap: 18px;
+        }
+
+        .main-content > .top-bar {
+            grid-area: top;
+            position: static !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            width: 100%;
+        }
+
+        .main-content > .content-wrapper {
+            grid-area: content;
+            max-width: none;
+            margin: 0;
+            padding: 0 !important;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .main-content > .conference-timeline-card {
+            grid-area: timeline;
+            position: sticky;
+            top: 14px;
+            right: auto;
+            width: 100%;
+            max-height: calc(100vh - 28px);
+            margin: 0;
+        }
+
+        .main-content > .sidebar {
+            display: none !important;
+        }
+
+        .top-bar-inner {
+            max-width: none;
+            margin: 0;
+            padding: 16px 18px;
+            gap: 0;
+            border-radius: 12px;
+        }
+
+        .top-bar-row.control-panel {
+            display: flex;
+            gap: 14px;
+            align-items: stretch;
+            flex-wrap: nowrap;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #d9e2ec;
+            background: #f8fbff;
+            border-radius: 10px;
+            padding: 10px 12px;
+            min-height: 62px;
+        }
+
+        .control-group-main {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .control-group-year {
+            flex: 0 0 auto;
+            margin-left: auto;
+        }
+
+        .control-group-main .field-group {
+            margin-left: 4px;
+        }
+
+        .control-group-main .field-group .field-dropdown,
+        .control-group-main .field-group .field-dropdown[data-field="ML"],
+        .control-group-main .field-group .field-dropdown[data-field="CV"],
+        .control-group-main .field-group .field-dropdown[data-field="AI"],
+        .control-group-main .field-group .field-dropdown[data-field="All"] {
+            width: 112px !important;
+            min-width: 112px !important;
+            max-width: 112px !important;
+            flex: 0 0 112px !important;
+            height: 40px !important;
+        }
+
+        #topic-input.search-input {
+            width: 220px !important;
+            min-width: 220px;
+            flex: 0 0 220px;
+        }
+
+        .top-bar-input,
+        .top-bar-button,
+        .field-dropdown {
+            height: 40px !important;
+            border-radius: 8px !important;
+            box-sizing: border-box;
+        }
+
+        .top-bar-input {
+            padding: 0 12px !important;
+        }
+
+        .top-bar-button {
+            padding: 0 14px !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .field-group {
+            gap: 10px;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+
+        .field-dropdown {
+            padding: 0 10px !important;
+            margin: 0 !important;
+            min-width: 106px;
+            flex: 0 0 auto;
+        }
+
+        .field-label {
+            height: 100%;
+            min-height: 38px;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .year-selector {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .year-select-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #3c4f63;
+            text-transform: lowercase;
+        }
+
+        #year-separator {
+            color: #637487;
+            font-size: 13px;
+            font-weight: 700;
+            margin: 0 2px;
+        }
+
+        .year-select {
+            min-width: 92px;
+            background: #fff;
+            border: 1px solid #cdd8e4;
+        }
+
+        .year-slider,
+        #start-year-range,
+        #end-year-range,
+        #start-year-label,
+        #end-year-label,
+        #year-slider-fill {
+            display: none !important;
+        }
+
+        .main-content > .conference-timeline-card {
+            position: static;
+            max-height: none;
+        }
+
+        .conference-timeline-scroll {
+            overflow: visible !important;
+            max-height: none !important;
+            padding-right: 0;
+        }
+
+        .conference-timeline-track {
+            height: 1240px;
+            min-height: 1240px;
+            padding: 24px 0;
+        }
+
+        .conference-timeline-line {
+            top: 24px;
+            bottom: 24px;
+            width: 4px;
+            background: linear-gradient(180deg, #8bb1df 0%, #5d91d1 55%, #3f82d6 100%);
+        }
+
+        .conference-timeline-month-label {
+            position: absolute;
+            left: 6px;
+            width: 28px;
+            transform: translateY(-50%);
+            text-align: right;
+            font-size: 11px;
+            color: #6d7b89;
+            font-weight: 700;
+            background: transparent;
+            border: none;
+            padding: 0;
+            line-height: 1.2;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .conference-timeline-month-tick {
+            position: absolute;
+            left: calc(50% - 8px);
+            width: 16px;
+            border-top: 1px dashed #bdd0e4;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+
+        .conference-timeline-side-label {
+            position: absolute;
+            top: 2px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 2px 10px;
+            line-height: 1.4;
+            z-index: 5;
+        }
+
+        .conference-timeline-side-label.side-left {
+            color: #1a4f8f;
+            background: #edf5ff;
+            border: 1px solid #b9d4f5;
+        }
+
+        .conference-timeline-side-label.side-right {
+            color: #9a4c12;
+            background: #fff2e6;
+            border: 1px solid #ffd0a8;
+        }
+
+        .conference-timeline-event {
+            position: absolute;
+            transform: translateY(-50%);
+            z-index: 4;
+        }
+
+        .conference-timeline-event-chip {
+            border-radius: 8px;
+            padding: 5px 8px;
+            font-size: 11px;
+            line-height: 1.3;
+            font-weight: 700;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            border: 1px solid transparent;
+            background: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conference-timeline-event.side-left .conference-timeline-event-chip {
+            text-align: right;
+        }
+
+        .conference-timeline-event.side-right .conference-timeline-event-chip {
+            text-align: left;
+        }
+
+        .conference-timeline-event.event-deadline .conference-timeline-event-chip {
+            color: #1a4f8f;
+            background: #edf5ff;
+            border-color: #b9d4f5;
+        }
+
+        .conference-timeline-event.event-result .conference-timeline-event-chip {
+            color: #9a4c12;
+            background: #fff2e6;
+            border-color: #ffd0a8;
+        }
+
+        .conference-timeline-event.event-today .conference-timeline-event-chip {
+            color: #155e38;
+            background: #e9fff1;
+            border-color: #9ad8b4;
+        }
+
+        .conference-timeline-connector {
+            position: absolute;
+            z-index: 3;
+        }
+
+        .conference-timeline-connector.connector-horizontal {
+            height: 2px;
+        }
+
+        .conference-timeline-connector.event-deadline {
+            background: #2f7fd3;
+        }
+
+        .conference-timeline-connector.event-result {
+            background: #e07b39;
+        }
+
+        .conference-timeline-connector.event-today {
+            background: #2ea55f;
+        }
+
+        .conference-timeline-arrowhead {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            z-index: 4;
+        }
+
+        .conference-timeline-arrowhead.arrow-right.event-deadline {
+            border-left: 8px solid #2f7fd3;
+        }
+
+        .conference-timeline-arrowhead.arrow-left.event-result {
+            border-right: 8px solid #e07b39;
+        }
+
+        .conference-timeline-arrowhead.arrow-left.event-today {
+            border-right: 8px solid #2ea55f;
+        }
+
+        .dark-mode .control-group {
+            border-color: #4a5765;
+            background: #253240;
+        }
+
+        .dark-mode .year-select-label,
+        .dark-mode #year-separator {
+            color: #d8e4f0;
+        }
+
+        .dark-mode .year-select {
+            background: #1f2b37;
+            color: #ecf0f1;
+            border-color: #3f556c;
+        }
+
+        .dark-mode .conference-timeline-month-label {
+            color: #d0dfef;
+        }
+
+        .dark-mode .conference-timeline-month-tick {
+            border-top-color: #45617d;
+        }
+
+        .dark-mode .conference-timeline-event.event-deadline .conference-timeline-event-chip {
+            color: #d8e8fb;
+            background: #22364c;
+            border-color: #3e5f81;
+        }
+
+        .dark-mode .conference-timeline-event.event-result .conference-timeline-event-chip {
+            color: #ffdfc7;
+            background: #4b3425;
+            border-color: #7e5a41;
+        }
+
+        .dark-mode .conference-timeline-event.event-today .conference-timeline-event-chip {
+            color: #d7ffe6;
+            background: #1f4a34;
+            border-color: #3f7a59;
+        }
+
+        .dark-mode .conference-timeline-side-label.side-left {
+            color: #d8e8fb;
+            background: #22364c;
+            border-color: #3e5f81;
+        }
+
+        .dark-mode .conference-timeline-side-label.side-right {
+            color: #ffdfc7;
+            background: #4b3425;
+            border-color: #7e5a41;
+        }
+
+        @media (min-width: 1101px) {
+            .container {
+                padding-right: 20px !important;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .main-content {
+                grid-template-columns: 1fr !important;
+                grid-template-areas:
+                    "top"
+                    "content"
+                    "timeline";
+            }
+
+            .main-content > .conference-timeline-card {
+                position: static;
+                max-height: none;
+            }
+
+            .conference-timeline-scroll {
+                max-height: none;
+            }
+
+            .top-bar-row.control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .control-group {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .control-group-year {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #topic-input.search-input {
+                width: 100% !important;
+                min-width: 0;
+                flex: 1 1 auto;
+            }
+
+            .search-controls {
+                width: 100%;
+            }
+
+            .field-group {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .field-dropdown {
+                min-width: calc(50% - 6px);
+                flex: 1 1 calc(50% - 6px);
+            }
+
+            .control-group-main .field-group .field-dropdown,
+            .control-group-main .field-group .field-dropdown[data-field="ML"],
+            .control-group-main .field-group .field-dropdown[data-field="CV"],
+            .control-group-main .field-group .field-dropdown[data-field="AI"],
+            .control-group-main .field-group .field-dropdown[data-field="All"] {
+                min-width: calc(50% - 6px) !important;
+                max-width: none !important;
+                width: auto !important;
+                flex: 1 1 calc(50% - 6px) !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="main-content">
+            <section class="conference-timeline-card" aria-label="会议投稿截止时间轴">
+                <div class="conference-timeline-head">
+                    <h2 class="conference-timeline-title">会议投稿截止时间轴（按月-日）</h2>
+                    <p class="conference-timeline-note">主要参考 2025 年公开时间安排，实际每年可能调整。</p>
+                    <p class="conference-timeline-current" id="conference-timeline-current">今天 --</p>
+                </div>
+                <div class="conference-timeline-scroll">
+                    <div class="conference-timeline-track" id="conference-timeline-track">
+                        <div class="conference-timeline-line"></div>
+                        <div class="conference-timeline-today" id="conference-timeline-today">
+                            <span class="conference-timeline-today-label" id="conference-timeline-today-label"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- 顶部导航栏 -->
             <div class="top-bar">
                 <div class="top-bar-inner">
-                    <div class="top-bar-row top-bar-row-1">
-                        <div class="search-controls">
-                            <input type="text" id="topic-input" class="top-bar-input search-input" placeholder="flow matching">
-                            <button id="search-btn" class="top-bar-button">搜索</button>
-                        </div>
-                        <div class="search-group">
-                            <label class="year-single">
-                                <input type="checkbox" id="single-year-checkbox">
-                                <span>单年</span>
-                            </label>
-                            <label class="year-recent">
-                                <input type="checkbox" id="recent-checkbox">
-                                <span>最近</span>
-                            </label>
-                            <div class="year-selector">
-                                <div class="year-slider" id="year-slider">
-                                    <div class="year-handle-label year-handle-label-start" id="start-year-label">
-                                        start-year <span id="start-year-value">2024</span>
-                                    </div>
-                                    <div class="year-handle-label year-handle-label-end" id="end-year-label">
-                                        end-year <span id="end-year-value">2025</span>
-                                    </div>
-                                    <div class="year-slider-track"></div>
-                                    <div class="year-slider-fill" id="year-slider-fill"></div>
-                                    <input type="range" id="start-year-range" class="year-range-input" min="0" max="1" step="1" value="0" aria-label="start year slider">
-                                    <input type="range" id="end-year-range" class="year-range-input" min="0" max="1" step="1" value="1" aria-label="end year slider">
-                                </div>
-                                <select id="start-year" class="top-bar-input year-select-hidden">
-                                    <option value="2026">2026</option>
-                                    <option value="2025">2025</option>
-                                    <option value="2024" selected>2024</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2020">2020</option>
-                                    <option value="2019">2019</option>
-                                </select>
-                                <span id="year-separator" class="year-select-hidden">-</span>
-                                <select id="end-year" class="top-bar-input year-select-hidden">
-                                    <option value="2025" selected>2025</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2020">2020</option>
-                                    <option value="2019">2019</option>
-                                </select>
+                    <div class="top-bar-row top-bar-row-1 control-panel">
+                        <div class="control-group control-group-main">
+                            <div class="search-controls">
+                                <input type="text" id="topic-input" class="top-bar-input search-input" placeholder="flow matching">
+                                <button id="search-btn" class="top-bar-button">搜索</button>
                             </div>
                             <div class="field-group">
                                 <div class="field-dropdown" data-field="ML">
@@ -2213,6 +2904,34 @@
                                         <span>All</span>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="control-group control-group-year">
+                            <label class="year-recent">
+                                <input type="checkbox" id="recent-checkbox">
+                                <span>近两年</span>
+                            </label>
+                            <div class="year-selector">
+                                <select id="start-year" class="top-bar-input year-select">
+                                    <option value="2026">2026</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2024" selected>2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2019">2019</option>
+                                </select>
+                                <span id="year-separator">&rarr;</span>
+                                <select id="end-year" class="top-bar-input year-select">
+                                    <option value="2025" selected>2025</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2019">2019</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -2286,7 +3005,7 @@
     </div>
 
     <footer class="site-footer">
-        <div class="version-info">Top AI Papers · v12.05</div>
+        <div class="version-info">Top AI Papers · updated</div>
     </footer>
 
     <!-- 移动端侧边栏切换按钮 -->

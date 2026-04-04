@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     const startYearSelect = document.getElementById('start-year');
     const endYearSelect = document.getElementById('end-year');
-    const yearSlider = document.getElementById('year-slider');
     const startYearRange = document.getElementById('start-year-range');
     const endYearRange = document.getElementById('end-year-range');
     const startYearValue = document.getElementById('start-year-value');
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const startYearLabel = document.getElementById('start-year-label');
     const endYearLabel = document.getElementById('end-year-label');
     const yearSliderFill = document.getElementById('year-slider-fill');
-    const singleYearCheckbox = document.getElementById('single-year-checkbox');
     const recentCheckbox = document.getElementById('recent-checkbox');
     const fieldMainCheckboxes = document.querySelectorAll('.field-main-checkbox');
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
@@ -31,14 +29,320 @@ document.addEventListener('DOMContentLoaded', function() {
     const pageStartSpan = document.getElementById('page-start');
     const pageEndSpan = document.getElementById('page-end');
     const totalPapersPagination = document.getElementById('total-papers-pagination');
+    const versionInfo = document.querySelector('.site-footer .version-info');
+    const conferenceTimelineTrack = document.getElementById('conference-timeline-track');
+    const conferenceTimelineToday = document.getElementById('conference-timeline-today');
+    const conferenceTimelineTodayLabel = document.getElementById('conference-timeline-today-label');
+    const conferenceTimelineCurrent = document.getElementById('conference-timeline-current');
 
     const DATA_MANIFEST_URL = 'data/manifest.json';
     const currentYear = new Date().getFullYear();
+    const timelineReferenceYear = 2025;
+    const timelineRangeStart = new Date(2025, 0, 1);
+    const timelineRangeEnd = new Date(2026, 1, 28);
+    const timelineTrackHeight = 1240;
+    const timelineTopPadding = 24;
+    const timelineBottomPadding = 24;
+    const timelineLabelGap = 28;
+    const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+    const conferenceTimelineData = [
+        { deadline: '01-23', result: '4-28', conference: 'IJCAI' },
+        { deadline: '01-30', result: '5.01', conference: 'ICML' },
+        { deadline: '03-05', result: '6.17', conference: 'ECCV' },
+        { deadline: '03-07', result: '6.25', conference: 'ICCV' },
+        { deadline: '04-11', result: '7.04', conference: 'ACM MM' },
+        { deadline: '05-15', result: '9.18', conference: 'NeurIPS' },
+        { deadline: '08-15', result: '12.9', conference: 'AAAI' },
+        { deadline: '10-01', result: '1.22', conference: 'ICLR' },
+        { deadline: '11-15', result: '2.26', conference: 'CVPR' }
+    ];
 
     const manifestCache = { loaded: false, data: null };
     const conferenceDataCache = new Map();
     let availableYears = [];
     let isSyncingYearControls = false;
+
+    if (versionInfo) {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        versionInfo.textContent = `Top AI Papers · updated ${year}-${month}-${day}`;
+    }
+
+    function formatMonthDay(month, day) {
+        return `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+
+    function normalizeMonthDay(monthDayText) {
+        if (!monthDayText) return null;
+        const parts = String(monthDayText).trim().split(/[-./]/).map(part => parseInt(part, 10));
+        if (parts.length !== 2 || !Number.isFinite(parts[0]) || !Number.isFinite(parts[1])) {
+            return null;
+        }
+
+        const [month, day] = parts;
+        const date = new Date(timelineReferenceYear, month - 1, day);
+        const isValidDate = date.getFullYear() === timelineReferenceYear &&
+            date.getMonth() === month - 1 &&
+            date.getDate() === day;
+        if (!isValidDate) {
+            return null;
+        }
+
+        return `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+
+    function monthDayToDate(monthDayText, year) {
+        const normalizedDate = normalizeMonthDay(monthDayText);
+        if (!normalizedDate || !Number.isFinite(year)) return null;
+        const [month, day] = normalizedDate.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        const isValidDate = date.getFullYear() === year &&
+            date.getMonth() === month - 1 &&
+            date.getDate() === day;
+        return isValidDate ? date : null;
+    }
+
+    function diffDays(startDate, endDate) {
+        return Math.round((endDate - startDate) / ONE_DAY_MS);
+    }
+
+    function dateToProgress(date) {
+        const totalDays = diffDays(timelineRangeStart, timelineRangeEnd);
+        if (!Number.isFinite(totalDays) || totalDays <= 0 || !(date instanceof Date)) {
+            return 0;
+        }
+        const offset = diffDays(timelineRangeStart, date);
+        return Math.min(1, Math.max(0, offset / totalDays));
+    }
+
+    function progressToTrackY(progress) {
+        const clamped = Math.min(1, Math.max(0, progress));
+        const usableHeight = timelineTrackHeight - timelineTopPadding - timelineBottomPadding;
+        return timelineTopPadding + usableHeight * clamped;
+    }
+
+    function buildMonthMarkers() {
+        const markers = [];
+        const cursor = new Date(timelineRangeStart.getFullYear(), timelineRangeStart.getMonth(), 1);
+        while (cursor <= timelineRangeEnd) {
+            markers.push(new Date(cursor));
+            cursor.setMonth(cursor.getMonth() + 1);
+        }
+        return markers;
+    }
+
+    function adjustLabelsWithoutOverlap(items, minY, maxY, gap) {
+        if (items.length === 0) return items;
+        const sorted = [...items].sort((a, b) => a.targetY - b.targetY);
+
+        let previous = minY - gap;
+        sorted.forEach(item => {
+            item.labelY = Math.max(item.targetY, previous + gap);
+            previous = item.labelY;
+        });
+
+        if (sorted[sorted.length - 1].labelY > maxY) {
+            sorted[sorted.length - 1].labelY = maxY;
+            for (let i = sorted.length - 2; i >= 0; i--) {
+                sorted[i].labelY = Math.min(sorted[i].labelY, sorted[i + 1].labelY - gap);
+            }
+            if (sorted[0].labelY < minY) {
+                const shift = minY - sorted[0].labelY;
+                sorted.forEach(item => {
+                    item.labelY += shift;
+                });
+            }
+        }
+        return sorted;
+    }
+
+    function appendTimelineConnector(track, typeClass, left, top, width, height, orientation) {
+        const connector = document.createElement('div');
+        connector.className = `conference-timeline-connector ${typeClass} connector-${orientation}`;
+        connector.style.left = `${left}px`;
+        connector.style.top = `${top}px`;
+        if (orientation === 'horizontal') {
+            connector.style.width = `${Math.max(width, 0)}px`;
+            connector.style.height = '2px';
+        } else {
+            connector.style.width = '2px';
+            connector.style.height = `${Math.max(height, 0)}px`;
+        }
+        track.appendChild(connector);
+    }
+
+    function appendTimelineArrow(track, side, typeClass, targetX, targetY) {
+        const arrow = document.createElement('div');
+        arrow.className = `conference-timeline-arrowhead ${side === 'left' ? 'arrow-right' : 'arrow-left'} ${typeClass}`;
+        arrow.style.top = `${targetY - 5}px`;
+        arrow.style.left = side === 'left' ? `${targetX}px` : `${targetX - 8}px`;
+        track.appendChild(arrow);
+    }
+
+    function renderConferenceTimeline() {
+        if (!conferenceTimelineTrack) return;
+
+        conferenceTimelineTrack.querySelectorAll(
+            '.conference-timeline-node, .conference-timeline-month-label, .conference-timeline-month-tick, .conference-timeline-event, .conference-timeline-connector, .conference-timeline-arrowhead'
+        ).forEach(node => node.remove());
+
+        const timelineWidth = conferenceTimelineTrack.clientWidth || 260;
+        const centerX = timelineWidth / 2;
+        const sidePadding = 8;
+        const labelWidth = Math.min(124, Math.max(92, Math.floor(centerX - 26)));
+        const leftLabelX = sidePadding;
+        const rightLabelX = Math.max(sidePadding + labelWidth + 16, timelineWidth - sidePadding - labelWidth);
+        const minY = timelineTopPadding + 12;
+        const maxY = timelineTrackHeight - timelineBottomPadding - 12;
+        const centerGap = 9;
+        const connectorGap = 6;
+
+        const today = new Date();
+        const todayMonth = today.getMonth() + 1;
+        const todayDay = today.getDate();
+        const todayMonthDay = formatMonthDay(todayMonth, todayDay);
+        const todayTimelineYear = todayMonth <= 2 ? 2026 : 2025;
+        const todayDate = monthDayToDate(todayMonthDay, todayTimelineYear);
+        if (conferenceTimelineCurrent) {
+            conferenceTimelineCurrent.textContent = `今天 ${todayMonthDay}`;
+        }
+        if (conferenceTimelineToday && todayDate) {
+            conferenceTimelineToday.style.top = `${progressToTrackY(dateToProgress(todayDate))}px`;
+            conferenceTimelineToday.style.display = 'block';
+        }
+        if (conferenceTimelineTodayLabel) {
+            conferenceTimelineTodayLabel.textContent = `今天 ${todayMonthDay}`;
+        }
+
+        buildMonthMarkers().forEach(monthDate => {
+            const y = progressToTrackY(dateToProgress(monthDate));
+            const monthText = monthDate.getFullYear() === 2025
+                ? `${String(monthDate.getMonth() + 1).padStart(2, '0')}月`
+                : `次年${String(monthDate.getMonth() + 1).padStart(2, '0')}月`;
+
+            const tick = document.createElement('div');
+            tick.className = 'conference-timeline-month-tick';
+            tick.style.top = `${y}px`;
+
+            const label = document.createElement('div');
+            label.className = 'conference-timeline-month-label';
+            label.style.top = `${y}px`;
+            label.textContent = monthText;
+
+            conferenceTimelineTrack.appendChild(tick);
+            conferenceTimelineTrack.appendChild(label);
+        });
+
+        const rawEvents = [];
+        conferenceTimelineData.forEach(item => {
+            const normalizedDeadline = normalizeMonthDay(item.deadline);
+            const normalizedResult = normalizeMonthDay(item.result);
+            if (!normalizedDeadline || !normalizedResult) {
+                return;
+            }
+
+            const deadlineDate = monthDayToDate(normalizedDeadline, 2025);
+            const deadlineMonth = parseInt(normalizedDeadline.slice(0, 2), 10);
+            const resultMonth = parseInt(normalizedResult.slice(0, 2), 10);
+            const resultYear = resultMonth < deadlineMonth ? 2026 : 2025;
+            const resultDate = monthDayToDate(normalizedResult, resultYear);
+
+            if (!deadlineDate || !resultDate) {
+                return;
+            }
+
+            rawEvents.push({
+                side: 'left',
+                typeClass: 'event-deadline',
+                label: `${item.conference} 投稿 ${normalizedDeadline}`,
+                targetY: progressToTrackY(dateToProgress(deadlineDate))
+            });
+            rawEvents.push({
+                side: 'right',
+                typeClass: 'event-result',
+                label: `${item.conference} 结果 ${normalizedResult}`,
+                targetY: progressToTrackY(dateToProgress(resultDate))
+            });
+        });
+
+        const leftEvents = adjustLabelsWithoutOverlap(
+            rawEvents.filter(event => event.side === 'left'),
+            minY,
+            maxY,
+            timelineLabelGap
+        );
+        const rightEvents = adjustLabelsWithoutOverlap(
+            rawEvents.filter(event => event.side === 'right'),
+            minY,
+            maxY,
+            timelineLabelGap
+        );
+
+        [...leftEvents, ...rightEvents].forEach(event => {
+            const eventNode = document.createElement('div');
+            eventNode.className = `conference-timeline-event side-${event.side} ${event.typeClass}`;
+            eventNode.style.top = `${event.labelY}px`;
+            eventNode.style.width = `${labelWidth}px`;
+            eventNode.style.left = `${event.side === 'left' ? leftLabelX : rightLabelX}px`;
+            eventNode.title = event.label;
+
+            const chip = document.createElement('div');
+            chip.className = 'conference-timeline-event-chip';
+            chip.textContent = event.label;
+            eventNode.appendChild(chip);
+            conferenceTimelineTrack.appendChild(eventNode);
+
+            if (event.side === 'left') {
+                const elbowX = leftLabelX + labelWidth + connectorGap;
+                const targetX = centerX - centerGap;
+                appendTimelineConnector(
+                    conferenceTimelineTrack,
+                    event.typeClass,
+                    elbowX,
+                    Math.min(event.labelY, event.targetY),
+                    2,
+                    Math.abs(event.targetY - event.labelY),
+                    'vertical'
+                );
+                appendTimelineConnector(
+                    conferenceTimelineTrack,
+                    event.typeClass,
+                    Math.min(elbowX, targetX),
+                    event.targetY,
+                    Math.abs(targetX - elbowX),
+                    2,
+                    'horizontal'
+                );
+                appendTimelineArrow(conferenceTimelineTrack, 'left', event.typeClass, targetX, event.targetY);
+            } else {
+                const elbowX = rightLabelX - connectorGap;
+                const targetX = centerX + centerGap;
+                appendTimelineConnector(
+                    conferenceTimelineTrack,
+                    event.typeClass,
+                    elbowX,
+                    Math.min(event.labelY, event.targetY),
+                    2,
+                    Math.abs(event.targetY - event.labelY),
+                    'vertical'
+                );
+                appendTimelineConnector(
+                    conferenceTimelineTrack,
+                    event.typeClass,
+                    Math.min(elbowX, targetX),
+                    event.targetY,
+                    Math.abs(targetX - elbowX),
+                    2,
+                    'horizontal'
+                );
+                appendTimelineArrow(conferenceTimelineTrack, 'right', event.typeClass, targetX, event.targetY);
+            }
+        });
+    }
+
+    renderConferenceTimeline();
 
     async function loadManifest() {
         if (manifestCache.loaded) {
@@ -261,10 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Selected conferences:', conferences);
                 
                 const startYear = startYearSelect ? startYearSelect.value : '2023';
-                // 检查是否为单年份模式
-                const singleYearCheckbox = document.getElementById('single-year-checkbox');
-                const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
-                const endYear = isSingleYear ? startYear : (endYearSelect ? endYearSelect.value : '2025');
+                const endYear = endYearSelect ? endYearSelect.value : '2025';
                 
                 // 如果没有选中任何会议，显示提示
                 if (conferences.length === 0) {
@@ -1032,9 +1333,7 @@ document.addEventListener('DOMContentLoaded', function() {
         startIndex = Math.min(Math.max(startIndex, 0), maxIndex);
         endIndex = Math.min(Math.max(endIndex, 0), maxIndex);
 
-        if (singleYearCheckbox && singleYearCheckbox.checked) {
-            endIndex = startIndex;
-        } else if (startIndex > endIndex) {
+        if (startIndex > endIndex) {
             if (source === 'end') {
                 startIndex = endIndex;
             } else {
@@ -1076,10 +1375,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!Number.isFinite(startYear)) startYear = availableYears[0];
         if (!Number.isFinite(endYear)) endYear = availableYears[availableYears.length - 1];
 
-        if (singleYearCheckbox && singleYearCheckbox.checked) {
-            endYear = startYear;
-            endYearSelect.value = String(endYear);
-        } else if (startYear > endYear) {
+        if (startYear > endYear) {
             endYear = startYear;
             endYearSelect.value = String(endYear);
         }
@@ -1116,27 +1412,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (Number.isFinite(startYear) && Number.isFinite(endYear) && startYear > endYear) {
             endYearSelect.value = startYearSelect.value;
         }
-        if (singleYearCheckbox && singleYearCheckbox.checked) {
-            endYearSelect.value = startYearSelect.value;
-        }
-    }
-    
-    // 处理单年份复选框切换
-    function toggleSingleYearMode() {
-        const yearSeparator = document.getElementById('year-separator');
-        const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
-
-        if (yearSlider) {
-            yearSlider.classList.toggle('single-year-mode', isSingleYear);
-        }
-        if (yearSeparator) {
-            yearSeparator.style.display = isSingleYear ? 'none' : '';
-        }
-        if (isSingleYear && startYearSelect && endYearSelect) {
-            endYearSelect.value = startYearSelect.value;
-        }
-        syncYearSliderFromSelects();
-        updateRecentCheckboxState();
     }
     
     // 添加年份选择事件
@@ -1164,27 +1439,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 添加单年份复选框事件监听器
-    if (singleYearCheckbox) {
-        singleYearCheckbox.addEventListener('change', toggleSingleYearMode);
-        // 初始化时设置正确的显示状态（默认不选中，显示年份范围）
-        toggleSingleYearMode();
-    }
-
-    // 处理“最近”复选框：选中后自动恢复到（单年=今年；非单年=去年—今年）
+    // 处理“最近”复选框：选中后自动恢复到去年—今年
     function applyRecentRange() {
         const currentYear = new Date().getFullYear();
-        const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
         if (!startYearSelect || !endYearSelect) return;
-        if (isSingleYear) {
-            // 单年：都设为今年
-            startYearSelect.value = String(currentYear);
-            endYearSelect.value = String(currentYear);
-        } else {
-            // 非单年：去年到今年
-            startYearSelect.value = String(currentYear - 1);
-            endYearSelect.value = String(currentYear);
-        }
+        startYearSelect.value = String(currentYear - 1);
+        endYearSelect.value = String(currentYear);
         // 触发校验与UI更新
         validateYearRange();
         startYearSelect.dispatchEvent(new Event('change'));
@@ -1209,8 +1469,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 计算“最近”应当对应的年份区间
     function computeRecentRange() {
         const currentYear = new Date().getFullYear();
-        const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
-        return isSingleYear ? [currentYear, currentYear] : [currentYear - 1, currentYear];
+        return [currentYear - 1, currentYear];
     }
 
     function isRecentRangeSelected() {
@@ -1459,8 +1718,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 设置最近三年
     function setRecentThreeYears() {
         if (!startYearSelect || !endYearSelect) return;
-        const isSingleYear = singleYearCheckbox && singleYearCheckbox.checked;
-        const startYear = isSingleYear ? currentYear : currentYear - 1;
+        const startYear = currentYear - 1;
 
         ensureYearExistsInSelect(startYearSelect, startYear);
         ensureYearExistsInSelect(endYearSelect, currentYear);
@@ -1564,6 +1822,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 监听窗口大小变化
     window.addEventListener('resize', function() {
         handleResponsiveLayout();
+        renderConferenceTimeline();
         
         // 在窗口大小变化时，确保侧边栏始终可见
         const sidebar = document.querySelector('.sidebar');

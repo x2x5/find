@@ -43,16 +43,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const timelineLabelGap = 58;
     const ONE_DAY_MS = 24 * 60 * 60 * 1000;
     const conferenceTimelineData = [
-        { deadline: '01-23', result: '4-28', conference: 'IJCAI' },
-        { deadline: '01-30', result: '5.01', conference: 'ICML' },
-        { deadline: '03-05', result: '6.17', conference: 'ECCV' },
-        { deadline: '03-07', result: '6.25', conference: 'ICCV' },
-        { deadline: '04-11', result: '7.04', conference: 'ACM MM' },
-        { deadline: '05-15', result: '9.18', conference: 'NeurIPS' },
-        { deadline: '08-15', result: '12.9', conference: 'AAAI' },
-        { deadline: '10-01', result: '1.22', conference: 'ICLR' },
-        { deadline: '11-15', result: '2.26', conference: 'CVPR' }
-    ];
+        { deadline: '01-19', result: '04-29', conference: 'IJCAI-ECAI' },
+        { deadline: '01-28', result: '04-30', conference: 'ICML' },
+        { deadline: '03-05', result: '06-17', conference: 'ECCV' },
+        { deadline: '03-07', result: '06-25', conference: 'ICCV' },
+        { deadline: '04-01', result: '07-07', conference: 'ACM MM' },
+        { deadline: '05-06', result: '09-24', conference: 'NeurIPS' },
+        { deadline: '08-15', result: '12-09', conference: 'AAAI' },
+        { deadline: '10-01', result: '01-22', conference: 'ICLR' },
+        { deadline: '11-15', result: '02-26', conference: 'CVPR' }
+        ];
 
     const manifestCache = { loaded: false, data: null };
     const conferenceDataCache = new Map();

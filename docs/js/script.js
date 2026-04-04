@@ -31,19 +31,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalPapersPagination = document.getElementById('total-papers-pagination');
     const versionInfo = document.querySelector('.site-footer .version-info');
     const conferenceTimelineTrack = document.getElementById('conference-timeline-track');
-    const conferenceTimelineToday = document.getElementById('conference-timeline-today');
-    const conferenceTimelineTodayLabel = document.getElementById('conference-timeline-today-label');
-    const conferenceTimelineCurrent = document.getElementById('conference-timeline-current');
 
     const DATA_MANIFEST_URL = 'data/manifest.json';
     const currentYear = new Date().getFullYear();
     const timelineReferenceYear = 2025;
     const timelineRangeStart = new Date(2025, 0, 1);
     const timelineRangeEnd = new Date(2026, 1, 28);
-    const timelineTrackHeight = 1240;
+    let timelineTrackHeight = 1240;
     const timelineTopPadding = 24;
     const timelineBottomPadding = 24;
-    const timelineLabelGap = 28;
+    const timelineLabelGap = 58;
     const ONE_DAY_MS = 24 * 60 * 60 * 1000;
     const conferenceTimelineData = [
         { deadline: '01-23', result: '4-28', conference: 'IJCAI' },
@@ -158,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return sorted;
     }
 
-    function appendTimelineConnector(track, typeClass, left, top, width, height, orientation) {
+    function appendTimelineConnector(track, typeClass, left, top, width, orientation) {
         const connector = document.createElement('div');
         connector.className = `conference-timeline-connector ${typeClass} connector-${orientation}`;
         connector.style.left = `${left}px`;
@@ -166,38 +163,37 @@ document.addEventListener('DOMContentLoaded', function() {
         if (orientation === 'horizontal') {
             connector.style.width = `${Math.max(width, 0)}px`;
             connector.style.height = '2px';
-        } else {
-            connector.style.width = '2px';
-            connector.style.height = `${Math.max(height, 0)}px`;
         }
         track.appendChild(connector);
     }
 
-    function appendTimelineArrow(track, side, typeClass, targetX, targetY) {
-        const arrow = document.createElement('div');
-        arrow.className = `conference-timeline-arrowhead ${side === 'left' ? 'arrow-right' : 'arrow-left'} ${typeClass}`;
-        arrow.style.top = `${targetY - 5}px`;
-        arrow.style.left = side === 'left' ? `${targetX}px` : `${targetX - 8}px`;
-        track.appendChild(arrow);
+    function appendTimelineMarker(track, typeClass, targetX, targetY) {
+        const marker = document.createElement('div');
+        marker.className = `conference-timeline-marker ${typeClass}`;
+        marker.style.top = `${targetY}px`;
+        marker.style.left = `${targetX}px`;
+        track.appendChild(marker);
     }
 
     function renderConferenceTimeline() {
         if (!conferenceTimelineTrack) return;
+        try {
 
         conferenceTimelineTrack.querySelectorAll(
-            '.conference-timeline-node, .conference-timeline-month-label, .conference-timeline-month-tick, .conference-timeline-event, .conference-timeline-connector, .conference-timeline-arrowhead'
+            '.conference-timeline-node, .conference-timeline-month-label, .conference-timeline-month-tick, .conference-timeline-event, .conference-timeline-connector, .conference-timeline-marker, .conference-timeline-arrowhead, .conference-timeline-side-label'
         ).forEach(node => node.remove());
 
         const timelineWidth = conferenceTimelineTrack.clientWidth || 260;
         const centerX = timelineWidth / 2;
         const sidePadding = 8;
-        const labelWidth = Math.min(124, Math.max(92, Math.floor(centerX - 26)));
-        const leftLabelX = sidePadding;
-        const rightLabelX = Math.max(sidePadding + labelWidth + 16, timelineWidth - sidePadding - labelWidth);
-        const minY = timelineTopPadding + 12;
-        const maxY = timelineTrackHeight - timelineBottomPadding - 12;
-        const centerGap = 9;
+        const monthColumnWidth = 32;
+        const leftLabelX = sidePadding + monthColumnWidth + 10;
+        const rightLabelX = timelineWidth - sidePadding - 62;
+        const minY = timelineTopPadding + 20;
+        let maxY = Math.max(minY + 100, timelineTrackHeight - timelineBottomPadding - 12);
         const connectorGap = 6;
+        const axisTargetX = centerX;
+        const arrowLineLength = 44;
 
         const today = new Date();
         const todayMonth = today.getMonth() + 1;
@@ -205,35 +201,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const todayMonthDay = formatMonthDay(todayMonth, todayDay);
         const todayTimelineYear = todayMonth <= 2 ? 2026 : 2025;
         const todayDate = monthDayToDate(todayMonthDay, todayTimelineYear);
-        if (conferenceTimelineCurrent) {
-            conferenceTimelineCurrent.textContent = `今天 ${todayMonthDay}`;
-        }
-        if (conferenceTimelineToday && todayDate) {
-            conferenceTimelineToday.style.top = `${progressToTrackY(dateToProgress(todayDate))}px`;
-            conferenceTimelineToday.style.display = 'block';
-        }
-        if (conferenceTimelineTodayLabel) {
-            conferenceTimelineTodayLabel.textContent = `今天 ${todayMonthDay}`;
+
+        function monthKeyOf(date) {
+            if (!(date instanceof Date)) return '';
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         }
 
-        buildMonthMarkers().forEach(monthDate => {
-            const y = progressToTrackY(dateToProgress(monthDate));
-            const monthText = monthDate.getFullYear() === 2025
-                ? `${String(monthDate.getMonth() + 1).padStart(2, '0')}月`
-                : `次年${String(monthDate.getMonth() + 1).padStart(2, '0')}月`;
+        const deadlineSideLabel = document.createElement('div');
+        deadlineSideLabel.className = 'conference-timeline-side-label side-left';
+        deadlineSideLabel.textContent = '投稿';
+        deadlineSideLabel.style.left = `${leftLabelX}px`;
 
-            const tick = document.createElement('div');
-            tick.className = 'conference-timeline-month-tick';
-            tick.style.top = `${y}px`;
+        const resultSideLabel = document.createElement('div');
+        resultSideLabel.className = 'conference-timeline-side-label side-right';
+        resultSideLabel.textContent = '接收';
+        resultSideLabel.style.left = `${rightLabelX}px`;
 
-            const label = document.createElement('div');
-            label.className = 'conference-timeline-month-label';
-            label.style.top = `${y}px`;
-            label.textContent = monthText;
-
-            conferenceTimelineTrack.appendChild(tick);
-            conferenceTimelineTrack.appendChild(label);
-        });
+        conferenceTimelineTrack.appendChild(deadlineSideLabel);
+        conferenceTimelineTrack.appendChild(resultSideLabel);
 
         const rawEvents = [];
         conferenceTimelineData.forEach(item => {
@@ -256,14 +241,109 @@ document.addEventListener('DOMContentLoaded', function() {
             rawEvents.push({
                 side: 'left',
                 typeClass: 'event-deadline',
-                label: `${item.conference} 投稿 ${normalizedDeadline}`,
-                targetY: progressToTrackY(dateToProgress(deadlineDate))
+                conference: item.conference,
+                dateText: normalizedDeadline,
+                bucketKey: monthKeyOf(deadlineDate)
             });
             rawEvents.push({
                 side: 'right',
                 typeClass: 'event-result',
-                label: `${item.conference} 结果 ${normalizedResult}`,
-                targetY: progressToTrackY(dateToProgress(resultDate))
+                conference: item.conference,
+                dateText: normalizedResult,
+                bucketKey: monthKeyOf(resultDate)
+            });
+        });
+
+        if (todayDate) {
+            rawEvents.push({
+                side: 'right',
+                typeClass: 'event-today',
+                conference: '今天',
+                dateText: todayMonthDay,
+                bucketKey: monthKeyOf(todayDate)
+            });
+        }
+
+        const timelineMonths = buildMonthMarkers().map(monthDate => {
+            const key = monthKeyOf(monthDate);
+            const label = monthDate.getFullYear() === 2025
+                ? `${String(monthDate.getMonth() + 1).padStart(2, '0')}月`
+                : `次年${String(monthDate.getMonth() + 1).padStart(2, '0')}月`;
+            return { key, label };
+        });
+
+        const monthCountMap = new Map();
+        timelineMonths.forEach(month => {
+            monthCountMap.set(month.key, { left: 0, right: 0 });
+        });
+        rawEvents.forEach(event => {
+            if (!monthCountMap.has(event.bucketKey)) {
+                monthCountMap.set(event.bucketKey, { left: 0, right: 0 });
+            }
+            const count = monthCountMap.get(event.bucketKey);
+            if (event.side === 'left') {
+                count.left += 1;
+            } else {
+                count.right += 1;
+            }
+        });
+
+        const monthAnchorMap = new Map();
+        let currentY = timelineTopPadding;
+        timelineMonths.forEach(month => {
+            const count = monthCountMap.get(month.key) || { left: 0, right: 0 };
+            const monthSpan = Math.max(count.left, count.right, 1);
+            const monthHeight = 76 + Math.max(0, monthSpan - 1) * 62;
+            month.startY = currentY;
+            month.height = monthHeight;
+            monthAnchorMap.set(month.key, currentY + monthHeight / 2);
+            currentY += monthHeight;
+        });
+
+        timelineTrackHeight = Math.max(currentY + timelineBottomPadding, 920);
+        conferenceTimelineTrack.style.height = `${timelineTrackHeight}px`;
+        conferenceTimelineTrack.style.minHeight = `${timelineTrackHeight}px`;
+        maxY = Math.max(minY + 100, timelineTrackHeight - timelineBottomPadding - 12);
+
+        timelineMonths.forEach(month => {
+            const y = month.startY;
+            const tick = document.createElement('div');
+            tick.className = 'conference-timeline-month-tick';
+            tick.style.top = `${y}px`;
+
+            const label = document.createElement('div');
+            label.className = 'conference-timeline-month-label';
+            label.style.top = `${y}px`;
+            label.textContent = month.label;
+
+            conferenceTimelineTrack.appendChild(tick);
+            conferenceTimelineTrack.appendChild(label);
+        });
+
+        rawEvents.forEach(event => {
+            event.targetY = monthAnchorMap.get(event.bucketKey) || timelineTopPadding;
+        });
+
+        const monthlyBuckets = new Map();
+        rawEvents.forEach(event => {
+            const key = `${event.side}|${event.bucketKey}`;
+            if (!monthlyBuckets.has(key)) {
+                monthlyBuckets.set(key, []);
+            }
+            monthlyBuckets.get(key).push(event);
+        });
+
+        monthlyBuckets.forEach(events => {
+            const sortedEvents = events.slice().sort((a, b) => {
+                if (a.dateText !== b.dateText) {
+                    return a.dateText.localeCompare(b.dateText);
+                }
+                return a.conference.localeCompare(b.conference);
+            });
+            const centerIndex = (sortedEvents.length - 1) / 2;
+            const localStep = 58;
+            sortedEvents.forEach((event, idx) => {
+                event.targetY += (idx - centerIndex) * localStep;
             });
         });
 
@@ -284,62 +364,59 @@ document.addEventListener('DOMContentLoaded', function() {
             const eventNode = document.createElement('div');
             eventNode.className = `conference-timeline-event side-${event.side} ${event.typeClass}`;
             eventNode.style.top = `${event.labelY}px`;
-            eventNode.style.width = `${labelWidth}px`;
-            eventNode.style.left = `${event.side === 'left' ? leftLabelX : rightLabelX}px`;
-            eventNode.title = event.label;
+            eventNode.style.left = '0px';
+            eventNode.title = `${event.conference} ${event.dateText}`;
 
             const chip = document.createElement('div');
             chip.className = 'conference-timeline-event-chip';
-            chip.textContent = event.label;
+            const confLine = document.createElement('div');
+            confLine.className = 'conference-timeline-event-conf';
+            confLine.textContent = event.conference;
+            const dateLine = document.createElement('div');
+            dateLine.className = 'conference-timeline-event-date';
+            dateLine.textContent = event.dateText;
+            chip.appendChild(confLine);
+            chip.appendChild(dateLine);
             eventNode.appendChild(chip);
             conferenceTimelineTrack.appendChild(eventNode);
+            const nodeWidth = Math.ceil(eventNode.getBoundingClientRect().width);
 
             if (event.side === 'left') {
-                const elbowX = leftLabelX + labelWidth + connectorGap;
-                const targetX = centerX - centerGap;
+                const targetX = axisTargetX;
+                const connectorLeft = targetX - arrowLineLength;
+                const desiredLeft = connectorLeft - connectorGap - nodeWidth;
+                const nodeLeft = Math.max(sidePadding + monthColumnWidth + 2, desiredLeft);
+                eventNode.style.left = `${nodeLeft}px`;
                 appendTimelineConnector(
                     conferenceTimelineTrack,
                     event.typeClass,
-                    elbowX,
-                    Math.min(event.labelY, event.targetY),
-                    2,
-                    Math.abs(event.targetY - event.labelY),
-                    'vertical'
-                );
-                appendTimelineConnector(
-                    conferenceTimelineTrack,
-                    event.typeClass,
-                    Math.min(elbowX, targetX),
-                    event.targetY,
-                    Math.abs(targetX - elbowX),
-                    2,
+                    connectorLeft,
+                    event.labelY,
+                    arrowLineLength,
                     'horizontal'
                 );
-                appendTimelineArrow(conferenceTimelineTrack, 'left', event.typeClass, targetX, event.targetY);
+                appendTimelineMarker(conferenceTimelineTrack, event.typeClass, targetX, event.labelY);
             } else {
-                const elbowX = rightLabelX - connectorGap;
-                const targetX = centerX + centerGap;
+                const targetX = axisTargetX;
+                const connectorLeft = targetX;
+                const desiredLeft = connectorLeft + arrowLineLength + connectorGap;
+                const maxLeft = Math.max(sidePadding, timelineWidth - sidePadding - nodeWidth);
+                const nodeLeft = Math.min(desiredLeft, maxLeft);
+                eventNode.style.left = `${nodeLeft}px`;
                 appendTimelineConnector(
                     conferenceTimelineTrack,
                     event.typeClass,
-                    elbowX,
-                    Math.min(event.labelY, event.targetY),
-                    2,
-                    Math.abs(event.targetY - event.labelY),
-                    'vertical'
-                );
-                appendTimelineConnector(
-                    conferenceTimelineTrack,
-                    event.typeClass,
-                    Math.min(elbowX, targetX),
-                    event.targetY,
-                    Math.abs(targetX - elbowX),
-                    2,
+                    connectorLeft,
+                    event.labelY,
+                    arrowLineLength,
                     'horizontal'
                 );
-                appendTimelineArrow(conferenceTimelineTrack, 'right', event.typeClass, targetX, event.targetY);
+                appendTimelineMarker(conferenceTimelineTrack, event.typeClass, targetX, event.labelY);
             }
         });
+        } catch (error) {
+            console.error('Failed to render conference timeline:', error);
+        }
     }
 
     renderConferenceTimeline();

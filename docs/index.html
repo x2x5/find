@@ -2583,8 +2583,8 @@
 
         .conference-timeline-month-label {
             position: absolute;
-            left: 6px;
-            width: 28px;
+            left: calc(50% - 30px);
+            width: 24px;
             transform: translateY(-50%);
             text-align: right;
             font-size: 11px;
@@ -2640,14 +2640,26 @@
             border-radius: 8px;
             padding: 5px 8px;
             font-size: 11px;
-            line-height: 1.3;
+            line-height: 1.25;
             font-weight: 700;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
             border: 1px solid transparent;
             background: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: normal;
+        }
+
+        .conference-timeline-event-conf {
+            display: block;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .conference-timeline-event-date {
+            display: block;
+            margin-top: 1px;
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.92;
         }
 
         .conference-timeline-event.side-left .conference-timeline-event-chip {
@@ -2697,25 +2709,27 @@
             background: #2ea55f;
         }
 
-        .conference-timeline-arrowhead {
+        .conference-timeline-marker {
             position: absolute;
-            width: 0;
-            height: 0;
-            border-top: 5px solid transparent;
-            border-bottom: 5px solid transparent;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
             z-index: 4;
         }
 
-        .conference-timeline-arrowhead.arrow-right.event-deadline {
-            border-left: 8px solid #2f7fd3;
+        .conference-timeline-marker.event-deadline {
+            background: #2f7fd3;
         }
 
-        .conference-timeline-arrowhead.arrow-left.event-result {
-            border-right: 8px solid #e07b39;
+        .conference-timeline-marker.event-result {
+            background: #e07b39;
         }
 
-        .conference-timeline-arrowhead.arrow-left.event-today {
-            border-right: 8px solid #2ea55f;
+        .conference-timeline-marker.event-today {
+            background: #2ea55f;
         }
 
         .dark-mode .control-group {
@@ -2770,6 +2784,11 @@
             color: #ffdfc7;
             background: #4b3425;
             border-color: #7e5a41;
+        }
+
+        .dark-mode .conference-timeline-marker {
+            border-color: #1f2b37;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
         }
 
         @media (min-width: 1101px) {
@@ -2848,18 +2867,14 @@
 <body>
     <div class="container">
         <div class="main-content">
-            <section class="conference-timeline-card" aria-label="会议投稿截止时间轴">
+            <section class="conference-timeline-card" aria-label="会议投稿与接收截止时间轴">
                 <div class="conference-timeline-head">
-                    <h2 class="conference-timeline-title">会议投稿截止时间轴（按月-日）</h2>
-                    <p class="conference-timeline-note">主要参考 2025 年公开时间安排，实际每年可能调整。</p>
-                    <p class="conference-timeline-current" id="conference-timeline-current">今天 --</p>
+                    <h2 class="conference-timeline-title">会议投稿与接收截止时间轴</h2>
+                    <p class="conference-timeline-note">主要参考 2025 年时间安排，实际每年会有调整。</p>
                 </div>
                 <div class="conference-timeline-scroll">
                     <div class="conference-timeline-track" id="conference-timeline-track">
                         <div class="conference-timeline-line"></div>
-                        <div class="conference-timeline-today" id="conference-timeline-today">
-                            <span class="conference-timeline-today-label" id="conference-timeline-today-label"></span>
-                        </div>
                     </div>
                 </div>
             </section>

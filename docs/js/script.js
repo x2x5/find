@@ -6,6 +6,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const versionBadge = document.querySelector('.version-badge');
     const searchBtn = document.getElementById('search-btn');
     const topicInput = document.getElementById('topic-input');
+    const langToggleBtn = document.getElementById('lang-toggle-btn');
+    const recentLabel = document.getElementById('recent-label');
+    const timelineTitle = document.getElementById('timeline-title');
+    const timelineNote = document.getElementById('timeline-note');
+    const legendDeadlineLabel = document.getElementById('legend-deadline-label');
+    const legendResultLabel = document.getElementById('legend-result-label');
     const themeToggleContainer = document.querySelector('.theme-toggle-top');
     // Topic标签已移除
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
@@ -43,11 +49,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const timelineLabelGap = 58;
     const ONE_DAY_MS = 24 * 60 * 60 * 1000;
     const conferenceTimelineData = [
-        { deadline: '01-19', result: '04-29', conference: 'IJCAI-ECAI' },
+        { deadline: '01-19', result: '04-29', conference: 'IJCAI' },
         { deadline: '01-28', result: '04-30', conference: 'ICML' },
         { deadline: '03-05', result: '06-17', conference: 'ECCV' },
         { deadline: '03-07', result: '06-25', conference: 'ICCV' },
-        { deadline: '04-01', result: '07-07', conference: 'ACM MM' },
+        { deadline: '04-01', result: '07-07', conference: 'MM' },
         { deadline: '05-06', result: '09-24', conference: 'NeurIPS' },
         { deadline: '08-15', result: '12-09', conference: 'AAAI' },
         { deadline: '10-01', result: '01-22', conference: 'ICLR' },
@@ -58,6 +64,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const conferenceDataCache = new Map();
     let availableYears = [];
     let isSyncingYearControls = false;
+    let currentLang = localStorage.getItem('uiLang') || 'zh';
+
+    function applyLanguage(lang) {
+        const isEn = lang === 'en';
+        if (searchBtn) {
+            searchBtn.innerHTML = '<i class="fas fa-search" aria-hidden="true"></i>';
+            searchBtn.setAttribute('aria-label', isEn ? 'Search' : '搜索');
+        }
+        if (topicInput) topicInput.placeholder = 'flow matching';
+        if (recentLabel) recentLabel.textContent = isEn ? 'Recent' : '最近';
+        if (timelineTitle) timelineTitle.textContent = isEn ? 'Timeline' : '时间轴';
+        if (timelineNote) {
+            timelineNote.textContent = '';
+            timelineNote.style.display = 'none';
+        }
+        if (legendDeadlineLabel) legendDeadlineLabel.textContent = isEn ? 'Submit' : '投稿';
+        if (legendResultLabel) legendResultLabel.textContent = isEn ? 'Accept' : '接受';
+        if (langToggleBtn) langToggleBtn.textContent = isEn ? 'EN / 中' : '中 / EN';
+        document.documentElement.lang = isEn ? 'en' : 'zh-CN';
+    }
 
     if (versionInfo) {
         const now = new Date();
@@ -187,13 +213,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const centerX = timelineWidth / 2;
         const sidePadding = 8;
         const monthColumnWidth = 32;
-        const leftLabelX = sidePadding + monthColumnWidth + 10;
-        const rightLabelX = timelineWidth - sidePadding - 62;
+        const arrowLineLength = 44;
         const minY = timelineTopPadding + 20;
         let maxY = Math.max(minY + 100, timelineTrackHeight - timelineBottomPadding - 12);
         const connectorGap = 6;
         const axisTargetX = centerX;
-        const arrowLineLength = 44;
 
         const today = new Date();
         const todayMonth = today.getMonth() + 1;
@@ -206,19 +230,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!(date instanceof Date)) return '';
             return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         }
-
-        const deadlineSideLabel = document.createElement('div');
-        deadlineSideLabel.className = 'conference-timeline-side-label side-left';
-        deadlineSideLabel.textContent = '投稿';
-        deadlineSideLabel.style.left = `${leftLabelX}px`;
-
-        const resultSideLabel = document.createElement('div');
-        resultSideLabel.className = 'conference-timeline-side-label side-right';
-        resultSideLabel.textContent = '接收';
-        resultSideLabel.style.left = `${rightLabelX}px`;
-
-        conferenceTimelineTrack.appendChild(deadlineSideLabel);
-        conferenceTimelineTrack.appendChild(resultSideLabel);
 
         const rawEvents = [];
         conferenceTimelineData.forEach(item => {
@@ -243,60 +254,58 @@ document.addEventListener('DOMContentLoaded', function() {
                 typeClass: 'event-deadline',
                 conference: item.conference,
                 dateText: normalizedDeadline,
-                bucketKey: monthKeyOf(deadlineDate)
+                bucketKey: monthKeyOf(deadlineDate),
+                actualDate: deadlineDate
             });
             rawEvents.push({
-                side: 'right',
+                side: 'left',
                 typeClass: 'event-result',
                 conference: item.conference,
                 dateText: normalizedResult,
-                bucketKey: monthKeyOf(resultDate)
+                bucketKey: monthKeyOf(resultDate),
+                actualDate: resultDate
             });
         });
 
         if (todayDate) {
             rawEvents.push({
-                side: 'right',
+                side: 'left',
                 typeClass: 'event-today',
                 conference: '今天',
                 dateText: todayMonthDay,
-                bucketKey: monthKeyOf(todayDate)
+                bucketKey: monthKeyOf(todayDate),
+                actualDate: todayDate
             });
         }
 
         const timelineMonths = buildMonthMarkers().map(monthDate => {
             const key = monthKeyOf(monthDate);
             const label = monthDate.getFullYear() === 2025
-                ? `${String(monthDate.getMonth() + 1).padStart(2, '0')}月`
-                : `次年${String(monthDate.getMonth() + 1).padStart(2, '0')}月`;
+                ? `${monthDate.getMonth() + 1}月`
+                : `次年${monthDate.getMonth() + 1}月`;
             return { key, label };
         });
 
-        const monthCountMap = new Map();
+        const monthEventsMap = new Map();
         timelineMonths.forEach(month => {
-            monthCountMap.set(month.key, { left: 0, right: 0 });
+            monthEventsMap.set(month.key, []);
         });
         rawEvents.forEach(event => {
-            if (!monthCountMap.has(event.bucketKey)) {
-                monthCountMap.set(event.bucketKey, { left: 0, right: 0 });
+            if (!monthEventsMap.has(event.bucketKey)) {
+                monthEventsMap.set(event.bucketKey, []);
             }
-            const count = monthCountMap.get(event.bucketKey);
-            if (event.side === 'left') {
-                count.left += 1;
-            } else {
-                count.right += 1;
-            }
+            monthEventsMap.get(event.bucketKey).push(event);
         });
 
-        const monthAnchorMap = new Map();
+        // 每个月的显示区间按“该月事件数”扩展，避免拥挤；事件永远放在当月与下月之间
+        const monthBaseHeight = 92;
+        const perEventExtraHeight = 30;
         let currentY = timelineTopPadding;
         timelineMonths.forEach(month => {
-            const count = monthCountMap.get(month.key) || { left: 0, right: 0 };
-            const monthSpan = Math.max(count.left, count.right, 1);
-            const monthHeight = 76 + Math.max(0, monthSpan - 1) * 62;
+            const monthEvents = monthEventsMap.get(month.key) || [];
+            const monthHeight = monthBaseHeight + Math.max(0, monthEvents.length - 1) * perEventExtraHeight;
             month.startY = currentY;
             month.height = monthHeight;
-            monthAnchorMap.set(month.key, currentY + monthHeight / 2);
             currentY += monthHeight;
         });
 
@@ -320,47 +329,28 @@ document.addEventListener('DOMContentLoaded', function() {
             conferenceTimelineTrack.appendChild(label);
         });
 
-        rawEvents.forEach(event => {
-            event.targetY = monthAnchorMap.get(event.bucketKey) || timelineTopPadding;
-        });
+        // 每个月内统一按日期排序，再把该月区间均分后排布
+        const positionedEvents = [];
+        timelineMonths.forEach(month => {
+            const monthEvents = (monthEventsMap.get(month.key) || [])
+                .filter(event => event.actualDate instanceof Date)
+                .sort((a, b) => {
+                    const diff = a.actualDate - b.actualDate;
+                    if (diff !== 0) return diff;
+                    if (a.side !== b.side) return a.side === 'left' ? -1 : 1;
+                    return a.conference.localeCompare(b.conference);
+                });
 
-        const monthlyBuckets = new Map();
-        rawEvents.forEach(event => {
-            const key = `${event.side}|${event.bucketKey}`;
-            if (!monthlyBuckets.has(key)) {
-                monthlyBuckets.set(key, []);
-            }
-            monthlyBuckets.get(key).push(event);
-        });
-
-        monthlyBuckets.forEach(events => {
-            const sortedEvents = events.slice().sort((a, b) => {
-                if (a.dateText !== b.dateText) {
-                    return a.dateText.localeCompare(b.dateText);
-                }
-                return a.conference.localeCompare(b.conference);
-            });
-            const centerIndex = (sortedEvents.length - 1) / 2;
-            const localStep = 58;
-            sortedEvents.forEach((event, idx) => {
-                event.targetY += (idx - centerIndex) * localStep;
+            const count = monthEvents.length;
+            if (count === 0) return;
+            const step = month.height / (count + 1);
+            monthEvents.forEach((event, idx) => {
+                event.labelY = Math.max(minY, Math.min(maxY, month.startY + step * (idx + 1)));
+                positionedEvents.push(event);
             });
         });
 
-        const leftEvents = adjustLabelsWithoutOverlap(
-            rawEvents.filter(event => event.side === 'left'),
-            minY,
-            maxY,
-            timelineLabelGap
-        );
-        const rightEvents = adjustLabelsWithoutOverlap(
-            rawEvents.filter(event => event.side === 'right'),
-            minY,
-            maxY,
-            timelineLabelGap
-        );
-
-        [...leftEvents, ...rightEvents].forEach(event => {
+        positionedEvents.forEach(event => {
             const eventNode = document.createElement('div');
             eventNode.className = `conference-timeline-event side-${event.side} ${event.typeClass}`;
             eventNode.style.top = `${event.labelY}px`;
@@ -369,14 +359,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const chip = document.createElement('div');
             chip.className = 'conference-timeline-event-chip';
-            const confLine = document.createElement('div');
-            confLine.className = 'conference-timeline-event-conf';
-            confLine.textContent = event.conference;
-            const dateLine = document.createElement('div');
-            dateLine.className = 'conference-timeline-event-date';
-            dateLine.textContent = event.dateText;
-            chip.appendChild(confLine);
-            chip.appendChild(dateLine);
+            const mainLine = document.createElement('div');
+            mainLine.className = 'conference-timeline-event-main';
+            mainLine.textContent = event.conference;
+            chip.appendChild(mainLine);
             eventNode.appendChild(chip);
             conferenceTimelineTrack.appendChild(eventNode);
             const nodeWidth = Math.ceil(eventNode.getBoundingClientRect().width);
@@ -413,6 +399,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 );
                 appendTimelineMarker(conferenceTimelineTrack, event.typeClass, targetX, event.labelY);
             }
+
+            const dateTag = document.createElement('div');
+            dateTag.className = `conference-timeline-date-tag ${event.typeClass}`;
+            dateTag.textContent = event.dateText;
+            dateTag.style.top = `${event.labelY}px`;
+            dateTag.style.left = `${axisTargetX + arrowLineLength + connectorGap + 8}px`;
+            conferenceTimelineTrack.appendChild(dateTag);
         });
         } catch (error) {
             console.error('Failed to render conference timeline:', error);
@@ -1329,6 +1322,15 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Browser does not support matchMedia listener');
     }
 
+    applyLanguage(currentLang);
+    if (langToggleBtn) {
+        langToggleBtn.addEventListener('click', function() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            localStorage.setItem('uiLang', currentLang);
+            applyLanguage(currentLang);
+        });
+    }
+
     function ensureYearExistsInSelect(selectEl, year) {
         if (!selectEl || !Number.isFinite(year)) return;
         const yearStr = String(year);
@@ -1356,6 +1358,21 @@ document.addEventListener('DOMContentLoaded', function() {
         return Array.from(years).sort((a, b) => a - b);
     }
 
+    function normalizeYearSelectOptions(selectEl, yearsDesc) {
+        if (!selectEl || !Array.isArray(yearsDesc) || yearsDesc.length === 0) return;
+        const selectedValue = selectEl.value;
+        selectEl.innerHTML = '';
+        yearsDesc.forEach(year => {
+            const option = document.createElement('option');
+            option.value = String(year);
+            option.textContent = String(year);
+            selectEl.appendChild(option);
+        });
+        if (yearsDesc.includes(parseInt(selectedValue, 10))) {
+            selectEl.value = selectedValue;
+        }
+    }
+
     function rebuildYearSliderModel() {
         if (!startYearSelect || !endYearSelect) return;
         const years = collectAvailableYears();
@@ -1365,6 +1382,9 @@ document.addEventListener('DOMContentLoaded', function() {
             ensureYearExistsInSelect(startYearSelect, year);
             ensureYearExistsInSelect(endYearSelect, year);
         });
+        const yearsDesc = [...years].sort((a, b) => b - a);
+        normalizeYearSelectOptions(startYearSelect, yearsDesc);
+        normalizeYearSelectOptions(endYearSelect, yearsDesc);
 
         availableYears = years;
         if (startYearRange && endYearRange) {
@@ -1823,7 +1843,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 更新年份选项并初始化滑块状态
     updateYearOptions();
-    syncYearSliderFromSelects();
+    // 首次加载默认锁定为“去年 -> 今年”，避免被静态selected年份覆盖
+    setRecentThreeYears();
     // 初始化“最近”状态
     updateRecentCheckboxState();
     

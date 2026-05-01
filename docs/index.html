@@ -2147,9 +2147,16 @@
         .conference-timeline-head {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
             gap: 4px;
             margin-bottom: 10px;
+        }
+
+        .conference-timeline-head-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
         }
 
         .conference-timeline-title {
@@ -2164,6 +2171,37 @@
             font-size: 11px;
             color: #6f7b86;
             line-height: 1.4;
+        }
+
+        .conference-timeline-legend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .conference-timeline-legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #5d6b78;
+        }
+
+        .conference-timeline-legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .conference-timeline-legend-dot.deadline {
+            background: #2f7fd3;
+        }
+
+        .conference-timeline-legend-dot.result {
+            background: #e07b39;
         }
 
         .conference-timeline-scroll {
@@ -2455,9 +2493,24 @@
             min-width: 0;
         }
 
-        .control-group-year {
+        .control-group-year-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
             flex: 0 0 auto;
+        }
+
+        .control-group-lang {
             margin-left: auto;
+            flex: 0 0 auto;
+            min-width: auto;
+            padding: 10px;
+        }
+
+        #lang-toggle-btn {
+            min-width: 78px;
+            font-weight: 700;
         }
 
         .control-group-main .field-group {
@@ -2507,18 +2560,43 @@
             min-width: 0;
         }
 
-        .field-dropdown {
+        .control-group-main .field-group .field-dropdown {
             padding: 0 10px !important;
             margin: 0 !important;
             min-width: 106px;
             flex: 0 0 auto;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
 
-        .field-label {
+        .control-group-main .field-group .field-label {
             height: 100%;
             min-height: 38px;
-            padding: 0;
+            padding: 0 2px;
             font-size: 14px;
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .control-group-main .field-group .field-label:hover {
+            background: transparent !important;
+        }
+
+        .control-group-main .field-group .field-dropdown[data-field="ML"] {
+            background: linear-gradient(135deg, #9b72cf, #b88edc);
+        }
+
+        .control-group-main .field-group .field-dropdown[data-field="CV"] {
+            background: linear-gradient(135deg, #75b357, #8dc76f);
+        }
+
+        .control-group-main .field-group .field-dropdown[data-field="AI"] {
+            background: linear-gradient(135deg, #e68686, #f0a0a0);
+        }
+
+        .control-group-main .field-group .field-dropdown[data-field="All"] {
+            background: linear-gradient(135deg, #2f3136, #3a3d43);
         }
 
         .year-selector {
@@ -2583,8 +2661,8 @@
 
         .conference-timeline-month-label {
             position: absolute;
-            left: calc(50% - 30px);
-            width: 24px;
+            left: calc(50% - 46px);
+            width: auto;
             transform: translateY(-50%);
             text-align: right;
             font-size: 11px;
@@ -2596,6 +2674,7 @@
             line-height: 1.2;
             z-index: 2;
             pointer-events: none;
+            white-space: nowrap;
         }
 
         .conference-timeline-month-tick {
@@ -2615,7 +2694,9 @@
             border-radius: 999px;
             padding: 2px 10px;
             line-height: 1.4;
-            z-index: 5;
+            z-index: 8;
+            transform: translateX(-50%);
+            white-space: nowrap;
         }
 
         .conference-timeline-side-label.side-left {
@@ -2645,21 +2726,32 @@
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
             border: 1px solid transparent;
             background: #fff;
-            white-space: normal;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            min-width: 110px;
         }
 
-        .conference-timeline-event-conf {
+        .conference-timeline-event-main {
             display: block;
             font-size: 12px;
             line-height: 1.2;
+            text-align: left;
         }
 
-        .conference-timeline-event-date {
-            display: block;
-            margin-top: 1px;
+        .conference-timeline-date-tag {
+            position: absolute;
+            transform: translateY(-50%);
+            border-radius: 999px;
+            padding: 2px 8px;
             font-size: 11px;
-            font-weight: 600;
-            opacity: 0.92;
+            font-weight: 700;
+            line-height: 1.2;
+            white-space: nowrap;
+            z-index: 6;
+            pointer-events: none;
         }
 
         .conference-timeline-event.side-left .conference-timeline-event-chip {
@@ -2675,17 +2767,32 @@
             background: #edf5ff;
             border-color: #b9d4f5;
         }
+        .conference-timeline-date-tag.event-deadline {
+            color: #1a4f8f;
+            background: #edf5ff;
+            border: 1px solid #b9d4f5;
+        }
 
         .conference-timeline-event.event-result .conference-timeline-event-chip {
             color: #9a4c12;
             background: #fff2e6;
             border-color: #ffd0a8;
         }
+        .conference-timeline-date-tag.event-result {
+            color: #9a4c12;
+            background: #fff2e6;
+            border: 1px solid #ffd0a8;
+        }
 
         .conference-timeline-event.event-today .conference-timeline-event-chip {
             color: #155e38;
             background: #e9fff1;
             border-color: #9ad8b4;
+        }
+        .conference-timeline-date-tag.event-today {
+            color: #155e38;
+            background: #e9fff1;
+            border: 1px solid #9ad8b4;
         }
 
         .conference-timeline-connector {
@@ -2761,14 +2868,29 @@
             background: #22364c;
             border-color: #3e5f81;
         }
+        .dark-mode .conference-timeline-date-tag.event-deadline {
+            color: #d8e8fb;
+            background: #22364c;
+            border-color: #3e5f81;
+        }
 
         .dark-mode .conference-timeline-event.event-result .conference-timeline-event-chip {
             color: #ffdfc7;
             background: #4b3425;
             border-color: #7e5a41;
         }
+        .dark-mode .conference-timeline-date-tag.event-result {
+            color: #ffdfc7;
+            background: #4b3425;
+            border-color: #7e5a41;
+        }
 
         .dark-mode .conference-timeline-event.event-today .conference-timeline-event-chip {
+            color: #d7ffe6;
+            background: #1f4a34;
+            border-color: #3f7a59;
+        }
+        .dark-mode .conference-timeline-date-tag.event-today {
             color: #d7ffe6;
             background: #1f4a34;
             border-color: #3f7a59;
@@ -2784,6 +2906,10 @@
             color: #ffdfc7;
             background: #4b3425;
             border-color: #7e5a41;
+        }
+
+        .dark-mode .conference-timeline-legend-item {
+            color: #d0dfef;
         }
 
         .dark-mode .conference-timeline-marker {
@@ -2825,7 +2951,8 @@
                 flex-wrap: wrap;
             }
 
-            .control-group-year {
+            .control-group-year-inline,
+            .control-group-lang {
                 margin-left: 0;
             }
         }
@@ -2867,10 +2994,22 @@
 <body>
     <div class="container">
         <div class="main-content">
-            <section class="conference-timeline-card" aria-label="会议投稿与接收截止时间轴">
+            <section class="conference-timeline-card" aria-label="会议时间轴">
                 <div class="conference-timeline-head">
-                    <h2 class="conference-timeline-title">会议投稿与接收截止时间轴</h2>
-                    <p class="conference-timeline-note">主要参考 2025 年时间安排，实际每年会有调整。</p>
+                    <div class="conference-timeline-head-row">
+                        <h2 id="timeline-title" class="conference-timeline-title">会议时间轴</h2>
+                        <div class="conference-timeline-legend" aria-label="时间轴图示">
+                            <span class="conference-timeline-legend-item">
+                                <span class="conference-timeline-legend-dot deadline"></span>
+                                <span id="legend-deadline-label">投稿</span>
+                            </span>
+                            <span class="conference-timeline-legend-item">
+                                <span class="conference-timeline-legend-dot result"></span>
+                                <span id="legend-result-label">接受</span>
+                            </span>
+                        </div>
+                    </div>
+                    <p id="timeline-note" class="conference-timeline-note">主要参考 2025 年时间安排，实际每年会有调整。</p>
                 </div>
                 <div class="conference-timeline-scroll">
                     <div class="conference-timeline-track" id="conference-timeline-track">
@@ -2886,7 +3025,7 @@
                         <div class="control-group control-group-main">
                             <div class="search-controls">
                                 <input type="text" id="topic-input" class="top-bar-input search-input" placeholder="flow matching">
-                                <button id="search-btn" class="top-bar-button">搜索</button>
+                                <button id="search-btn" class="top-bar-button" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></button>
                             </div>
                             <div class="field-group">
                                 <div class="field-dropdown" data-field="ML">
@@ -2920,34 +3059,37 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="control-group control-group-year">
-                            <label class="year-recent">
+                            <div class="control-group-year-inline">
+                                <label class="year-recent">
                                 <input type="checkbox" id="recent-checkbox">
-                                <span>近两年</span>
-                            </label>
-                            <div class="year-selector">
-                                <select id="start-year" class="top-bar-input year-select">
-                                    <option value="2026">2026</option>
-                                    <option value="2025">2025</option>
-                                    <option value="2024" selected>2024</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2020">2020</option>
-                                    <option value="2019">2019</option>
-                                </select>
-                                <span id="year-separator">&rarr;</span>
-                                <select id="end-year" class="top-bar-input year-select">
-                                    <option value="2025" selected>2025</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2020">2020</option>
-                                    <option value="2019">2019</option>
-                                </select>
+                                    <span id="recent-label">最近</span>
+                                </label>
+                                <div class="year-selector">
+                                    <select id="start-year" class="top-bar-input year-select">
+                                        <option value="2026">2026</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2024" selected>2024</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2019">2019</option>
+                                    </select>
+                                    <span id="year-separator">&rarr;</span>
+                                    <select id="end-year" class="top-bar-input year-select">
+                                        <option value="2025" selected>2025</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2019">2019</option>
+                                    </select>
+                                </div>
                             </div>
+                        </div>
+                        <div class="control-group control-group-lang">
+                            <button id="lang-toggle-btn" class="top-bar-button secondary">中 / EN</button>
                         </div>
                     </div>
                 </div>

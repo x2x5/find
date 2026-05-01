@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const manifestCache = { loaded: false, data: null };
     const conferenceDataCache = new Map();
+    let prefetchTimer = null;
     let availableYears = [];
     let isSyncingYearControls = false;
     let currentLang = localStorage.getItem('uiLang') || 'zh';
@@ -450,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (manifestCache.loaded) {
             return manifestCache.data;
         }
-        const response = await fetch(DATA_MANIFEST_URL, { cache: 'no-cache' });
+        const response = await fetch(DATA_MANIFEST_URL, { cache: 'force-cache' });
         if (!response.ok) {
             throw new Error('Failed to load manifest');
         }
@@ -499,6 +500,33 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         return merged;
+    }
+
+    function runWhenIdle(task) {
+        if (typeof window.requestIdleCallback === 'function') {
+            window.requestIdleCallback(task, { timeout: 1200 });
+            return;
+        }
+        setTimeout(task, 220);
+    }
+
+    function scheduleBackgroundPrefetch() {
+        if (prefetchTimer) {
+            clearTimeout(prefetchTimer);
+        }
+        prefetchTimer = setTimeout(() => {
+            const selectedConfs = getSelectedConferences()
+                .filter(conf => !conferenceDataCache.has(conf));
+            if (selectedConfs.length === 0) return;
+
+            runWhenIdle(() => {
+                selectedConfs.forEach(conf => {
+                    loadConferenceData(conf).catch(err => {
+                        console.debug('Prefetch skipped:', conf, err);
+                    });
+                });
+            });
+        }, 180);
     }
     
     // 统计信息相关元素
@@ -1163,6 +1191,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             console.log('All checkbox changed:', isChecked);
             console.log('Selected conferences:', Object.keys(selectedConferences).filter(c => selectedConferences[c]));
+            scheduleBackgroundPrefetch();
         });
     }
     
@@ -1215,11 +1244,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 console.log('All checkbox toggled via field checkbox change:', isChecked);
                 console.log('Selected conferences:', Object.keys(selectedConferences).filter(c => selectedConferences[c]));
+                scheduleBackgroundPrefetch();
                 return;
             }
             
             console.log('Field checkbox changed:', field, isChecked);
             console.log('Selected conferences:', Object.keys(selectedConferences).filter(c => selectedConferences[c]));
+            scheduleBackgroundPrefetch();
         });
     });
     
@@ -1331,6 +1362,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('Conference selection updated:', conf, this.checked);
         console.log('Current selected conferences:', Object.keys(selectedConferences).filter(c => selectedConferences[c]));
+        scheduleBackgroundPrefetch();
     }
 
     console.log("Theme toggle loaded:", versionBadge); // 调试信息
@@ -1773,6 +1805,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 初始化所有复选框状态
         updateFieldCheckboxes();
+        scheduleBackgroundPrefetch();
     }
 
     // Function to copy text to clipboard

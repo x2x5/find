@@ -112,8 +112,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     ? 'No papers found. Please try different keywords or filters.'
                     : '没有找到论文，请尝试其他关键词或筛选条件。')
                 : (isEn
-                    ? 'Please select a topic and sample a batch of papers.'
-                    : '请选择关键词并抽样一批论文。');
+                    ? 'Enter keywords, then find papers.'
+                    : '输入关键词，然后查找论文。');
         }
         if (langToggleBtn) langToggleBtn.textContent = isEn ? 'EN / 中' : '中 / EN';
         document.documentElement.lang = isEn ? 'en' : 'zh-CN';
@@ -566,8 +566,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     : "没有找到论文，请尝试其他关键词或筛选条件。";
             } else {
                 noResults.innerHTML = isEn
-                    ? "Please select a topic and sample a batch of papers."
-                    : "请选择关键词并抽样一批论文。";
+                    ? "Enter keywords, then find papers."
+                    : "输入关键词，然后查找论文。";
             }
         }
         if (papersList) {

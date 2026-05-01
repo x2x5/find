@@ -1117,6 +1117,26 @@
             padding: 0;
             margin: 0;
         }
+
+        .title-copy-tooltip {
+            position: relative;
+        }
+
+        .title-copy-tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 0;
+            top: -26px;
+            z-index: 20;
+            background: rgba(40, 44, 52, 0.95);
+            color: #fff;
+            font-size: 11px;
+            line-height: 1;
+            padding: 4px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            pointer-events: none;
+        }
         
         .list-copy-button {
             padding: 3px 8px;
@@ -1874,6 +1894,41 @@
             padding: 8px 16px;
             border-radius: 20px;
             border: 1px solid #e0e0e0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination-page-btn {
+            min-width: 34px;
+            height: 32px;
+            padding: 0 8px;
+            border: 1px solid #d0d7de;
+            background: #fff;
+            color: #2c3e50;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 1;
+        }
+
+        .pagination-page-btn:hover:not(:disabled) {
+            background: #f3f8ff;
+            border-color: #98b6d8;
+        }
+
+        .pagination-page-btn.active {
+            background: #3498db;
+            color: #fff;
+            border-color: #3498db;
+            cursor: default;
+        }
+
+        .pagination-ellipsis {
+            color: #6f7b86;
+            font-weight: 700;
+            padding: 0 2px;
+            user-select: none;
         }
         
         #current-page-input {
@@ -1909,6 +1964,27 @@
             background-color: #2d2d2d;
             border-color: #444;
             color: #ecf0f1;
+        }
+
+        .dark-mode .pagination-page-btn {
+            background: #2d3b4a;
+            color: #dce6f1;
+            border-color: #4b5f73;
+        }
+
+        .dark-mode .pagination-page-btn:hover:not(:disabled) {
+            background: #35506a;
+            border-color: #5b7b9b;
+        }
+
+        .dark-mode .pagination-page-btn.active {
+            background: #3498db;
+            color: #fff;
+            border-color: #3498db;
+        }
+
+        .dark-mode .pagination-ellipsis {
+            color: #aeb9c4;
         }
         
         .dark-mode #current-page-input {
@@ -2209,6 +2285,14 @@
             overflow-y: auto;
             max-height: calc(100vh - 170px);
             padding-right: 4px;
+        }
+
+        .conference-timeline-footnote {
+            margin: 8px 0 0;
+            font-size: 11px;
+            color: #6f7b86;
+            line-height: 1.4;
+            text-align: center;
         }
 
         .conference-timeline-track {
@@ -2661,8 +2745,8 @@
 
         .conference-timeline-month-label {
             position: absolute;
-            left: calc(50% - 46px);
-            width: auto;
+            left: calc(50% - 86px);
+            width: 74px;
             transform: translateY(-50%);
             text-align: right;
             font-size: 11px;
@@ -2912,6 +2996,10 @@
             color: #d0dfef;
         }
 
+        .dark-mode .conference-timeline-footnote {
+            color: #aeb9c4;
+        }
+
         .dark-mode .conference-timeline-marker {
             border-color: #1f2b37;
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
@@ -3016,6 +3104,7 @@
                         <div class="conference-timeline-line"></div>
                     </div>
                 </div>
+                <p id="timeline-footnote" class="conference-timeline-footnote">主要参考2025年的数据</p>
             </section>
 
             <!-- 顶部导航栏 -->
@@ -3105,7 +3194,7 @@
                 
                 <div id="loading" class="loading" style="display: none;">Loading papers...</div>
                 <div id="no-results" class="no-results">
-                    Please select a topic and sample a batch of papers..
+                    请选择关键词并抽样一批论文。
                 </div>
                 
                 <!-- 论文统计信息 - 简化版本，只显示总数 -->
@@ -3121,9 +3210,9 @@
                     <table id="papers-list-view" class="papers-list-view" style="width: 100% !important; min-width: 100% !important; max-width: 100% !important; table-layout: fixed !important; border-collapse: collapse;">
                         <thead>
                             <tr style="width: 100% !important;">
-                                <th style="width: 15% !important; min-width: 15% !important; max-width: 15% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Conference</th>
-                                <th style="width: 10% !important; min-width: 10% !important; max-width: 10% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Year</th>
-                                <th id="title-header" style="width: 75% !important; min-width: 75% !important; max-width: 75% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer;">Title (click to copy all)</th>
+                                <th id="conference-header" style="width: 15% !important; min-width: 15% !important; max-width: 15% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">会议</th>
+                                <th id="year-header" style="width: 10% !important; min-width: 10% !important; max-width: 10% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">年份</th>
+                                <th id="title-header" style="width: 75% !important; min-width: 75% !important; max-width: 75% !important; padding: 8px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer;">标题（点单条标题可复制；点此表头可复制本页全部标题）</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -3139,22 +3228,13 @@
                             <i class="fas fa-chevron-left"></i> 上一页
                         </button>
                         
-                        <div class="pagination-info" style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #666;">
-                            <span>第</span>
-                            <input type="number" id="current-page-input" min="1" value="1" style="width: 60px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 14px;">
-                            <span>页</span>
-                            <span>/</span>
-                            <span>共 <span id="total-pages">1</span> 页</span>
-                        </div>
+                        <div id="page-number-strip" class="pagination-info" style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #666;"></div>
                         
                         <button id="next-page-btn" class="pagination-btn" style="padding: 8px 16px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
                             下一页 <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
                     
-                    <div class="pagination-summary" style="margin-top: 10px; font-size: 13px; color: #777;">
-                        显示第 <span id="page-start">1</span> - <span id="page-end">50</span> 篇，共 <span id="total-papers-pagination">0</span> 篇论文
-                    </div>
                 </div>
             </div>
             </div>

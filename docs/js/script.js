@@ -10,8 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const recentLabel = document.getElementById('recent-label');
     const timelineTitle = document.getElementById('timeline-title');
     const timelineNote = document.getElementById('timeline-note');
+    const timelineFootnote = document.getElementById('timeline-footnote');
     const legendDeadlineLabel = document.getElementById('legend-deadline-label');
     const legendResultLabel = document.getElementById('legend-result-label');
+    const conferenceHeader = document.getElementById('conference-header');
+    const yearHeader = document.getElementById('year-header');
+    const titleHeader = document.getElementById('title-header');
     const themeToggleContainer = document.querySelector('.theme-toggle-top');
     // Topic标签已移除
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
@@ -30,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const paginationContainer = document.getElementById('pagination-container');
     const prevPageBtn = document.getElementById('prev-page-btn');
     const nextPageBtn = document.getElementById('next-page-btn');
+    const pageNumberStrip = document.getElementById('page-number-strip');
     const currentPageInput = document.getElementById('current-page-input');
     const totalPagesSpan = document.getElementById('total-pages');
     const pageStartSpan = document.getElementById('page-start');
@@ -66,6 +71,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let isSyncingYearControls = false;
     let currentLang = localStorage.getItem('uiLang') || 'zh';
 
+    function getTimelineMonthLabel(monthDate) {
+        const month = monthDate.getMonth() + 1;
+        const isCurrentYear = monthDate.getFullYear() === 2025;
+        if (currentLang === 'en') {
+            const shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const label = shortMonths[month - 1] || String(month);
+            return isCurrentYear ? label : `Next ${label}`;
+        }
+        return isCurrentYear ? `${month}月` : `次年${month}月`;
+    }
+
     function applyLanguage(lang) {
         const isEn = lang === 'en';
         if (searchBtn) {
@@ -74,13 +90,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (topicInput) topicInput.placeholder = 'flow matching';
         if (recentLabel) recentLabel.textContent = isEn ? 'Recent' : '最近';
-        if (timelineTitle) timelineTitle.textContent = isEn ? 'Timeline' : '时间轴';
+        if (timelineTitle) timelineTitle.textContent = isEn ? 'Conf Timeline' : '会议时间轴';
         if (timelineNote) {
             timelineNote.textContent = '';
             timelineNote.style.display = 'none';
         }
+        if (timelineFootnote) {
+            timelineFootnote.textContent = isEn
+                ? 'Mainly based on 2025 data.'
+                : '主要参考2025年的数据';
+        }
         if (legendDeadlineLabel) legendDeadlineLabel.textContent = isEn ? 'Submit' : '投稿';
         if (legendResultLabel) legendResultLabel.textContent = isEn ? 'Accept' : '接受';
+        if (conferenceHeader) conferenceHeader.textContent = isEn ? 'Conference' : '会议';
+        if (yearHeader) yearHeader.textContent = isEn ? 'Year' : '年份';
+        updateTitleHeaderSummary();
+        if (noResults && noResults.style.display !== 'none') {
+            const isSearchPerformed = Boolean(currentSearchTerm && currentSearchTerm.trim());
+            noResults.innerHTML = isSearchPerformed
+                ? (isEn
+                    ? 'No papers found. Please try different keywords or filters.'
+                    : '没有找到论文，请尝试其他关键词或筛选条件。')
+                : (isEn
+                    ? 'Please select a topic and sample a batch of papers.'
+                    : '请选择关键词并抽样一批论文。');
+        }
         if (langToggleBtn) langToggleBtn.textContent = isEn ? 'EN / 中' : '中 / EN';
         document.documentElement.lang = isEn ? 'en' : 'zh-CN';
     }
@@ -280,9 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const timelineMonths = buildMonthMarkers().map(monthDate => {
             const key = monthKeyOf(monthDate);
-            const label = monthDate.getFullYear() === 2025
-                ? `${monthDate.getMonth() + 1}月`
-                : `次年${monthDate.getMonth() + 1}月`;
+            const label = getTimelineMonthLabel(monthDate);
             return { key, label };
         });
 
@@ -495,6 +527,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const papersPerPage = 50; // 每页显示的论文数量
     let totalPages = 0; // 总页数
 
+    function updateTitleHeaderSummary(shown, total) {
+        if (!titleHeader) return;
+        const totalCount = Number.isFinite(total) ? total : (allFilteredPapers.length || 0);
+        const shownCount = Number.isFinite(shown) ? shown : Math.min(totalCount, papersPerPage);
+        if (totalCount <= 0) {
+            titleHeader.textContent = currentLang === 'en' ? 'Showing 0 / 0' : '展示 0 / 0';
+            return;
+        }
+        const start = (currentPage - 1) * papersPerPage + 1;
+        const end = Math.min(start + shownCount - 1, totalCount);
+        titleHeader.textContent = currentLang === 'en'
+            ? `Showing ${start}~${end} / ${totalCount}`
+            : `展示 ${start}~${end} / ${totalCount}`;
+    }
+
     // Function to check if a paper matches all keywords
     function paperMatchesAllKeywords(paper, keywords) {
         return keywords.every(keyword => {
@@ -507,14 +554,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to display no results message
     function showNoResultsMessage(isSearchPerformed = false) {
+        updateTitleHeaderSummary(0, 0);
         if (loading) loading.style.display = 'none';
         if (noResults) {
             noResults.style.display = 'flex';
+            const isEn = currentLang === 'en';
             // 根据是否进行了搜索来显示不同的消息
             if (isSearchPerformed) {
-                noResults.innerHTML = "No papers found. Please try different keywords or filters.";
+                noResults.innerHTML = isEn
+                    ? "No papers found. Please try different keywords or filters."
+                    : "没有找到论文，请尝试其他关键词或筛选条件。";
             } else {
-                noResults.innerHTML = "Please select a topic and sample a batch of papers.";
+                noResults.innerHTML = isEn
+                    ? "Please select a topic and sample a batch of papers."
+                    : "请选择关键词并抽样一批论文。";
             }
         }
         if (papersList) {
@@ -640,7 +693,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 如果没有选中任何会议，显示提示
                 if (conferences.length === 0) {
                     showNoResultsMessage(true);
-                    alert('Please select at least one field or conference to search.');
+                    alert(currentLang === 'en'
+                        ? 'Please select at least one field or conference to search.'
+                        : '请至少选择一个领域或会议后再搜索。');
                     return;
                 }
                 
@@ -746,28 +801,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // 页码输入框
-        if (currentPageInput) {
-            currentPageInput.addEventListener('change', function() {
-                let page = parseInt(this.value);
-                if (page >= 1 && page <= totalPages) {
-                    goToPage(page);
-                } else {
-                    this.value = currentPage; // 恢复当前页码
-                }
-            });
-
-            currentPageInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    let page = parseInt(this.value);
-                    if (page >= 1 && page <= totalPages) {
-                        goToPage(page);
-                    } else {
-                        this.value = currentPage; // 恢复当前页码
-                    }
-                }
-            });
-        }
     }
 
     // 跳转到指定页
@@ -797,9 +830,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 更新翻页控件状态
     function updatePaginationControls() {
-        if (currentPageInput) currentPageInput.value = currentPage;
-        if (totalPagesSpan) totalPagesSpan.textContent = totalPages;
-        
         // 更新按钮状态
         if (prevPageBtn) {
             prevPageBtn.disabled = currentPage <= 1;
@@ -807,6 +837,47 @@ document.addEventListener('DOMContentLoaded', function() {
         if (nextPageBtn) {
             nextPageBtn.disabled = currentPage >= totalPages;
         }
+        renderPageNumberStrip();
+    }
+
+    function getPageItems(current, total) {
+        if (total <= 0) return [];
+        if (total <= 5) {
+            return Array.from({ length: total }, (_, i) => i + 1);
+        }
+        if (current <= 3) {
+            return [1, 2, 3, 4, '...', total];
+        }
+        if (current >= total - 1) {
+            return [1, '...', total - 3, total - 2, total - 1, total];
+        }
+        return [1, '...', current - 1, current, current + 1, '...', total];
+    }
+
+    function renderPageNumberStrip() {
+        if (!pageNumberStrip) return;
+        pageNumberStrip.innerHTML = '';
+        const items = getPageItems(currentPage, totalPages);
+
+        items.forEach(item => {
+            if (item === '...') {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'pagination-ellipsis';
+                ellipsis.textContent = '...';
+                pageNumberStrip.appendChild(ellipsis);
+                return;
+            }
+
+            const pageBtn = document.createElement('button');
+            pageBtn.type = 'button';
+            pageBtn.className = `pagination-page-btn${item === currentPage ? ' active' : ''}`;
+            pageBtn.textContent = String(item);
+            pageBtn.disabled = item === currentPage;
+            pageBtn.addEventListener('click', function() {
+                goToPage(item);
+            });
+            pageNumberStrip.appendChild(pageBtn);
+        });
     }
 
     // 更新翻页摘要信息
@@ -834,6 +905,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 设置列表视图为活动视图
         papersList.classList.add('view-active');
         papersList.style.display = 'table';
+        updateTitleHeaderSummary(papers.length, allFilteredPapers.length || papers.length);
         
         // 清空现有内容（仅在初始加载时）
         const listTbody = papersList.querySelector('tbody');
@@ -900,31 +972,19 @@ document.addEventListener('DOMContentLoaded', function() {
             'aaai': 'ai', 'ijcai': 'ai', 'mm': 'ai'
         };
         
-        // 计算标题的单词数（考虑连字符）
-        function countWords(title) {
-            // 将标题按空格分割成单词
-            const words = title.split(/\s+/);
-            // 计算总单词数，包括连字符分隔的部分
-            let wordCount = 0;
-            words.forEach(word => {
-                // 检查单词中是否包含连字符
-                if (word.includes('-')) {
-                    // 按连字符分割并计算分割后的单词数
-                    const hyphenatedParts = word.split('-').filter(part => part.length > 0);
-                    wordCount += hyphenatedParts.length;
-                } else {
-                    // 普通单词计为1个
-                    wordCount += 1;
-                }
-            });
-            return wordCount;
+        // 计算标题的字母个数（忽略空格、数字和标点）
+        function countLetters(title) {
+            return (title.match(/[A-Za-z]/g) || []).length;
         }
-        
-        // Sort papers by word count instead of character length
+
+        // 当前页内按字母个数从少到多排序
         papers.sort((a, b) => {
-            const aWordCount = countWords(a.title);
-            const bWordCount = countWords(b.title);
-            return aWordCount - bWordCount;
+            const aLetterCount = countLetters(a.title);
+            const bLetterCount = countLetters(b.title);
+            if (aLetterCount !== bLetterCount) {
+                return aLetterCount - bLetterCount;
+            }
+            return a.title.localeCompare(b.title);
         });
         
         const listTbody = papersList.querySelector('tbody');
@@ -983,7 +1043,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // 创建标题单元格并高亮搜索词
             const titleCell = document.createElement('td');
             titleCell.className = 'list-paper-title tex2jax_process';
-            titleCell.title = 'Click to copy: ' + paper.title;
             titleCell.style.cursor = 'pointer';
             
             // 高亮显示搜索词
@@ -1328,6 +1387,7 @@ document.addEventListener('DOMContentLoaded', function() {
             currentLang = currentLang === 'zh' ? 'en' : 'zh';
             localStorage.setItem('uiLang', currentLang);
             applyLanguage(currentLang);
+            renderConferenceTimeline();
         });
     }
 

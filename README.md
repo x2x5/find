@@ -9,23 +9,23 @@ A React-based single-page application for browsing and searching AI conference p
 - **Framework**: React 18 + TypeScript, built with Vite 6
 - **Styling**: Tailwind CSS 3.4 with dark mode (`class` strategy)
 - **Icons**: Lucide React
-- **Entry**: `v2/src/main.tsx` → `v2/src/App.tsx`
+- **Entry**: `src/main.tsx` → `src/App.tsx`
 - **Data flow**: JSON manifest + per-conference paper files → `useManifest` + `usePapers` hooks → `AppContext` state → component tree
 - **Routing**: None (single page). All navigation via state.
-- **i18n**: `v2/src/i18n/zh.ts` and `en.ts`, consumed via `useAppContext().t`
+- **i18n**: `src/i18n/zh.ts` and `en.ts`, consumed via `useAppContext().t`
 
 ### Key Components
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| App | `v2/src/App.tsx` | Root layout, state management, data wiring |
-| Header | `v2/src/components/layout/Header.tsx` | Year selector, search bar, lucky paper, controls |
-| Sidebar | `v2/src/components/layout/Sidebar.tsx` | Field filter + distributions + cart |
-| PapersTable | `v2/src/components/features/PapersTable.tsx` | Paginated paper list with highlight |
-| Distributions | `v2/src/components/features/Distributions.tsx` | Bar charts by conference and year |
-| Timeline | `v2/src/components/features/Timeline.tsx` | Conference deadline/result timeline |
-| Cart | `v2/src/components/features/Cart.tsx` | Shopping cart for paper collection |
-| FieldFilter | `v2/src/components/features/FieldFilter.tsx` | Conference checkboxes (legacy, now merged into Distributions) |
+| App | `src/App.tsx` | Root layout, state management, data wiring |
+| Header | `src/components/layout/Header.tsx` | Year selector, search bar, lucky paper, controls |
+| Sidebar | `src/components/layout/Sidebar.tsx` | Field filter + distributions + cart |
+| PapersTable | `src/components/features/PapersTable.tsx` | Paginated paper list with highlight |
+| Distributions | `src/components/features/Distributions.tsx` | Bar charts by conference and year |
+| Timeline | `src/components/features/Timeline.tsx` | Conference deadline/result timeline |
+| Cart | `src/components/features/Cart.tsx` | Shopping cart for paper collection |
+| FieldFilter | `src/components/features/FieldFilter.tsx` | Conference checkboxes (legacy, now merged into Distributions) |
 
 ### State Architecture
 
@@ -50,7 +50,7 @@ Derived state (via `useMemo`):
 cd v2
 npm install
 npm run dev      # dev server at localhost:5173
-npm run build    # production build to v2/dist/
+npm run build    # production build to dist/
 ```
 
 Deploy `v2/dist/` to any static host (GitHub Pages, Vercel, Netlify).
@@ -82,12 +82,12 @@ interface Manifest {
 }
 ```
 
-See `v2/src/types/index.ts` for full type definitions.
+See `src/types/index.ts` for full type definitions.
 
 ### Conference Data
 
 ```typescript
-// v2/src/lib/conferences.ts
+// src/lib/conferences.ts
 CONFERENCE_FIELDS: Record<string, 'CV' | 'AI' | 'ML'> // maps conf key to field
 CONFERENCE_NAMES: Record<string, string>               // maps conf key to display name
 ```

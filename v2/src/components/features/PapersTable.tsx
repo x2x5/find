@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { Copy, Check } from 'lucide-react';
 import type { Paper } from '@/types';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
 import { useAppContext } from '@/context/AppContext';
@@ -20,7 +19,6 @@ const FIELD_COLORS: Record<string, { bg: string; text: string; darkBg: string; d
 export default function PapersTable({ papers = [], pageSize = 50, onShowToast }: PapersTableProps) {
   const { t } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const totalPages = Math.max(1, Math.ceil(papers.length / pageSize));
   const safePage = Math.min(currentPage, totalPages);
@@ -32,12 +30,11 @@ export default function PapersTable({ papers = [], pageSize = 50, onShowToast }:
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  const handleCopy = useCallback(async (title: string, index: number) => {
+  const handleCopyTitle = useCallback(async (paper: Paper) => {
+    const text = `${paper.conference.toUpperCase()} ${paper.year} ${paper.title}`;
     try {
-      await navigator.clipboard.writeText(title);
-      setCopiedIndex(index);
-      setTimeout(() => setCopiedIndex(null), 1500);
-      onShowToast?.('Copied to clipboard');
+      await navigator.clipboard.writeText(text);
+      onShowToast?.('Copied');
     } catch {
       // ignore
     }
@@ -111,28 +108,21 @@ export default function PapersTable({ papers = [], pageSize = 50, onShowToast }:
             return (
               <div
                 key={globalIdx}
-                className="px-4 py-2.5 flex items-center gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors group"
+                className="px-4 py-2.5 flex items-center gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors"
               >
-                <span className={`inline-flex items-center w-[4.5rem] shrink-0 px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}>
+                <span className={`inline-flex items-center justify-center w-[4.5rem] shrink-0 px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}>
                   {paper.conference.toUpperCase()}
                 </span>
-                <span className="inline-flex items-center w-14 shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 tabular-nums">
+                <span className="inline-flex items-center justify-center w-14 shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 tabular-nums">
                   {paper.year}
                 </span>
-                <span className="text-sm text-zinc-900 dark:text-zinc-100 flex-1 truncate">
+                <span
+                  onClick={() => handleCopyTitle(paper)}
+                  className="text-sm text-zinc-900 dark:text-zinc-100 flex-1 truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  title="Click to copy"
+                >
                   {paper.title}
                 </span>
-                <button
-                  onClick={() => handleCopy(paper.title, globalIdx)}
-                  className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-all"
-                  title="Copy title"
-                >
-                  {copiedIndex === globalIdx ? (
-                    <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  ) : (
-                    <Copy className="w-3.5 h-3.5" />
-                  )}
-                </button>
               </div>
             );
           })

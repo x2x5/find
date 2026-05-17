@@ -1,5 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
+import { Plus, Minus } from 'lucide-react';
 import type { Paper } from '@/types';
+import { getPaperKey } from '@/lib/utils';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
 import { useAppContext } from '@/context/AppContext';
 import Pagination from './Pagination';
@@ -9,32 +11,48 @@ interface PapersTableProps {
   pageSize?: number;
   searchTrigger?: string;
   onShowToast?: (message: string) => void;
-  onAddToCart?: (paper: Paper) => void;
+  cart?: Paper[];
+  onToggleCart?: (paper: Paper) => void;
+  onWordClick?: (word: string, paper: Paper, globalIdx: number) => void;
 }
 
-function highlightText(text: string, query: string): React.ReactNode {
-  if (!query.trim()) return text;
+function highlightText(text: string, query: string, onWordClick?: (word: string) => void): React.ReactNode {
+  if (!query.trim() && !onWordClick) return text;
 
   const words = query.trim().split(/\s+/).filter(Boolean);
-  if (words.length === 0) return text;
-
-  // Escape regex special characters
   const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const escaped = words.map(escapeRegExp);
 
-  // Build regex matching any word, case-insensitive
-  const regex = new RegExp(`(${escaped.join('|')})`, 'gi');
-  const parts = text.split(regex);
+  // Split by whitespace, then split hyphenated tokens into parts ("System-Aware" → ["System", "-", "Aware"])
+  const tokens = text.split(/(\s+)/).flatMap((t) => {
+    if (!t.trim()) return [t];
+    return t.split(/(-)/).filter(Boolean);
+  });
 
-  if (parts.length <= 1) return text;
+  return tokens.map((token, i) => {
+    if (!token.trim() || token === '-') return token;
 
-  return parts.map((part, i) => {
-    if (i % 2 === 0) return part;
-    return (
-      <mark key={i} className="bg-yellow-200 dark:bg-yellow-800 rounded-sm px-0.5">
-        {part}
-      </mark>
+    const cleanWord = token.replace(/[^a-zA-Z0-9一-鿿]/g, '');
+    const isHighlighted = escaped.some((pat) => new RegExp(pat, 'i').test(token));
+
+    const content = isHighlighted ? (
+      <mark className="bg-yellow-200 dark:bg-yellow-800 rounded-sm px-0.5">{token}</mark>
+    ) : (
+      token
     );
+
+    if (cleanWord && onWordClick) {
+      return (
+        <span
+          key={i}
+          onClick={(e) => { e.stopPropagation(); onWordClick(cleanWord); }}
+          className="cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+        >
+          {content}
+        </span>
+      );
+    }
+    return isHighlighted ? <mark key={i} className="bg-yellow-200 dark:bg-yellow-800 rounded-sm px-0.5">{token}</mark> : token;
   });
 }
 
@@ -44,9 +62,11 @@ const FIELD_COLORS: Record<string, { bg: string; text: string; darkBg: string; d
   ML: { bg: 'bg-emerald-100', text: 'text-emerald-700', darkBg: 'dark:bg-emerald-950', darkText: 'dark:text-emerald-300' },
 };
 
-export default function PapersTable({ papers = [], pageSize = 50, searchTrigger = '', onShowToast, onAddToCart }: PapersTableProps) {
+export default function PapersTable({ papers = [], pageSize = 50, searchTrigger = '', onShowToast, cart = [], onToggleCart, onWordClick }: PapersTableProps) {
   const { t } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
+
+  const cartKeys = useMemo(() => new Set(cart.map(getPaperKey)), [cart]);
 
   const totalPages = Math.max(1, Math.ceil(papers.length / pageSize));
   const safePage = Math.min(currentPage, totalPages);
@@ -150,12 +170,15 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
                 >
                   {paper.year}
                 </span>
-                <span
-                  onClick={() => onAddToCart?.(paper)}
-                  className="text-sm text-zinc-900 dark:text-zinc-100 flex-1 min-w-0 truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                  title="Add to cart"
+                <button
+                  onClick={() => onToggleCart?.(paper)}
+                  className={`shrink-0 w-5 h-5 flex items-center justify-center rounded transition-colors ${cartKeys.has(getPaperKey(paper)) ? "text-red-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20" : "text-zinc-300 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"}`}
+                  title={cartKeys.has(getPaperKey(paper)) ? "Remove from cart" : "Add to cart"}
                 >
-                  {highlightText(paper.title, searchTrigger)}
+                  {cartKeys.has(getPaperKey(paper)) ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                </button>
+                <span className="text-sm text-zinc-900 dark:text-zinc-100 flex-1 min-w-0 truncate">
+                  {highlightText(paper.title, searchTrigger, (word) => onWordClick?.(word, paper, globalIdx))}
                 </span>
               </div>
             );

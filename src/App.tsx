@@ -9,6 +9,7 @@ import Toast from './components/ui/Toast';
 import { Skeleton } from './components/ui/Skeleton';
 import { useManifest } from './hooks/useManifest';
 import { usePapers } from './hooks/usePapers';
+import { getPaperKey } from './lib/utils';
 import { filterPapers } from './lib/search';
 import { shuffle } from './lib/shuffle';
 
@@ -25,6 +26,7 @@ function AppContent() {
   const [showTimeline, setShowTimeline] = useState(false);
   const [cart, setCart] = useState<Paper[]>([]);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+  const [pinnedPaper, setPinnedPaper] = useState<{ key: string; position: number } | null>(null);
 
   const { papers: loadedPapers, loading: papersLoading, error: papersError } = usePapers(
     selectedConfs,
@@ -37,8 +39,17 @@ function AppContent() {
   }, [loadedPapers, searchValue, yearRange, selectedConfs]);
 
   const shuffledPapers = useMemo(() => {
-    return shuffle(filteredPapers);
-  }, [filteredPapers]);
+    const result = shuffle(filteredPapers);
+    if (pinnedPaper) {
+      const idx = result.findIndex((p) => getPaperKey(p) === pinnedPaper.key);
+      if (idx !== -1) {
+        const [paper] = result.splice(idx, 1);
+        const insertAt = Math.min(pinnedPaper.position, result.length);
+        result.splice(insertAt, 0, paper);
+      }
+    }
+    return result;
+  }, [filteredPapers, pinnedPaper]);
 
   const luckyPaper = useMemo(() => {
     if (filteredPapers.length === 0) return null;
@@ -66,10 +77,15 @@ function AppContent() {
     setToast({ message, visible: true });
   }, []);
 
-  const handleAddToCart = useCallback((paper: Paper) => {
-    setCart((prev) => [...prev, paper]);
-    showToast('Added to cart');
-  }, [showToast]);
+  const handleToggleCart = useCallback((paper: Paper) => {
+    setCart((prev) => {
+      const idx = prev.findIndex((p) => p.title === paper.title && p.conference === paper.conference && p.year === paper.year);
+      if (idx !== -1) {
+        return prev.filter((_, i) => i !== idx);
+      }
+      return [...prev, paper];
+    });
+  }, []);
 
   const handleRemoveFromCart = useCallback((idx: number) => {
     setCart((prev) => prev.filter((_, i) => i !== idx));
@@ -82,6 +98,20 @@ function AppContent() {
 
   const handleClearCart = useCallback(() => setCart([]), []);
 
+  const handleWordClick = useCallback((word: string, _paper: Paper, globalIdx: number) => {
+    setSearchValue((prev) => {
+      const words = prev ? prev.trim().split(/\s+/) : [];
+      const lower = word.toLowerCase();
+      const idx = words.findIndex((w) => w.toLowerCase() === lower);
+      if (idx !== -1) {
+        words.splice(idx, 1);
+        return words.join(' ');
+      }
+      return prev ? prev + ' ' + word : word;
+    });
+    setPinnedPaper({ key: getPaperKey(_paper), position: globalIdx });
+  }, []);
+
   const hideToast = useCallback(() => {
     setToast((prev) => ({ ...prev, visible: false }));
   }, []);
@@ -90,7 +120,10 @@ function AppContent() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-200">
       <Header
         searchValue={searchValue}
-        onSearchChange={setSearchValue}
+        onSearchChange={(value) => {
+          setSearchValue(value);
+          setPinnedPaper(null);
+        }}
         luckyPaper={luckyPaper}
         showTimeline={showTimeline}
         onToggleTimeline={() => setShowTimeline((v) => !v)}
@@ -140,7 +173,7 @@ function AppContent() {
           )}
 
           {!combinedLoading && !combinedError && (
-            <PapersTable papers={shuffledPapers} pageSize={pageSize} searchTrigger={searchValue} onShowToast={showToast} onAddToCart={handleAddToCart} />
+            <PapersTable papers={shuffledPapers} pageSize={pageSize} searchTrigger={searchValue} onShowToast={showToast} cart={cart} onToggleCart={handleToggleCart} onWordClick={handleWordClick} />
           )}
         </section>
       </main>

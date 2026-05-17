@@ -1,50 +1,103 @@
-# 淘鼎 TaoDing
+# README for AI | [README for Human](https://x2x5.github.io/find/about)
 
-三大顶会论文检索工具 — 支持实时搜索、领域/年份筛选、会议分布可视化、购物车收藏。
+## Project: 淘鼎 (TaoDing)
 
-## 项目结构
+A React-based single-page application for browsing and searching AI conference paper titles across 9 top venues (NeurIPS, ICML, ICLR, CVPR, ECCV, ICCV, AAAI, MM, IJCAI).
 
-```text
-.
-├── v2/                # React + TypeScript + Tailwind 主应用
-│   ├── src/           # 源码
-│   ├── public/        # 静态数据
-│   └── scripts/       # 数据生成
-├── docs/              # v1 静态站（遗留）
-└── papers/            # 原始标题数据
-```
+### Architecture
 
-## V2 功能
+- **Framework**: React 18 + TypeScript, built with Vite 6
+- **Styling**: Tailwind CSS 3.4 with dark mode (`class` strategy)
+- **Icons**: Lucide React
+- **Entry**: `v2/src/main.tsx` → `v2/src/App.tsx`
+- **Data flow**: JSON manifest + per-conference paper files → `useManifest` + `usePapers` hooks → `AppContext` state → component tree
+- **Routing**: None (single page). All navigation via state.
+- **i18n**: `v2/src/i18n/zh.ts` and `en.ts`, consumed via `useAppContext().t`
 
-- **实时搜索**：边打字边过滤，结果数实时显示
-- **年份选择**：`◀ 2025 ▶ → ◀ 2026 ▶` 可调范围，一键重置最近两年
-- **领域分布**：ML/CV/AI 三组，柱状图显示各会议数量，点击切换筛选
-- **年份分布**：年份从小到大，深浅渐变柱状图
-- **会议时间轴**：投稿/录用时间线，可折叠
-- **运气最佳**：随机展示一篇论文
-- **购物车**：收藏论文，一键复制导出
-- **深色模式 / 中英切换**
+### Key Components
 
-## 本地启动
+| Component | Path | Purpose |
+|-----------|------|---------|
+| App | `v2/src/App.tsx` | Root layout, state management, data wiring |
+| Header | `v2/src/components/layout/Header.tsx` | Year selector, search bar, lucky paper, controls |
+| Sidebar | `v2/src/components/layout/Sidebar.tsx` | Field filter + distributions + cart |
+| PapersTable | `v2/src/components/features/PapersTable.tsx` | Paginated paper list with highlight |
+| Distributions | `v2/src/components/features/Distributions.tsx` | Bar charts by conference and year |
+| Timeline | `v2/src/components/features/Timeline.tsx` | Conference deadline/result timeline |
+| Cart | `v2/src/components/features/Cart.tsx` | Shopping cart for paper collection |
+| FieldFilter | `v2/src/components/features/FieldFilter.tsx` | Conference checkboxes (legacy, now merged into Distributions) |
+
+### State Architecture
+
+State lives in `App.tsx` (via `useState`) and flows down as props:
+
+- `selectedConfs: Set<string>` — active conference filters (default: ICML/ICLR/NeurIPS/CVPR/ECCV/ICCV)
+- `yearRange: [number, number]` — year filter range
+- `searchValue: string` — real-time search query text
+- `pageSize: number` — items per page (10/50/100)
+- `showTimeline: boolean` — timeline visibility toggle
+- `cart: Paper[]` — cart items
+- `toast: { message, visible }` — toast notification state
+
+Derived state (via `useMemo`):
+- `filteredPapers` — `filterPapers(loadedPapers, searchValue, yearRange, selectedConfs)`
+- `shuffledPapers` — Fisher-Yates shuffle of `filteredPapers`
+- `luckyPaper` — random pick from `filteredPapers`
+
+### Build & Deploy
 
 ```bash
 cd v2
 npm install
-npm run dev
+npm run dev      # dev server at localhost:5173
+npm run build    # production build to v2/dist/
 ```
 
-## 数据更新
+Deploy `v2/dist/` to any static host (GitHub Pages, Vercel, Netlify).
 
+### Data Pipeline
+
+Raw paper titles live in `papers/<conference>/<year>.txt` (one title per line).
+
+Generate JSON data:
 ```bash
 cd v2/scripts
 npx tsx gen-data.ts
 ```
 
-## 部署
+This produces `v2/public/manifest.json` and per-conference JSON files in `v2/public/data/`.
 
-静态站点，构建 `v2/dist/` 部署即可。
+### Types
 
-```bash
-cd v2
-npm run build
+```typescript
+interface Paper {
+  conference: string;  // e.g., "cvpr"
+  year: string;        // e.g., "2025"
+  title: string;
+}
+
+interface Manifest {
+  version: string;
+  conferences: Record<string, ConferenceMeta>;
+}
 ```
+
+See `v2/src/types/index.ts` for full type definitions.
+
+### Conference Data
+
+```typescript
+// v2/src/lib/conferences.ts
+CONFERENCE_FIELDS: Record<string, 'CV' | 'AI' | 'ML'> // maps conf key to field
+CONFERENCE_NAMES: Record<string, string>               // maps conf key to display name
+```
+
+9 conferences → 3 fields: ML (nips, icml, iclr), CV (cvpr, eccv, iccv), AI (aaai, mm, ijcai).
+
+### Search Logic
+
+`v2/src/lib/search.ts` — keyword splitting, camelCase expansion, case-insensitive regex matching.
+
+### About Page
+
+A standalone HTML page served at `/about.html` (or `https://x2x5.github.io/find/about`). Linked from the app header via "关于/About" button and from this README.

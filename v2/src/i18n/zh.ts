@@ -45,6 +45,7 @@ export const zh: Translations = {
   language: {
     zh: '中',
     en: 'EN',
+    about: '关于',
   },
   error: '错误',
   timeline: {

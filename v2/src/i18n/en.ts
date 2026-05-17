@@ -43,6 +43,7 @@ export interface Translations {
   language: {
     zh: string;
     en: string;
+    about: string;
   };
   error: string;
   timeline: {
@@ -103,6 +104,7 @@ export const en: Translations = {
   language: {
     zh: '中',
     en: 'EN',
+    about: 'About',
   },
   error: 'Error',
   timeline: {

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关于 淘鼎</title>
+<style>
+  :root {
+    --bg: #fafafa; --fg: #1e1e1e; --muted: #666;
+    --card: #fff; --border: #e5e5e5; --accent: #6366f1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0a0a; --fg: #eee; --muted: #999;
+      --card: #171717; --border: #262626; --accent: #818cf8;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg); color: var(--fg); line-height: 1.7;
+    max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem;
+  }
+  h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; color: var(--accent); }
+  p, li { font-size: 0.95rem; color: var(--muted); }
+  ul { padding-left: 1.25rem; margin: 0.5rem 0; }
+  a { color: var(--accent); }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem; margin: 1rem 0;
+  }
+  code {
+    background: var(--border); padding: 0.15em 0.4em;
+    border-radius: 3px; font-size: 0.9em;
+  }
+  pre {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1rem; overflow-x: auto;
+    font-size: 0.85em; margin: 0.75rem 0;
+  }
+  .badge {
+    display: inline-block; padding: 0.15em 0.5em;
+    border-radius: 4px; font-size: 0.8em; font-weight: 600;
+  }
+  .ml { background: #d1fae5; color: #065f46; }
+  .cv { background: #dbeafe; color: #1e40af; }
+  .ai { background: #fef3c7; color: #92400e; }
+</style>
+</head>
+<body>
+
+<h1>淘鼎 TaoDing</h1>
+<p>三大顶会论文检索 — 快速浏览、筛选、收藏 AI 顶会论文标题。</p>
+
+<h2>设计理念</h2>
+<div class="card">
+  <p>三大顶会 = 三个领域 × 每组三个会议：</p>
+  <p>
+    <span class="badge ml">ML</span> NeurIPS · ICML · ICLR<br>
+    <span class="badge cv">CV</span> CVPR · ECCV · ICCV<br>
+    <span class="badge ai">AI</span> AAAI · MM · IJCAI
+  </p>
+  <p style="margin-top:0.75rem">所有论文随机打乱，每页更像「淘」的感觉——你不知道下一页会看到什么。顶部的"运气最佳"随机展示一篇，点标题直接加入购物车。</p>
+</div>
+
+<h2>功能一览</h2>
+<ul>
+  <li><strong>实时搜索</strong> — 边打字边过滤，搜索结果数实时显示</li>
+  <li><strong>年份筛选</strong> — 可调范围，一键重置最近两年</li>
+  <li><strong>领域分布</strong> — 柱状图实时显示各会议论文数量，点击切换筛选</li>
+  <li><strong>年份分布</strong> — 按年份查看论文数量变化</li>
+  <li><strong>会议时间轴</strong> — 投稿/录用日期可视化，可折叠</li>
+  <li><strong>运气最佳</strong> — 每次搜索随机推荐一篇</li>
+  <li><strong>购物车</strong> — 收藏论文，一键复制导出</li>
+  <li><strong>深色模式 / 中英切换</strong></li>
+</ul>
+
+<h2>本地部署</h2>
+<div class="card">
+  <pre><code>cd v2
+npm install
+npm run dev</code></pre>
+  <p>浏览器打开 <code>http://localhost:5173</code></p>
+  <p style="margin-top:0.5rem">生成生产版本：<code>npm run build</code>，部署 <code>dist/</code> 目录即可。</p>
+</div>
+
+<h2>数据更新</h2>
+<div class="card">
+  <p>论文数据存放在 <code>papers/&lt;conference&gt;/&lt;year&gt;.txt</code>，每行一个标题。</p>
+  <p>更新后运行：</p>
+  <pre><code>cd v2/scripts
+npx tsx gen-data.ts</code></pre>
+</div>
+
+<h2>技术栈</h2>
+<ul>
+  <li>React 18 + TypeScript</li>
+  <li>Tailwind CSS 3.4</li>
+  <li>Vite 6</li>
+  <li>Lucide React (图标)</li>
+</ul>
+
+<h2>项目结构</h2>
+<pre><code>v2/
+├── src/
+│   ├── components/
+│   │   ├── layout/     # Header, Sidebar
+│   │   ├── features/   # PapersTable, Timeline, Distributions, Cart, etc.
+│   │   └── ui/         # Skeleton, Toast
+│   ├── context/        # AppContext (theme, language)
+│   ├── hooks/          # usePapers, useManifest, useTheme, useLanguage
+│   ├── i18n/           # zh.ts, en.ts
+│   └── lib/            # conferences, search, shuffle, utils
+├── public/             # 静态数据 (JSON)
+└── scripts/            # gen-data.ts</code></pre>
+
+<p style="margin-top:3rem; font-size:0.8rem; color:var(--muted); text-align:center">
+  Made with ❤️ — <a href="/">返回首页</a>
+</p>
+
+</body>
+</html>

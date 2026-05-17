@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Sun, Moon, ChevronLeft, ChevronRight, Undo2, PanelTopClose, PanelTopOpen } from 'lucide-react';
+import { Sun, Moon, ChevronLeft, ChevronRight, Undo2, PanelTopClose, PanelTopOpen, Info } from 'lucide-react';
 import SearchBar from '@/components/features/SearchBar';
 import { useAppContext } from '@/context/AppContext';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
@@ -132,6 +132,9 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
           <button onClick={toggleLanguage} className="text-sm px-2 py-1 rounded-md bg-rose-50 dark:bg-rose-900/20 text-rose-400 hover:text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/40 dark:text-rose-300 dark:hover:text-rose-100">
             {language === 'zh' ? t.language.en : t.language.zh}
           </button>
+          <a href="/about.html" className="p-1.5 rounded-md bg-indigo-50 dark:bg-indigo-900/20 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 dark:text-indigo-300 dark:hover:text-indigo-100" title={t.language.about}>
+            <Info className="w-4 h-4" />
+          </a>
         </div>
       </div>
     </header>

@@ -25,13 +25,6 @@ export default function Sidebar({
     <aside className="space-y-4">
       <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
         <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-3">
-          {t.sidebar.timeline}
-        </h2>
-        <Timeline />
-      </div>
-
-      <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-3">
           {t.sidebar.filters}
         </h2>
         <FieldFilter
@@ -45,6 +38,13 @@ export default function Sidebar({
           yearRange={yearRange}
           onChange={onYearChange}
         />
+      </div>
+
+      <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-3">
+          {t.sidebar.timeline}
+        </h2>
+        <Timeline />
       </div>
     </aside>
   );

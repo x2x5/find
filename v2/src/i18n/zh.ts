@@ -21,6 +21,7 @@ export const zh: Translations = {
   },
   table: {
     title: '论文列表',
+    copyPage: '复制本页',
     copyAll: '复制全部',
     results: '篇结果',
     showing: '显示',

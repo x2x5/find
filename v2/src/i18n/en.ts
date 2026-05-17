@@ -19,6 +19,7 @@ export interface Translations {
   };
   table: {
     title: string;
+    copyPage: string;
     copyAll: string;
     results: string;
     showing: string;
@@ -68,6 +69,7 @@ export const en: Translations = {
   },
   table: {
     title: 'Papers',
+    copyPage: 'Copy Page',
     copyAll: 'Copy All',
     results: 'results',
     showing: 'showing',

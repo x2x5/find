@@ -1,6 +1,6 @@
 # README for AI | [README for Human](https://x2x5.github.io/find/about.html)
 
-## Project: 淘鼎 (TaoDing)
+## Project: 淘顶 (TaoDing)
 
 A React-based single-page application for browsing and searching AI conference paper titles across 9 top venues (NeurIPS, ICML, ICLR, CVPR, ECCV, ICCV, AAAI, MM, IJCAI).
 

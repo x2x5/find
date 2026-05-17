@@ -94,7 +94,7 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
   }, [papers, onShowToast]);
 
   return (
-    <div className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+    <div className="w-full min-w-0 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
       <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-4">
         <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
           {t.table.title}
@@ -145,7 +145,7 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
                 </span>
                 <span
                   onClick={() => handleCopyTitle(paper)}
-                  className="text-sm text-zinc-900 dark:text-zinc-100 flex-1 truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="text-sm text-zinc-900 dark:text-zinc-100 flex-1 min-w-0 truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                   title="Click to copy"
                 >
                   {highlightText(paper.title, searchTrigger)}

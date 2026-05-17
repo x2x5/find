@@ -1,4 +1,5 @@
 import { useMemo, useState, useCallback } from 'react';
+import type { Paper } from '@/types';
 import { AppProvider } from './context/AppContext';
 import Header from './components/layout/Header';
 import Sidebar from './components/layout/Sidebar';
@@ -20,6 +21,9 @@ function AppContent() {
   );
   const [yearRange, setYearRange] = useState<[number, number]>([defaultYear - 1, defaultYear]);
   const [searchValue, setSearchValue] = useState('');
+  const [pageSize, setPageSize] = useState(50);
+  const [showTimeline, setShowTimeline] = useState(true);
+  const [cart, setCart] = useState<Paper[]>([]);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
 
   const { papers: loadedPapers, loading: papersLoading, error: papersError } = usePapers(
@@ -34,6 +38,12 @@ function AppContent() {
 
   const shuffledPapers = useMemo(() => {
     return shuffle(filteredPapers);
+  }, [filteredPapers]);
+
+  const luckyPaper = useMemo(() => {
+    if (filteredPapers.length === 0) return null;
+    const idx = Math.floor(Math.random() * filteredPapers.length);
+    return filteredPapers[idx];
   }, [filteredPapers]);
 
   const combinedLoading = manifestLoading || papersLoading;
@@ -56,6 +66,22 @@ function AppContent() {
     setToast({ message, visible: true });
   }, []);
 
+  const handleAddToCart = useCallback((paper: Paper) => {
+    setCart((prev) => [...prev, paper]);
+    showToast('Added to cart');
+  }, [showToast]);
+
+  const handleRemoveFromCart = useCallback((idx: number) => {
+    setCart((prev) => prev.filter((_, i) => i !== idx));
+  }, []);
+
+  const handleCopyCart = useCallback(async () => {
+    const text = cart.map((p) => `${p.conference.toUpperCase()} ${p.year} ${p.title}`).join('\n');
+    try { await navigator.clipboard.writeText(text); showToast(`Copied ${cart.length} titles`); } catch {}
+  }, [cart, showToast]);
+
+  const handleClearCart = useCallback(() => setCart([]), []);
+
   const hideToast = useCallback(() => {
     setToast((prev) => ({ ...prev, visible: false }));
   }, []);
@@ -66,12 +92,15 @@ function AppContent() {
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         resultCount={filteredPapers.length}
+        luckyPaper={luckyPaper}
+        showTimeline={showTimeline}
+        onToggleTimeline={() => setShowTimeline((v) => !v)}
         manifest={manifest}
         yearRange={yearRange}
         onYearChange={handleYearChange}
       />
 
-      <Timeline />
+      {showTimeline && <Timeline />}
 
       <main className="max-w-7xl mx-auto px-4 pt-0 pb-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
         <Sidebar
@@ -79,6 +108,10 @@ function AppContent() {
           papers={filteredPapers}
           selectedConfs={selectedConfs}
           onToggleConf={handleToggleConf}
+          cart={cart}
+          onRemoveFromCart={handleRemoveFromCart}
+          onCopyCart={handleCopyCart}
+          onClearCart={handleClearCart}
         />
 
         <section className="space-y-4 min-w-0">
@@ -106,7 +139,7 @@ function AppContent() {
           )}
 
           {!combinedLoading && !combinedError && (
-            <PapersTable papers={shuffledPapers} searchTrigger={searchValue} onShowToast={showToast} />
+            <PapersTable papers={shuffledPapers} pageSize={pageSize} onPageSizeChange={setPageSize} searchTrigger={searchValue} onShowToast={showToast} onAddToCart={handleAddToCart} />
           )}
         </section>
       </main>

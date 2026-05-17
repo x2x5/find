@@ -1,7 +1,8 @@
 import type { Translations } from './en';
 
 export const zh: Translations = {
-  appTitle: '顶会论文',
+  appTitle: '淘鼎',
+  subtitle: '运气最佳',
   search: {
     placeholder: '搜索论文...',
     button: '搜索',
@@ -25,7 +26,7 @@ export const zh: Translations = {
     title: '论文列表',
     copyPage: '复制本页',
     copyAll: '复制前500条',
-    results: '篇结果',
+    results: '找到',
     showing: '显示',
     noResults: '没有符合条件的论文',
     loading: '加载中...',
@@ -33,6 +34,7 @@ export const zh: Translations = {
   pagination: {
     page: '第',
     of: '页，共',
+    perPage: '每页',
     goTo: '跳转',
     go: '确定',
   },
@@ -49,5 +51,11 @@ export const zh: Translations = {
     today: '今天',
     deadline: '投稿截止',
     result: '结果公布',
+  },
+  cart: {
+    cart: '购物车',
+    copy: '复制',
+    clear: '清空',
+    empty: '点击论文旁 + 号添加',
   },
 };

@@ -9,9 +9,9 @@ interface DistributionsProps {
 }
 
 const FIELDS = [
-  { key: 'ML', label: 'ML', color: 'bg-emerald-400 dark:bg-emerald-500' },
-  { key: 'CV', label: 'CV', color: 'bg-blue-400 dark:bg-blue-500' },
-  { key: 'AI', label: 'AI', color: 'bg-amber-400 dark:bg-amber-500' },
+  { key: 'ML', label: 'ML', bar: 'bg-emerald-400 dark:bg-emerald-500', barDim: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50/50 dark:bg-emerald-950/20' },
+  { key: 'CV', label: 'CV', bar: 'bg-blue-400 dark:bg-blue-500',          barDim: 'bg-blue-100 dark:bg-blue-900/40',       text: 'text-blue-700 dark:text-blue-300',       bg: 'bg-blue-50/50 dark:bg-blue-950/20' },
+  { key: 'AI', label: 'AI', bar: 'bg-amber-400 dark:bg-amber-500',        barDim: 'bg-amber-100 dark:bg-amber-900/40',     text: 'text-amber-700 dark:text-amber-300',     bg: 'bg-amber-50/50 dark:bg-amber-950/20' },
 ] as const;
 
 const CONF_ORDER = Object.keys(CONFERENCE_FIELDS);
@@ -24,19 +24,16 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
       cc[p.conference] = (cc[p.conference] || 0) + 1;
       yc[p.year] = (yc[p.year] || 0) + 1;
     }
-
     const groups: Record<string, string[]> = {};
     for (const c of CONF_ORDER) {
       const field = CONFERENCE_FIELDS[c];
       if (!groups[field]) groups[field] = [];
       groups[field].push(c);
     }
-
     return { confCounts: cc, yearCounts: yc, fieldGroups: groups };
   }, [papers]);
 
   const confMax = Math.max(1, ...Object.values(confCounts));
-  const yearMax = Math.max(1, ...Object.values(yearCounts));
 
   const sortedYearEntries = useMemo(() => {
     return Object.entries(yearCounts).sort(([a], [b]) => parseInt(a) - parseInt(b));
@@ -51,26 +48,27 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
     });
   };
 
-  if (papers.length === 0) return null;
-
   return (
     <div className="text-xs space-y-3">
-      <div className="space-y-2">
-        {FIELDS.map(({ key, label, color }) => {
+      <div>
+        {FIELDS.map(({ key, label, bar, barDim, text, bg }) => {
           const confs = fieldGroups[key] || [];
           const fieldAll = confs.every((c) => selectedConfs.has(c));
           const fieldAny = confs.some((c) => selectedConfs.has(c));
 
           return (
-            <div key={key} className="space-y-0.5">
+            <div key={key} className={`relative pl-7 rounded ${bg}`}>
               <button
                 onClick={() => toggleField(confs)}
-                className={`inline-flex items-center justify-center w-6 h-4 rounded text-[9px] font-bold transition-all ${color} ${
-                  fieldAll ? '' : fieldAny ? 'opacity-50' : 'opacity-25 grayscale'
-                }`}
+                className="absolute left-0.5 top-0 bottom-0 w-5 flex items-center justify-center"
               >
-                {label}
+                <span className={`text-[11px] font-extrabold leading-none ${text} ${
+                  fieldAll ? '' : fieldAny ? 'opacity-50' : 'opacity-30'
+                }`}>
+                  {label}
+                </span>
               </button>
+
               {confs.map((conf) => {
                 const name = CONFERENCE_NAMES[conf] || conf.toUpperCase();
                 const count = confCounts[conf] || 0;
@@ -80,24 +78,20 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
                   <button
                     key={conf}
                     onClick={() => onToggleConf(conf)}
-                    className={`flex items-center gap-1.5 w-full group ${
-                      sel ? '' : 'opacity-30'
-                    }`}
+                    className="flex items-center gap-1.5 w-full py-[1px]"
                   >
-                    <span className="w-10 text-right text-zinc-500 shrink-0 tabular-nums">{count}</span>
-                    <div className="flex-1 h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-sm overflow-hidden">
-                      <div
-                        className={`h-full rounded-sm transition-all ${
-                          sel
-                            ? color
-                            : 'bg-zinc-300 dark:bg-zinc-600'
-                        }`}
-                        style={{ width: `${(count / confMax) * 100}%` }}
-                      />
-                    </div>
-                    <span className={`w-16 shrink-0 ${sel ? 'text-zinc-700 dark:text-zinc-200' : 'text-zinc-400'}`}>
+                    <span className={`w-14 shrink-0 text-right font-medium ${
+                      sel ? text : 'text-zinc-300 dark:text-zinc-600'
+                    }`}>
                       {name}
                     </span>
+                    <div className="flex-1 h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-sm overflow-hidden">
+                      <div
+                        className={`h-full rounded-sm transition-all ${sel ? bar : barDim}`}
+                        style={{ width: `${confMax > 0 ? (count / confMax) * 100 : 0}%` }}
+                      />
+                    </div>
+                    <span className={`w-8 shrink-0 text-right tabular-nums ${sel ? 'text-zinc-500' : 'text-zinc-300 dark:text-zinc-600'}`}>{count}</span>
                   </button>
                 );
               })}
@@ -106,20 +100,36 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
         })}
       </div>
 
-      <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2 space-y-1">
-        {sortedYearEntries.map(([year, count]) => (
-          <div key={year} className="flex items-center gap-1.5">
-            <span className="w-10 text-right text-zinc-500 shrink-0 tabular-nums">{count}</span>
-            <div className="flex-1 h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-sm overflow-hidden">
-              <div
-                className="h-full bg-emerald-400 dark:bg-emerald-500 rounded-sm transition-all"
-                style={{ width: `${(count / yearMax) * 100}%` }}
-              />
-            </div>
-            <span className="w-8 text-zinc-600 dark:text-zinc-400 shrink-0 text-right">{year}</span>
+      {Object.keys(yearCounts).length > 0 && (() => {
+        const yearNums = sortedYearEntries.map(([y]) => parseInt(y));
+        const yMin = Math.min(...yearNums);
+        const yMax = Math.max(...yearNums);
+
+        return (
+          <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2 space-y-1">
+            {sortedYearEntries.map(([year, count]) => {
+              const n = parseInt(year);
+              const t = yMax > yMin ? (n - yMin) / (yMax - yMin) : 0.5;
+              const alpha = 0.12 + t * 0.28;
+              return (
+                <div key={year} className="flex items-center gap-1.5 pl-7">
+                  <span className="w-14 shrink-0 text-right text-zinc-600 dark:text-zinc-400">{year}</span>
+                  <div className="flex-1 h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-sm overflow-hidden">
+                    <div
+                      className="h-full rounded-sm transition-all"
+                      style={{
+                        width: `${(count / confMax) * 100}%`,
+                        background: `rgba(99, 102, 241, ${alpha})`,
+                      }}
+                    />
+                  </div>
+                  <span className="w-8 shrink-0 text-right text-zinc-500 tabular-nums">{count}</span>
+                </div>
+              );
+            })}
           </div>
-        ))}
-      </div>
+        );
+      })()}
     </div>
   );
 }

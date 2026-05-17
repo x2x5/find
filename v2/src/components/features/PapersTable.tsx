@@ -7,8 +7,10 @@ import Pagination from './Pagination';
 interface PapersTableProps {
   papers?: Paper[];
   pageSize?: number;
+  onPageSizeChange?: (size: number) => void;
   searchTrigger?: string;
   onShowToast?: (message: string) => void;
+  onAddToCart?: (paper: Paper) => void;
 }
 
 function highlightText(text: string, query: string): React.ReactNode {
@@ -43,7 +45,7 @@ const FIELD_COLORS: Record<string, { bg: string; text: string; darkBg: string; d
   ML: { bg: 'bg-emerald-100', text: 'text-emerald-700', darkBg: 'dark:bg-emerald-950', darkText: 'dark:text-emerald-300' },
 };
 
-export default function PapersTable({ papers = [], pageSize = 50, searchTrigger = '', onShowToast }: PapersTableProps) {
+export default function PapersTable({ papers = [], pageSize = 50, onPageSizeChange, searchTrigger = '', onShowToast, onAddToCart }: PapersTableProps) {
   const { t } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -51,6 +53,20 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
   const safePage = Math.min(currentPage, totalPages);
   const startIdx = (safePage - 1) * pageSize;
   const pagePapers = papers.slice(startIdx, startIdx + pageSize);
+
+  const yearNums = papers.map((p) => parseInt(p.year));
+  const yearMin = Math.min(...yearNums, new Date().getFullYear());
+  const yearMax = Math.max(...yearNums, new Date().getFullYear());
+
+  const yearStyle = (y: string) => {
+    const n = parseInt(y);
+    const t = yearMax > yearMin ? (n - yearMin) / (yearMax - yearMin) : 0.5;
+    const alpha = 0.06 + t * 0.14;
+    return {
+      background: `rgba(99, 102, 241, ${alpha})`,
+      color: `rgba(67, 56, 202, ${0.5 + t * 0.5})`,
+    };
+  };
 
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
@@ -99,6 +115,22 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
         <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 shrink-0">
           {t.table.title}
         </h2>
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-indigo-300 dark:text-indigo-500 mr-0.5">{t.pagination.perPage}</span>
+          {[10, 50, 100].map((n) => (
+            <button
+              key={n}
+              onClick={() => onPageSizeChange?.(n)}
+              className={`text-xs px-1.5 py-0.5 rounded font-medium tabular-nums transition-colors ${
+                pageSize === n
+                  ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300'
+                  : 'text-indigo-400 hover:text-indigo-600 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/40'
+              }`}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleCopyPage}
@@ -131,12 +163,22 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
             return (
               <div
                 key={globalIdx}
-                className="px-4 py-2.5 flex items-center gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors"
+                className="px-4 py-2.5 flex items-center gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors group"
               >
+                <button
+                  onClick={() => onAddToCart?.(paper)}
+                  className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-zinc-300 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-sm leading-none opacity-0 group-hover:opacity-100 transition-all"
+                  title="Add to cart"
+                >
+                  +
+                </button>
                 <span className={`inline-flex items-center justify-center w-[4.5rem] shrink-0 px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}>
                   {paper.conference.toUpperCase()}
                 </span>
-                <span className="inline-flex items-center justify-center w-14 shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 tabular-nums">
+                <span
+                  className="inline-flex items-center justify-center w-14 shrink-0 px-2 py-0.5 rounded text-xs font-medium tabular-nums"
+                  style={yearStyle(paper.year)}
+                >
                   {paper.year}
                 </span>
                 <span

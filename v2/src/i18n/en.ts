@@ -1,5 +1,6 @@
 export interface Translations {
   appTitle: string;
+  subtitle: string;
   search: {
     placeholder: string;
     button: string;
@@ -31,6 +32,7 @@ export interface Translations {
   pagination: {
     page: string;
     of: string;
+    perPage: string;
     goTo: string;
     go: string;
   };
@@ -48,10 +50,17 @@ export interface Translations {
     deadline: string;
     result: string;
   };
+  cart: {
+    cart: string;
+    copy: string;
+    clear: string;
+    empty: string;
+  };
 }
 
 export const en: Translations = {
-  appTitle: 'Top AI Papers',
+  appTitle: 'TaoDing',
+  subtitle: 'Lucky Pick',
   search: {
     placeholder: 'Search papers...',
     button: 'Search',
@@ -75,7 +84,7 @@ export const en: Translations = {
     title: 'Papers',
     copyPage: 'Copy Page',
     copyAll: 'Copy 500',
-    results: 'results',
+    results: 'Found',
     showing: 'showing',
     noResults: 'No papers match your filters',
     loading: 'Loading data...',
@@ -83,6 +92,7 @@ export const en: Translations = {
   pagination: {
     page: 'Page',
     of: 'of',
+    perPage: 'Per page',
     goTo: 'Go to',
     go: 'Go',
   },
@@ -99,5 +109,11 @@ export const en: Translations = {
     today: 'Today',
     deadline: 'Submission',
     result: 'Acceptance',
+  },
+  cart: {
+    cart: 'Cart',
+    copy: 'Copy',
+    clear: 'Clear',
+    empty: 'Click + to add papers',
   },
 };

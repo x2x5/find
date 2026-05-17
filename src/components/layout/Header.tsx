@@ -93,6 +93,9 @@ export default function Header(props: HeaderProps) {
           </button>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={onToggleTimeline} className="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200" title="时间轴">
+            {showTimeline ? <PanelTopClose className="w-4 h-4" /> : <PanelTopOpen className="w-4 h-4" />}
+          </button>
           <SearchBar value={searchValue} onChange={onSearchChange} />
           {luckyPaper && (
             <div className="flex items-center gap-1.5 text-xs min-w-0">
@@ -126,9 +129,6 @@ export default function Header(props: HeaderProps) {
           )}
         </div>
         <div className="flex items-center gap-1 shrink-0 md:ml-auto">
-          <button onClick={onToggleTimeline} className="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200" title="时间轴">
-            {showTimeline ? <PanelTopClose className="w-4 h-4" /> : <PanelTopOpen className="w-4 h-4" />}
-          </button>
           <div className="relative" ref={settingsRef}>
             <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-1.5 rounded-md bg-zinc-50 dark:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700">
               <Settings className="w-4 h-4" />

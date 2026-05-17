@@ -79,19 +79,18 @@ export default function Timeline() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-3">
       <div className="relative h-[170px]">
-        {/* 月份标签 */}
-        <div className="absolute top-[64px] left-0 right-0 flex">
-          {MONTH_LABELS.map((label, i) => (
-            <div
-              key={i}
-              className={`flex-1 text-center text-[10px] font-medium ${
-                i >= 12 ? 'text-indigo-400 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500'
-              }`}
-            >
-              {label}
-            </div>
-          ))}
-        </div>
+        {/* 月份标签 — 每个在月份的左端点 */}
+        {MONTH_LABELS.map((label, i) => (
+          <div
+            key={i}
+            className={`absolute text-[10px] font-medium leading-none ${
+              i >= 12 ? 'text-indigo-400 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500'
+            }`}
+            style={{ left: `${(i / 14) * 100}%`, top: '66px', transform: 'translateX(6px)' }}
+          >
+            {label}
+          </div>
+        ))}
 
         {/* 横线 */}
         <div className="absolute top-[80px] left-0 right-0 h-[2px] bg-zinc-300 dark:bg-zinc-600">

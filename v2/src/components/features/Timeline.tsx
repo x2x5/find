@@ -1,16 +1,5 @@
 import { useMemo } from 'react';
 
-interface TimelineEvent {
-  conference: string;
-  dateText: string;
-  type: 'deadline' | 'result' | 'today';
-}
-
-interface TimelineMonth {
-  label: string;
-  events: TimelineEvent[];
-}
-
 const RAW_DATA = [
   { deadline: '01-19', result: '04-29', conference: 'IJCAI' },
   { deadline: '01-28', result: '04-30', conference: 'ICML' },
@@ -23,111 +12,130 @@ const RAW_DATA = [
   { deadline: '11-15', result: '02-26', conference: 'CVPR' },
 ];
 
-function getMonthLabel(monthDay: string): string {
-  const month = parseInt(monthDay.slice(0, 2), 10);
-  const day = parseInt(monthDay.slice(3, 5), 10);
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${monthNames[month - 1]} ${day}`;
+const MONTH_LABELS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '翌年1月', '翌年2月'];
+
+const HEIGHTS = [24, 36, 48];
+
+interface PlacedEvent {
+  label: string;
+  date: string;
+  type: 'deadline' | 'result' | 'today';
+  position: number; // % from left
+  height: number;   // px
 }
 
-function getYearForDate(monthDay: string, baseYear: number): number {
-  const month = parseInt(monthDay.slice(0, 2), 10);
-  return month <= 2 ? baseYear + 1 : baseYear;
+function parseDate(mmdd: string): { m: number; d: number } {
+  return { m: parseInt(mmdd.slice(0, 2), 10), d: parseInt(mmdd.slice(3, 5), 10) };
 }
 
 export default function Timeline() {
   const today = useMemo(() => new Date(), []);
-  const todayMonth = today.getMonth() + 1;
-  const todayDay = today.getDate();
-  const todayYear = today.getFullYear();
 
-  const months = useMemo<TimelineMonth[]>(() => {
-    const eventsByMonth = new Map<string, TimelineEvent[]>();
+  const placedEvents = useMemo<PlacedEvent[]>(() => {
+    const all: { monthIdx: number; label: string; date: string; type: 'deadline' | 'result' | 'today' }[] = [];
 
     for (const item of RAW_DATA) {
-      const dlMonth = item.deadline.slice(0, 2);
-      const rsMonth = item.result.slice(0, 2);
+      // deadline: same year, month 0-11
+      const dl = parseDate(item.deadline);
+      all.push({ monthIdx: dl.m - 1, label: item.conference, date: `${dl.m}/${dl.d}`, type: 'deadline' });
 
-      const dlKey = `${getYearForDate(item.deadline, todayYear)}-${dlMonth}`;
-      const rsKey = `${getYearForDate(item.result, todayYear)}-${rsMonth}`;
-
-      if (!eventsByMonth.has(dlKey)) eventsByMonth.set(dlKey, []);
-      if (!eventsByMonth.has(rsKey)) eventsByMonth.set(rsKey, []);
-
-      eventsByMonth.get(dlKey)!.push({
-        conference: item.conference,
-        dateText: item.deadline,
-        type: 'deadline',
-      });
-      eventsByMonth.get(rsKey)!.push({
-        conference: item.conference,
-        dateText: item.result,
-        type: 'result',
-      });
+      // result: month <= 2 → next year (indices 12-13)
+      const rs = parseDate(item.result);
+      all.push({ monthIdx: rs.m <= 2 ? rs.m - 1 + 12 : rs.m - 1, label: item.conference, date: `${rs.m}/${rs.d}`, type: 'result' });
     }
 
-    // Add today marker
-    const todayKey = `${todayYear}-${String(todayMonth).padStart(2, '0')}`;
-    if (!eventsByMonth.has(todayKey)) eventsByMonth.set(todayKey, []);
-    eventsByMonth.get(todayKey)!.push({
-      conference: 'Today',
-      dateText: `${String(todayMonth).padStart(2, '0')}-${String(todayDay).padStart(2, '0')}`,
-      type: 'today',
-    });
+    // Today marker (above line, like result)
+    const tm = today.getMonth();
+    all.push({ monthIdx: tm, label: '今天', date: `${tm + 1}/${today.getDate()}`, type: 'today' });
 
-    const sortedKeys = Array.from(eventsByMonth.keys()).sort();
-    return sortedKeys.map((key) => {
-      const [year, month] = key.split('-');
-      const monthNum = parseInt(month, 10);
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return {
-        label: `${monthNames[monthNum - 1]} ${year}`,
-        events: eventsByMonth.get(key)!.sort((a, b) => {
-          const aDay = parseInt(a.dateText.slice(3, 5), 10);
-          const bDay = parseInt(b.dateText.slice(3, 5), 10);
-          return aDay - bDay;
-        }),
-      };
-    });
-  }, [todayDay, todayMonth, todayYear]);
+    // Group by month
+    const byMonth = new Map<number, typeof all>();
+    for (const ev of all) {
+      if (!byMonth.has(ev.monthIdx)) byMonth.set(ev.monthIdx, []);
+      byMonth.get(ev.monthIdx)!.push(ev);
+    }
 
-  const typeColors: Record<string, { dot: string; text: string; bg: string }> = {
-    deadline: { dot: 'bg-rose-500', text: 'text-rose-700 dark:text-rose-300', bg: 'bg-rose-50 dark:bg-rose-950/30' },
-    result: { dot: 'bg-emerald-500', text: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50 dark:bg-emerald-950/30' },
-    today: { dot: 'bg-indigo-500', text: 'text-indigo-700 dark:text-indigo-300', bg: 'bg-indigo-50 dark:bg-indigo-950/30' },
-  };
+    const monthWidth = 100 / MONTH_LABELS.length;
+    const result: PlacedEvent[] = [];
+
+    for (let m = 0; m < MONTH_LABELS.length; m++) {
+      const events = byMonth.get(m) || [];
+      const count = events.length;
+      if (count === 0) continue;
+
+      for (let i = 0; i < count; i++) {
+        const innerPct = count === 1 ? 50 : ((i + 0.5) / count) * 100;
+        result.push({
+          ...events[i],
+          position: m * monthWidth + monthWidth * (innerPct / 100),
+          height: HEIGHTS[i % HEIGHTS.length],
+        });
+      }
+    }
+
+    return result;
+  }, [today]);
 
   return (
-    <div className="space-y-4">
-      {months.map((month) => (
-        <div key={month.label} className="relative">
-          {/* Month label */}
-          <div className="flex items-center gap-2 mb-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-            <span className="text-xs font-medium text-zinc-500">{month.label}</span>
-          </div>
-
-          {/* Events */}
-          <div className="space-y-1 pl-3.5">
-            {month.events.map((event, i) => {
-              const colors = typeColors[event.type];
-              return (
-                <div
-                  key={`${event.conference}-${i}`}
-                  className={`flex items-center gap-2 px-2 py-1 rounded text-xs ${colors.bg} ${colors.text}`}
-                  title={`${event.conference} — ${event.type === 'deadline' ? 'Submission' : event.type === 'result' ? 'Acceptance' : 'Today'}`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full ${colors.dot} shrink-0`} />
-                  <span className="font-medium">{event.conference}</span>
-                  <span className="ml-auto text-zinc-500 text-[10px] tabular-nums">
-                    {getMonthLabel(event.dateText)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+    <div className="max-w-7xl mx-auto px-4 py-3">
+      <div className="relative h-[170px]">
+        {/* 月份标签 */}
+        <div className="absolute top-[64px] left-0 right-0 flex">
+          {MONTH_LABELS.map((label, i) => (
+            <div
+              key={i}
+              className={`flex-1 text-center text-[10px] font-medium ${
+                i >= 12 ? 'text-indigo-400 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500'
+              }`}
+            >
+              {label}
+            </div>
+          ))}
         </div>
-      ))}
+
+        {/* 横线 */}
+        <div className="absolute top-[80px] left-0 right-0 h-[2px] bg-zinc-300 dark:bg-zinc-600">
+          {/* 刻度 */}
+          {Array.from({ length: 15 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute top-[-4px] w-px h-[10px] bg-zinc-400 dark:bg-zinc-500"
+              style={{ left: `${(i / 14) * 100}%` }}
+            />
+          ))}
+        </div>
+
+        {/* 事件 */}
+        {placedEvents.map((ev, i) => {
+          const isAbove = ev.type === 'result' || ev.type === 'today';
+
+          const dotColor = ev.type === 'deadline' ? 'bg-rose-500' : ev.type === 'result' ? 'bg-emerald-500' : 'bg-indigo-500';
+          const lineColor = ev.type === 'deadline' ? 'bg-rose-300 dark:bg-rose-700/60' : ev.type === 'result' ? 'bg-emerald-300 dark:bg-emerald-700/60' : 'bg-indigo-300 dark:bg-indigo-700/60';
+          const textColor = ev.type === 'deadline' ? 'text-rose-600 dark:text-rose-300' : ev.type === 'result' ? 'text-emerald-600 dark:text-emerald-300' : 'text-indigo-600 dark:text-indigo-300';
+          const dotSize = ev.type === 'today' ? 'w-2.5 h-2.5' : 'w-2 h-2';
+          const lineWidth = ev.type === 'today' ? 'w-[2px]' : 'w-px';
+
+          return (
+            <div
+              key={i}
+              className={`absolute flex flex-col items-center ${isAbove ? 'flex-col-reverse bottom-[80px]' : 'top-[80px]'}`}
+              style={{ left: `${ev.position}%`, transform: 'translateX(-50%)' }}
+            >
+              {/* 圆点 */}
+              <div className={`${dotSize} rounded-full ${dotColor} border-2 border-white dark:border-zinc-900 flex-shrink-0`} />
+
+              {/* 竖线 */}
+              <div className={`${lineWidth} ${lineColor} flex-shrink-0`} style={{ height: `${ev.height}px` }} />
+
+              {/* 文字 */}
+              <div className={`text-center leading-tight whitespace-nowrap ${textColor}`}>
+                <div className="text-[11px] font-semibold">{ev.label}</div>
+                <div className="text-[10px] font-normal opacity-70">{ev.date}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

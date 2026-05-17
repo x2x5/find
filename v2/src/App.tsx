@@ -2,6 +2,7 @@ import { useMemo, useState, useCallback } from 'react';
 import { AppProvider } from './context/AppContext';
 import Header from './components/layout/Header';
 import Sidebar from './components/layout/Sidebar';
+import Timeline from './components/features/Timeline';
 import PapersTable from './components/features/PapersTable';
 import Toast from './components/ui/Toast';
 import { Skeleton } from './components/ui/Skeleton';
@@ -71,6 +72,8 @@ function AppContent() {
         onSearchChange={setSearchValue}
         onSearch={handleSearch}
       />
+
+      <Timeline />
 
       <main className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
         <Sidebar

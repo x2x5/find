@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>时间轴方案 V6</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #fafafa;
+    padding: 60px 40px;
+    display: flex; justify-content: center;
+  }
+  .container { max-width: 1100px; width: 100%; }
+  .card {
+    background: white;
+    border: 1px solid #e4e4e7;
+    border-radius: 12px;
+    padding: 28px 32px 36px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .card-title {
+    font-size: 13px; font-weight: 600; color: #18181b;
+    margin-bottom: 20px;
+  }
+
+  .timeline-wrap { position: relative; height: 170px; }
+
+  /* 月份标签 */
+  .month-labels {
+    position: absolute;
+    top: 68px;
+    left: 0; right: 0;
+    display: flex;
+  }
+  .month-label-item {
+    flex: 1;
+    text-align: center;
+    font-size: 10px; font-weight: 500; color: #a1a1aa;
+  }
+  .month-label-item.next-year { color: #c4b5fd; }
+
+  /* 横线 */
+  .axis-line {
+    position: absolute;
+    top: 84px; left: 0; right: 0;
+    height: 2px;
+    background: #d4d4d8;
+  }
+
+  /* 月份刻度 */
+  .tick {
+    position: absolute;
+    top: -4px;
+    width: 1px; height: 10px;
+    background: #a1a1aa;
+  }
+
+  /* ====== 事件 ====== */
+  .event-item {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateX(-50%);
+  }
+
+  /* 圆点 */
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    border: 2px solid white;
+    flex-shrink: 0;
+  }
+
+  /* 竖线 */
+  .line {
+    width: 1px;
+    flex-shrink: 0;
+  }
+
+  /* 文字 */
+  .label {
+    text-align: center;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .label .name {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .label .date {
+    font-size: 10px;
+    font-weight: 400; opacity: 0.7;
+    display: block;
+  }
+
+  /* ---- 公布（横线上方） ---- */
+  .event-item.result {
+    bottom: 84px;         /* 容器底部在横线 */
+    flex-direction: column-reverse;
+  }
+  .event-item.result .dot { background: #10b981; }
+  .event-item.result .line { background: #6ee7b7; }
+  .event-item.result .label { color: #059669; }
+
+  /* ---- 截止（横线下方） ---- */
+  .event-item.deadline {
+    top: 84px;
+    flex-direction: column;
+  }
+  .event-item.deadline .dot { background: #e11d48; }
+  .event-item.deadline .line { background: #fda4af; }
+  .event-item.deadline .label { color: #be123c; }
+
+  /* ---- 今天 ---- */
+  .event-item.today {
+    bottom: 84px;
+    flex-direction: column-reverse;
+  }
+  .event-item.today .dot { background: #6366f1; width: 10px; height: 10px; }
+  .event-item.today .line { background: #a5b4fc; width: 2px; }
+  .event-item.today .label { color: #4f46e5; font-weight: 600; }
+
+  /* 竖线高度 */
+  .h-short { height: 20px; }
+  .h-med   { height: 32px; }
+  .h-long  { height: 46px; }
+
+  /* 图例 */
+  .legend {
+    display: flex; gap: 24px; margin-top: 20px;
+    font-size: 12px; color: #71717a;
+    justify-content: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .ldot { width: 8px; height: 8px; border-radius: 50%; }
+  .ldot.dl { background: #e11d48; }
+  .ldot.rs { background: #10b981; }
+  .ldot.td { background: #6366f1; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <div class="card-title">📅 时间轴</div>
+
+    <div class="timeline-wrap">
+      <!-- 月份标签：1月～12月 + 次年1月 + 次年2月 -->
+      <div class="month-labels">
+        <div class="month-label-item">1月</div>
+        <div class="month-label-item">2月</div>
+        <div class="month-label-item">3月</div>
+        <div class="month-label-item">4月</div>
+        <div class="month-label-item">5月</div>
+        <div class="month-label-item">6月</div>
+        <div class="month-label-item">7月</div>
+        <div class="month-label-item">8月</div>
+        <div class="month-label-item">9月</div>
+        <div class="month-label-item">10月</div>
+        <div class="month-label-item">11月</div>
+        <div class="month-label-item">12月</div>
+        <div class="month-label-item next-year">次年1月</div>
+        <div class="month-label-item next-year">次年2月</div>
+      </div>
+
+      <!-- 横线 + 刻度 -->
+      <div class="axis-line">
+        <!-- 14个月份，每个占 1/14 ≈ 7.14% -->
+        <div class="tick" style="left:0%;"></div>
+        <div class="tick" style="left:7.14%;"></div>
+        <div class="tick" style="left:14.29%;"></div>
+        <div class="tick" style="left:21.43%;"></div>
+        <div class="tick" style="left:28.57%;"></div>
+        <div class="tick" style="left:35.71%;"></div>
+        <div class="tick" style="left:42.86%;"></div>
+        <div class="tick" style="left:50%;"></div>
+        <div class="tick" style="left:57.14%;"></div>
+        <div class="tick" style="left:64.29%;"></div>
+        <div class="tick" style="left:71.43%;"></div>
+        <div class="tick" style="left:78.57%;"></div>
+        <div class="tick" style="left:85.71%;"></div>
+        <div class="tick" style="left:92.86%;"></div>
+      </div>
+
+      <!--
+        14个月份，每份 7.14%
+        事件在月份内均匀分布
+        公布：dot → line → label（column-reverse 使 dot 在底部靠近横线）
+        截止：dot → line → label（column 使 dot 在顶部靠近横线）
+        今天：同公布
+      -->
+
+      <!-- === 截止（横线下方） === -->
+      <!-- 1月：2个，25%, 75% -->
+      <div class="event-item deadline" style="left:1.8%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="name">IJCAI</span><span class="date">1/19</span></div>
+      </div>
+      <div class="event-item deadline" style="left:5.4%;">
+        <div class="dot"></div>
+        <div class="line h-long"></div>
+        <div class="label"><span class="name">ICML</span><span class="date">1/28</span></div>
+      </div>
+
+      <!-- 3月：2个，25%, 75% -->
+      <div class="event-item deadline" style="left:16.1%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="name">ECCV</span><span class="date">3/5</span></div>
+      </div>
+      <div class="event-item deadline" style="left:19.6%;">
+        <div class="dot"></div>
+        <div class="line h-long"></div>
+        <div class="label"><span class="name">ICCV</span><span class="date">3/7</span></div>
+      </div>
+
+      <!-- 4月：3个（只有MM截止是deadline，其他2个是公布），16.7%, 50%, 83.3%
+           但MM截止是第1个（16.7%） -->
+      <div class="event-item deadline" style="left:22.6%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="name">MM</span><span class="date">4/1</span></div>
+      </div>
+
+      <!-- 5月：NeurIPS截止（25%） -->
+      <div class="event-item deadline" style="left:30.4%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="name">NeurIPS</span><span class="date">5/6</span></div>
+      </div>
+
+      <!-- 8月 -->
+      <div class="event-item deadline" style="left:53.6%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="name">AAAI</span><span class="date">8/15</span></div>
+      </div>
+
+      <!-- 10月 -->
+      <div class="event-item deadline" style="left:67.9%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="name">ICLR</span><span class="date">10/1</span></div>
+      </div>
+
+      <!-- 11月 -->
+      <div class="event-item deadline" style="left:75%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="name">CVPR</span><span class="date">11/15</span></div>
+      </div>
+
+      <!-- === 公布（横线上方） === -->
+      <!-- 4月：IJCAI公布（50%）, ICML公布（83.3%） -->
+      <div class="event-item result" style="left:25%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="date">4/29</span><span class="name">IJCAI</span></div>
+      </div>
+      <div class="event-item result" style="left:27.4%;">
+        <div class="dot"></div>
+        <div class="line h-long"></div>
+        <div class="label"><span class="date">4/30</span><span class="name">ICML</span></div>
+      </div>
+
+      <!-- 5月：今天 -->
+      <div class="event-item today" style="left:33.9%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="date">5/17</span><span class="name">今天</span></div>
+      </div>
+
+      <!-- 6月：2个，25%, 75% -->
+      <div class="event-item result" style="left:37.5%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="date">6/17</span><span class="name">ECCV</span></div>
+      </div>
+      <div class="event-item result" style="left:41.1%;">
+        <div class="dot"></div>
+        <div class="line h-long"></div>
+        <div class="label"><span class="date">6/25</span><span class="name">ICCV</span></div>
+      </div>
+
+      <!-- 7月 -->
+      <div class="event-item result" style="left:46.4%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="date">7/7</span><span class="name">MM</span></div>
+      </div>
+
+      <!-- 9月 -->
+      <div class="event-item result" style="left:60.7%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="date">9/24</span><span class="name">NeurIPS</span></div>
+      </div>
+
+      <!-- 12月 -->
+      <div class="event-item result" style="left:82.1%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="date">12/9</span><span class="name">AAAI</span></div>
+      </div>
+
+      <!-- 次年1月：ICLR公布（跨年） -->
+      <div class="event-item result" style="left:89.3%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="date">1/22</span><span class="name">ICLR</span></div>
+      </div>
+
+      <!-- 次年2月：CVPR公布（跨年） -->
+      <div class="event-item result" style="left:96.4%;">
+        <div class="dot"></div>
+        <div class="line h-med"></div>
+        <div class="label"><span class="date">2/26</span><span class="name">CVPR</span></div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="ldot dl"></span> 投稿截止</div>
+      <div class="legend-item"><span class="ldot rs"></span> 结果公布</div>
+      <div class="legend-item"><span class="ldot td"></span> 今天</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

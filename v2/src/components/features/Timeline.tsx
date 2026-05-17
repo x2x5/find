@@ -118,7 +118,7 @@ export default function Timeline() {
           return (
             <div
               key={i}
-              className={`absolute flex flex-col items-center ${isAbove ? 'flex-col-reverse bottom-[80px]' : 'top-[80px]'}`}
+              className={`absolute flex flex-col items-center ${isAbove ? 'flex-col-reverse bottom-[90px]' : 'top-[80px]'}`}
               style={{ left: `${ev.position}%`, transform: 'translateX(-50%)' }}
             >
               {/* 圆点（统一大小，中心在横线） */}

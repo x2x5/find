@@ -3,120 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>关于 淘鼎</title>
+<title>关于 淘顶网</title>
 <style>
   :root {
-    --bg: #fafafa; --fg: #1e1e1e; --muted: #666;
-    --card: #fff; --border: #e5e5e5; --accent: #6366f1;
+    --bg: #fafafa; --card: #fff; --fg: #1e1e1e; --muted: #666;
+    --border: #e5e5e5; --accent: #6366f1;
+    --ml: #059669; --cv: #2563eb; --ai: #d97706;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0a0a0a; --fg: #eee; --muted: #999;
-      --card: #171717; --border: #262626; --accent: #818cf8;
+      --bg: #09090b; --card: #18181b; --fg: #e4e4e7;
+      --muted: #a1a1aa; --border: #27272a;
     }
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
   body {
     font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    background: var(--bg); color: var(--fg); line-height: 1.7;
-    max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem;
+    background: var(--bg); color: var(--fg); line-height:1.8;
+    max-width: 760px; margin:0 auto; padding:2rem 1.5rem 4rem;
   }
-  h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-  h2 { font-size: 1.2rem; margin: 2rem 0 0.75rem; color: var(--accent); }
-  p, li { font-size: 0.95rem; color: var(--muted); }
-  ul { padding-left: 1.25rem; margin: 0.5rem 0; }
-  a { color: var(--accent); }
+  h1 { font-size:2rem; margin-bottom:0.25rem; }
+  h2 { font-size:1.3rem; margin:2.5rem 0 0.75rem; color:var(--accent); }
+  h3 { font-size:1.05rem; margin:1.5rem 0 0.5rem; }
+  p, li { font-size:0.95rem; color:var(--muted); }
+  a { color:var(--accent); }
   .card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 8px; padding: 1.25rem; margin: 1rem 0;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:10px; padding:1.25rem 1.5rem; margin:1rem 0;
   }
   code {
-    background: var(--border); padding: 0.15em 0.4em;
-    border-radius: 3px; font-size: 0.9em;
+    background:var(--border); padding:0.12em 0.4em;
+    border-radius:3px; font-size:0.88em; font-family: 'SF Mono', 'Fira Code', monospace;
   }
   pre {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 6px; padding: 1rem; overflow-x: auto;
-    font-size: 0.85em; margin: 0.75rem 0;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:8px; padding:1rem 1.25rem; overflow-x:auto;
+    font-size:0.85em; margin:0.75rem 0; line-height:1.6;
   }
-  .badge {
-    display: inline-block; padding: 0.15em 0.5em;
-    border-radius: 4px; font-size: 0.8em; font-weight: 600;
+  .step {
+    display:flex; gap:0.75rem; align-items:flex-start; margin:1rem 0;
   }
-  .ml { background: #d1fae5; color: #065f46; }
-  .cv { background: #dbeafe; color: #1e40af; }
-  .ai { background: #fef3c7; color: #92400e; }
+  .step-num {
+    width:1.6rem; height:1.6rem; border-radius:50%;
+    background:var(--accent); color:#fff; font-size:0.8rem;
+    font-weight:700; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; margin-top:0.15rem;
+  }
+  .tag {
+    display:inline-block; padding:0.15em 0.6em; border-radius:4px;
+    font-size:0.8em; font-weight:600; margin:0.15em 0.3em 0.15em 0;
+  }
+  .ml { background:#d1fae5; color:#065f46; }
+  .cv { background:#dbeafe; color:#1e40af; }
+  .ai { background:#fef3c7; color:#92400e; }
+  .pink { background:#fce7f3; color:#9d174d; }
+
+  .bar-demo { height:10px; border-radius:3px; margin:2px 0; transition:width 0.6s; }
+  .bar-row { display:flex; align-items:center; gap:8px; margin:3px 0; font-size:0.82em; }
+  .bar-label { width:52px; text-align:right; flex-shrink:0; }
+  .bar-fill { flex:1; height:10px; background:#e5e5e5; border-radius:3px; overflow:hidden; }
+  .bar-inner { height:100%; border-radius:3px; }
+  .bar-count { width:36px; text-align:right; flex-shrink:0; font-size:0.8em; color:var(--muted); }
+
+  .highlight { color:var(--accent); font-weight:600; }
+  hr { border:none; border-top:1px solid var(--border); margin:2rem 0; }
+  .demo-btn {
+    font-size:0.78em; padding:0.3em 0.8em; border-radius:5px;
+    border:1px solid var(--border); background:var(--card);
+    cursor:pointer; color:var(--muted); margin:0.3em;
+  }
+  .demo-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
 </style>
 </head>
 <body>
 
 <h1>淘顶网</h1>
-<p>淘顶网 — 像淘宝一样淘顶会论文，快速浏览、筛选、收藏 AI 顶会论文标题。</p>
+<p>像逛淘宝一样逛顶会论文。</p>
 
-<h2>设计理念</h2>
+<h2>这是什么？</h2>
 <div class="card">
-  <p>淘鼎 = 三个领域 × 每组三个会议：</p>
-  <p>
-    <span class="badge ml">ML</span> NeurIPS · ICML · ICLR<br>
-    <span class="badge cv">CV</span> CVPR · ECCV · ICCV<br>
-    <span class="badge ai">AI</span> AAAI · MM · IJCAI
-  </p>
-  <p style="margin-top:0.75rem">所有论文随机打乱，每页更像「淘」的感觉——你不知道下一页会看到什么。顶部的"运气最佳"随机展示一篇，点标题直接加入购物车。</p>
+  <p><strong>淘顶网</strong> 是一个 AI 顶会论文浏览器。覆盖 <span class="tag ml">ML</span><span class="tag cv">CV</span><span class="tag ai">AI</span> 三大领域共 9 个顶会。</p>
+  <p>所有论文随机打乱展示——你每次搜索，看到的结果顺序都不一样。就像在淘宝上逛，你不知道下一页会出现什么。</p>
 </div>
 
-<h2>功能一览</h2>
-<ul>
-  <li><strong>实时搜索</strong> — 边打字边过滤，搜索结果数实时显示</li>
-  <li><strong>年份筛选</strong> — 可调范围，一键重置最近两年</li>
-  <li><strong>领域分布</strong> — 柱状图实时显示各会议论文数量，点击切换筛选</li>
-  <li><strong>年份分布</strong> — 按年份查看论文数量变化</li>
-  <li><strong>会议时间轴</strong> — 投稿/录用日期可视化，可折叠</li>
-  <li><strong>运气最佳</strong> — 每次搜索随机推荐一篇</li>
-  <li><strong>购物车</strong> — 收藏论文，一键复制导出</li>
-  <li><strong>深色模式 / 中英切换</strong></li>
-</ul>
-
-<h2>本地部署</h2>
+<h2>为什么叫淘顶网？</h2>
 <div class="card">
-  <pre><code>cd v2
-npm install
-npm run dev</code></pre>
-  <p>浏览器打开 <code>http://localhost:5173</code></p>
-  <p style="margin-top:0.5rem">生成生产版本：<code>npm run build</code>，部署 <code>dist/</code> 目录即可。</p>
+  <p><strong>淘</strong> = 淘宝的淘。我们希望找论文像逛淘宝一样轻松有趣。</p>
+  <p><strong>顶</strong> = 顶会。只收录顶级会议，不收录水会。</p>
+  <p>你可以把喜欢的论文<strong>加入购物车</strong>，最后一次性复制导出。还能看到<strong class="pink tag">最有缘分</strong>的论文——搜索时随机推荐一篇。</p>
 </div>
 
-<h2>数据更新</h2>
+<h2>数据从哪来？</h2>
 <div class="card">
-  <p>论文数据存放在 <code>papers/&lt;conference&gt;/&lt;year&gt;.txt</code>，每行一个标题。</p>
-  <p>更新后运行：</p>
+  <p>论文标题数据来自两个渠道：</p>
+  <p>🔹 <strong>DBLP</strong> — 计算机科学文献数据库，手工提取整理</p>
+  <p>🔹 <strong>Paper Copilot</strong> — 部分数据从该网站获取</p>
+  <p>数据存放在 <code>papers/&lt;conference&gt;/&lt;year&gt;.txt</code>，每行一个标题。运行脚本生成 JSON 供前端读取。</p>
+</div>
+
+<h2>领域分布是怎么工作的？</h2>
+<div class="card" id="dist-demo">
+  <p style="margin-bottom:0.75rem">当你筛选条件变化时，柱状图<strong>实时</strong>反映各会议论文数量：</p>
+  <div class="bar-row"><span class="bar-label" style="color:#059669;font-weight:600">ML</span></div>
+  <div class="bar-row"><span class="bar-label">NeurIPS</span><span class="bar-fill"><span class="bar-inner" style="width:85%;background:#059669"></span></span><span class="bar-count">17,280</span></div>
+  <div class="bar-row"><span class="bar-label">ICML</span><span class="bar-fill"><span class="bar-inner" style="width:78%;background:#059669"></span></span><span class="bar-count">15,900</span></div>
+  <div class="bar-row"><span class="bar-label">ICLR</span><span class="bar-fill"><span class="bar-inner" style="width:62%;background:#059669"></span></span><span class="bar-count">12,640</span></div>
+  <div class="bar-row" style="margin-top:4px"><span class="bar-label" style="color:#2563eb;font-weight:600">CV</span></div>
+  <div class="bar-row"><span class="bar-label">CVPR</span><span class="bar-fill"><span class="bar-inner" style="width:90%;background:#2563eb"></span></span><span class="bar-count">18,420</span></div>
+  <div class="bar-row"><span class="bar-label">ECCV</span><span class="bar-fill"><span class="bar-inner" style="width:45%;background:#2563eb"></span></span><span class="bar-count">9,200</span></div>
+  <div class="bar-row"><span class="bar-label">ICCV</span><span class="bar-fill"><span class="bar-inner" style="width:41%;background:#2563eb"></span></span><span class="bar-count">8,400</span></div>
+  <div class="bar-row" style="margin-top:4px"><span class="bar-label" style="color:#d97706;font-weight:600">AI</span></div>
+  <div class="bar-row"><span class="bar-label">AAAI</span><span class="bar-fill"><span class="bar-inner" style="width:100%;background:#d97706"></span></span><span class="bar-count">20,500</span></div>
+  <div class="bar-row"><span class="bar-label">MM</span><span class="bar-fill"><span class="bar-inner" style="width:30%;background:#d97706"></span></span><span class="bar-count">6,100</span></div>
+  <div class="bar-row"><span class="bar-label">IJCAI</span><span class="bar-fill"><span class="bar-inner" style="width:55%;background:#d97706"></span></span><span class="bar-count">11,300</span></div>
+  <p style="margin-top:0.75rem;font-size:0.82em;color:var(--muted)">颜色深浅表示 <strong>是否被选中</strong>。点击色块可以一键全选 / 取消该领域全部会议。</p>
+</div>
+
+<h2>年份分布是怎么看的？</h2>
+<div class="card">
+  <p style="margin-bottom:0.75rem">年份越<span style="font-weight:600;color:#6366f1">新</span>，颜色越<span style="font-weight:600;color:#4338ca">深</span>。一眼看出论文量的变化趋势：</p>
+  <div class="bar-row"><span class="bar-label" style="color:#4338ca;font-weight:600">2026</span><span class="bar-fill"><span class="bar-inner" style="width:82%;background:#4338ca"></span></span><span class="bar-count">16,800</span></div>
+  <div class="bar-row"><span class="bar-label" style="color:#4f46e5">2025</span><span class="bar-fill"><span class="bar-inner" style="width:100%;background:#6366f1"></span></span><span class="bar-count">20,500</span></div>
+  <div class="bar-row"><span class="bar-label" style="color:#818cf8">2024</span><span class="bar-fill"><span class="bar-inner" style="width:91%;background:#818cf8"></span></span><span class="bar-count">18,700</span></div>
+  <div class="bar-row"><span class="bar-label" style="color:#a5b4fc">2023</span><span class="bar-fill"><span class="bar-inner" style="width:73%;background:#a5b4fc"></span></span><span class="bar-count">15,000</span></div>
+  <div class="bar-row"><span class="bar-label" style="color:#c7d2fe">2022</span><span class="bar-fill"><span class="bar-inner" style="width:58%;background:#c7d2fe"></span></span><span class="bar-count">12,000</span></div>
+</div>
+
+<h2>"最有缘分"是什么？</h2>
+<div class="card">
+  <p>每次输入关键词搜索后，系统会<span class="highlight">随机</span>从结果中挑一篇论文展示在顶部——</p>
+  <p>就像茫茫论文海中，<span class="tag pink">最有缘分</span>的那一篇主动出现在你面前。</p>
+  <p>点击标题直接加入购物车。</p>
+  <p>不输入关键词时，不显示——缘分要自己去寻找。</p>
+</div>
+
+<h2>怎么部署到自己的电脑？</h2>
+<p style="margin-top:1rem">假设你<strong>完全没接触过编程</strong>，跟着下面一步步来：</p>
+
+<h3>第一步：安装 Node.js</h3>
+<div class="card">
+  <div class="step"><span class="step-num">1</span><span>打开 <a href="https://nodejs.org">nodejs.org</a>，下载左边的 LTS 版本</span></div>
+  <div class="step"><span class="step-num">2</span><span>双击安装包，一路点 <strong>Next</strong> 直到完成</span></div>
+  <div class="step"><span class="step-num">3</span><span>打开终端（Mac 搜"终端"，Windows 搜"cmd"），输入 <code>node -v</code> 回车，看到版本号就成功了</span></div>
+</div>
+
+<h3>第二步：下载项目</h3>
+<div class="card">
+  <div class="step"><span class="step-num">1</span><span>打开 <a href="https://github.com/x2x5/find">github.com/x2x5/find</a></span></div>
+  <div class="step"><span class="step-num">2</span><span>点绿色 <strong>Code</strong> 按钮 → <strong>Download ZIP</strong></span></div>
+  <div class="step"><span class="step-num">3</span><span>解压到任意文件夹，比如桌面上的 <code>find</code> 文件夹</span></div>
+</div>
+
+<h3>第三步：安装依赖</h3>
+<div class="card">
+  <div class="step"><span class="step-num">1</span><span>终端里进入项目目录：<code>cd ~/Desktop/find/v2</code>（换成你的实际路径）</span></div>
+  <div class="step"><span class="step-num">2</span><span>输入 <code>npm install</code> 回车，等待下载完成（约 1-2 分钟）</span></div>
+</div>
+
+<h3>第四步：启动</h3>
+<div class="card">
+  <div class="step"><span class="step-num">1</span><span>输入 <code>npm run dev</code> 回车</span></div>
+  <div class="step"><span class="step-num">2</span><span>看到 <code>Local: http://localhost:5173</code> 就成功了</span></div>
+  <div class="step"><span class="step-num">3</span><span>浏览器打开这个地址，搞定 🎉</span></div>
+</div>
+
+<h2>怎么更新论文数据？</h2>
+<div class="card">
+  <p>在 <code>papers/</code> 目录下找到对应会议和年份的 <code>.txt</code> 文件，添加新标题（一行一个）。</p>
+  <p>然后运行：</p>
   <pre><code>cd v2/scripts
 npx tsx gen-data.ts</code></pre>
+  <p>刷新网页即可看到新数据。</p>
 </div>
 
 <h2>技术栈</h2>
-<ul>
-  <li>React 18 + TypeScript</li>
-  <li>Tailwind CSS 3.4</li>
-  <li>Vite 6</li>
-  <li>Lucide React (图标)</li>
-</ul>
+<div class="card" style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;padding:1.5rem">
+  <span class="tag" style="font-size:0.85em;padding:0.3em 0.8em">React 18</span>
+  <span class="tag" style="font-size:0.85em;padding:0.3em 0.8em">TypeScript</span>
+  <span class="tag" style="font-size:0.85em;padding:0.3em 0.8em">Tailwind CSS</span>
+  <span class="tag" style="font-size:0.85em;padding:0.3em 0.8em">Vite</span>
+  <span class="tag" style="font-size:0.85em;padding:0.3em 0.8em">Lucide Icons</span>
+</div>
 
-<h2>项目结构</h2>
-<pre><code>v2/
-├── src/
-│   ├── components/
-│   │   ├── layout/     # Header, Sidebar
-│   │   ├── features/   # PapersTable, Timeline, Distributions, Cart, etc.
-│   │   └── ui/         # Skeleton, Toast
-│   ├── context/        # AppContext (theme, language)
-│   ├── hooks/          # usePapers, useManifest, useTheme, useLanguage
-│   ├── i18n/           # zh.ts, en.ts
-│   └── lib/            # conferences, search, shuffle, utils
-├── public/             # 静态数据 (JSON)
-└── scripts/            # gen-data.ts</code></pre>
-
-<p style="margin-top:3rem; font-size:0.8rem; color:var(--muted); text-align:center">
-  Made with ❤️ — <a href="/">去淘点顶会吧</a>
+<hr>
+<p style="text-align:center;font-size:0.85em;color:var(--muted)">
+  淘顶网 — <a href="/">去淘点顶会吧</a>
 </p>
 
 </body>

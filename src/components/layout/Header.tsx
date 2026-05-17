@@ -61,7 +61,7 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
 
   return (
     <header className="sticky top-0 z-50 max-w-7xl mx-auto px-4">
-      <div className="py-3 flex items-center gap-4 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="py-2 flex flex-col gap-2 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 md:flex-row md:items-center md:gap-4 md:py-3">
         <div className="flex items-center gap-2 shrink-0">
           <button onClick={() => adjustStart(-1)} disabled={startYear <= minYear} className="p-1 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
             <ChevronLeft className="w-4 h-4" />
@@ -81,46 +81,36 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-1">
           <span className="text-xs text-indigo-600 dark:text-indigo-400 whitespace-nowrap font-medium min-w-[7rem] inline-block">
             {searchValue.trim() ? `${t.table.results} ` : ''}
             <span className="inline-block text-left tabular-nums min-w-[2.8rem]">{searchValue.trim() ? resultCount : ''}</span>
           </span>
-          <div className="ml-2">
-            <SearchBar
-              value={searchValue}
-              onChange={onSearchChange}
-            />
-          </div>
-          {luckyPaper && searchValue.trim() && (() => {
-            const field = CONFERENCE_FIELDS[luckyPaper.conference] || 'ML';
-            const fc = FIELD_COLORS[field] || FIELD_COLORS.ML;
-            return (
-              <div className="flex items-center gap-1.5 text-xs min-w-0 ml-2">
-                <span className="text-pink-500 font-medium shrink-0">{t.subtitle}</span>
-                <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0 ${fc.bg} ${fc.text}`}>
-                  {luckyPaper.conference.toUpperCase()}
-                </span>
-                <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-medium tabular-nums shrink-0 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300">
-                  {luckyPaper.year}
-                </span>
-                <span
-                  onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(luckyPaper.title);
-                    } catch {}
-                  }}
-                  className="text-pink-600 dark:text-pink-400 truncate cursor-pointer hover:text-pink-700 dark:hover:text-pink-300 max-w-[30rem]"
-                  title={luckyPaper.title}
-                >
-                  {luckyPaper.title}
-                </span>
-              </div>
-            );
-          })()}
+          <SearchBar value={searchValue} onChange={onSearchChange} />
         </div>
-        <div className="flex-1 text-center min-w-0" />
-        <div className="flex items-center gap-1 shrink-0 ml-auto">
+        {luckyPaper && searchValue.trim() && (() => {
+          const field = CONFERENCE_FIELDS[luckyPaper.conference] || 'ML';
+          const fc = FIELD_COLORS[field] || FIELD_COLORS.ML;
+          return (
+            <div className="flex items-center gap-1.5 text-xs min-w-0">
+              <span className="text-pink-500 font-medium shrink-0">{t.subtitle}</span>
+              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0 ${fc.bg} ${fc.text}`}>
+                {luckyPaper.conference.toUpperCase()}
+              </span>
+              <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-medium tabular-nums shrink-0 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300">
+                {luckyPaper.year}
+              </span>
+              <span
+                onClick={async () => { try { await navigator.clipboard.writeText(luckyPaper.title); } catch {} }}
+                className="text-pink-600 dark:text-pink-400 truncate cursor-pointer hover:text-pink-700 dark:hover:text-pink-300 max-w-[12rem] md:max-w-[30rem]"
+                title={luckyPaper.title}
+              >
+                {luckyPaper.title}
+              </span>
+            </div>
+          );
+        })()}
+        <div className="flex items-center gap-1 shrink-0 md:ml-auto">
           <button onClick={onToggleTimeline} className="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200" title="时间轴">
             {showTimeline ? <PanelTopClose className="w-4 h-4" /> : <PanelTopOpen className="w-4 h-4" />}
           </button>

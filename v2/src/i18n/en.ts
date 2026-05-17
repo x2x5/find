@@ -11,6 +11,8 @@ export interface Translations {
     from: string;
     to: string;
     recent2y: string;
+    selectAll: string;
+    deselectAll: string;
   };
   fields: {
     CV: string;
@@ -61,6 +63,8 @@ export const en: Translations = {
     from: 'From',
     to: 'To',
     recent2y: 'Recent 2y',
+    selectAll: 'Select All',
+    deselectAll: 'Deselect',
   },
   fields: {
     CV: 'Computer Vision',
@@ -70,7 +74,7 @@ export const en: Translations = {
   table: {
     title: 'Papers',
     copyPage: 'Copy Page',
-    copyAll: 'Copy All',
+    copyAll: 'Copy 500',
     results: 'results',
     showing: 'showing',
     noResults: 'No papers match your filters',

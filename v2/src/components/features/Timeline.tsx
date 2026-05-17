@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useAppContext } from '@/context/AppContext';
 
 const RAW_DATA = [
   { deadline: '01-19', result: '04-29', conference: 'IJCAI' },
@@ -30,6 +31,7 @@ function parseDate(mmdd: string): { m: number; d: number } {
 
 export default function Timeline() {
   const today = useMemo(() => new Date(), []);
+  const { t } = useAppContext();
 
   const placedEvents = useMemo<PlacedEvent[]>(() => {
     const all: { monthIdx: number; label: string; date: string; type: 'deadline' | 'result' | 'today' }[] = [];
@@ -63,10 +65,25 @@ export default function Timeline() {
       const count = events.length;
       if (count === 0) continue;
 
+      const sorted = [...events].sort((a, b) => {
+        const dayA = parseInt(a.date.split('/')[1], 10);
+        const dayB = parseInt(b.date.split('/')[1], 10);
+        return dayA - dayB;
+      });
+
+      const tightDates = count >= 3 && sorted.some((ev, idx) => {
+        if (idx === 0) return false;
+        const prevDay = parseInt(sorted[idx - 1].date.split('/')[1], 10);
+        const currDay = parseInt(ev.date.split('/')[1], 10);
+        return currDay - prevDay <= 2;
+      });
+
       for (let i = 0; i < count; i++) {
-        const innerPct = ((i + 1) / (count + 1)) * 100;
+        const innerPct = tightDates
+          ? 10 + (i / (count - 1)) * 80
+          : ((i + 1) / (count + 1)) * 100;
         result.push({
-          ...events[i],
+          ...sorted[i],
           position: m * monthWidth + monthWidth * (innerPct / 100),
           height: HEIGHTS[i % HEIGHTS.length],
         });
@@ -77,8 +94,19 @@ export default function Timeline() {
   }, [today]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-3">
+    <div className="max-w-7xl mx-auto px-4 pt-3 pb-0">
       <div className="relative h-[170px]">
+        {/* 图示 */}
+        <div className="absolute top-0 left-0 flex items-center gap-3 text-[10px] text-zinc-500 dark:text-zinc-400">
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
+            {t.timeline.deadline}
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+            {t.timeline.result}
+          </span>
+        </div>
         {/* 月份标签 — 每个在月份的左端点 */}
         {MONTH_LABELS.map((label, i) => (
           <div

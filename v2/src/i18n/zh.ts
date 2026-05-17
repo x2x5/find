@@ -13,6 +13,8 @@ export const zh: Translations = {
     from: '起始',
     to: '结束',
     recent2y: '最近两年',
+    selectAll: '全选',
+    deselectAll: '取消全选',
   },
   fields: {
     CV: '计算机视觉',
@@ -22,7 +24,7 @@ export const zh: Translations = {
   table: {
     title: '论文列表',
     copyPage: '复制本页',
-    copyAll: '复制全部',
+    copyAll: '复制前500条',
     results: '篇结果',
     showing: '显示',
     noResults: '没有符合条件的论文',

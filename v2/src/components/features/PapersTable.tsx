@@ -78,7 +78,7 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
   }, [pagePapers, onShowToast]);
 
   const handleCopyAll = useCallback(async () => {
-    const MAX = 200;
+    const MAX = 500;
     const toCopy = papers.slice(0, MAX);
     const titles = toCopy.map((p) => p.title).join('\n');
     try {
@@ -95,11 +95,11 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
 
   return (
     <div className="w-full min-w-0 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
-      <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-4">
-        <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+      <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+        <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 shrink-0">
           {t.table.title}
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleCopyPage}
             disabled={pagePapers.length === 0}
@@ -114,10 +114,6 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
           >
             {t.table.copyAll}
           </button>
-          <span className="text-xs text-zinc-500">
-            {papers.length} {t.table.results}
-            {papers.length > 0 && ` (${t.table.showing} ${startIdx + 1}-${Math.min(startIdx + pageSize, papers.length)})`}
-          </span>
         </div>
       </div>
 

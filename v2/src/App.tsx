@@ -20,7 +20,6 @@ function AppContent() {
   );
   const [yearRange, setYearRange] = useState<[number, number]>([defaultYear - 1, defaultYear]);
   const [searchValue, setSearchValue] = useState('');
-  const [searchTrigger, setSearchTrigger] = useState('');
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
 
   const { papers: loadedPapers, loading: papersLoading, error: papersError } = usePapers(
@@ -30,8 +29,8 @@ function AppContent() {
   );
 
   const filteredPapers = useMemo(() => {
-    return filterPapers(loadedPapers, searchTrigger, yearRange, selectedConfs);
-  }, [loadedPapers, searchTrigger, yearRange, selectedConfs]);
+    return filterPapers(loadedPapers, searchValue, yearRange, selectedConfs);
+  }, [loadedPapers, searchValue, yearRange, selectedConfs]);
 
   const shuffledPapers = useMemo(() => {
     return shuffle(filteredPapers);
@@ -53,10 +52,6 @@ function AppContent() {
     setYearRange(range);
   }, []);
 
-  const handleSearch = useCallback(() => {
-    setSearchTrigger(searchValue);
-  }, [searchValue]);
-
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
   }, []);
@@ -70,21 +65,22 @@ function AppContent() {
       <Header
         searchValue={searchValue}
         onSearchChange={setSearchValue}
-        onSearch={handleSearch}
+        resultCount={filteredPapers.length}
+        manifest={manifest}
+        yearRange={yearRange}
+        onYearChange={handleYearChange}
       />
 
       <Timeline />
 
-      <main className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
+      <main className="max-w-7xl mx-auto px-4 pt-0 pb-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
         <Sidebar
           manifest={manifest}
           selectedConfs={selectedConfs}
           onToggleConf={handleToggleConf}
-          yearRange={yearRange}
-          onYearChange={handleYearChange}
         />
 
-        <section className="space-y-4 max-w-5xl">
+        <section className="space-y-4 min-w-0">
           {combinedLoading && (
             <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
               <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
@@ -109,7 +105,7 @@ function AppContent() {
           )}
 
           {!combinedLoading && !combinedError && (
-            <PapersTable papers={shuffledPapers} searchTrigger={searchTrigger} onShowToast={showToast} />
+            <PapersTable papers={shuffledPapers} searchTrigger={searchValue} onShowToast={showToast} />
           )}
         </section>
       </main>

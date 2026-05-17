@@ -20,3 +20,10 @@
 # execution
 - Execute commands directly when user asks, rather than just providing them. Confidence: 0.60
 
+# communication
+- When user reports a problem, first analyze and explain the root cause, then wait for approval before making code changes. Confidence: 0.70
+
+# layout
+- Header should align left edge with sidebar left edge and right edge with table right edge. Confidence: 0.80
+- Timeline should also align left and right edges with Header. Confidence: 0.70
+

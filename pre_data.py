@@ -36,8 +36,172 @@ CONFERENCE_ALIASES = {
 def get_conference_alias(conf_name: str) -> str:
     return CONFERENCE_ALIASES.get(conf_name, conf_name)
 
+import re
+
+LATEX_UNICODE = {
+    'alpha': 'α', 'beta': 'β', 'gamma': 'γ', 'delta': 'δ',
+    'epsilon': 'ε', 'varepsilon': 'ε', 'zeta': 'ζ', 'eta': 'η',
+    'theta': 'θ', 'iota': 'ι', 'kappa': 'κ', 'lambda': 'λ',
+    'mu': 'μ', 'nu': 'ν', 'xi': 'ξ', 'omicron': 'ο',
+    'pi': 'π', 'rho': 'ρ', 'sigma': 'σ', 'tau': 'τ',
+    'upsilon': 'υ', 'phi': 'φ', 'chi': 'χ', 'psi': 'ψ',
+    'omega': 'ω',
+    'ell': 'ℓ', 'L': 'Ł', 'partial': '∂', 'infty': '∞',
+    'sharp': '♯', 'neg': '¬', 'wedge': '∧', 'vee': '∨',
+    'forall': '∀', 'exists': '∃', 'tau': 'τ', 'ell': 'ℓ',
+}
+
+def strip_text_braces(t: str, cmd: str) -> str:
+    """Strip \cmd{...} and \cmd{...}{...}..., keeping inner content."""
+    while cmd in t:
+        start = t.find(cmd)
+        i = start + len(cmd)
+        parts = []
+        while i < len(t) and t[i] == '{':
+            depth = 0
+            j = i
+            while j < len(t):
+                if t[j] == '{':
+                    depth += 1
+                elif t[j] == '}':
+                    depth -= 1
+                    if depth == 0:
+                        break
+                j += 1
+            parts.append(t[i+1:j])
+            i = j + 1
+        t = t[:start] + ''.join(parts) + t[i:]
+    return t
+
+STRIP_CMDS = ['\\textbf', '\\textit', '\\texttt', '\\emph', '\\underline',
+               '\\mathbf', '\\boldsymbol', '\\textrm', '\\text']
+
+def process_math_block(s: str) -> str:
+    """Clean up a math block: strip formatting, handle remaining."""
+    for cmd in STRIP_CMDS:
+        s = strip_text_braces(s, cmd)
+    out = []
+    j = 0
+    while j < len(s):
+        m = re.match(r'\\([a-zA-Z]+)((?:\{[^}]*\})+)', s[j:])
+        if m:
+            name = m.group(1)
+            if name in LATEX_UNICODE:
+                out.append(LATEX_UNICODE[name])
+            else:
+                out.append('$' + m.group(0) + '$')
+            j += len(m.group(0))
+            continue
+        m = re.match(r'\\([a-zA-Z]+)', s[j:])
+        if m:
+            name = m.group(1)
+            if name in LATEX_UNICODE:
+                out.append(LATEX_UNICODE[name])
+            else:
+                out.append('$' + m.group(0) + '$')
+            j += len(m.group(0))
+            continue
+        m = re.match(r'[_^](\{[^}]*\}|\w)', s[j:])
+        if m:
+            out.append('$' + m.group(0) + '$')
+            j += len(m.group(0))
+            continue
+        out.append(s[j])
+        j += 1
+    return ''.join(out)
+
+def clean_title(title: str) -> str:
+    t = title
+    t = t.replace('_x0008_', '')
+    t = re.sub(r'\*\*(.+?)\*\*', r'\1', t)
+    t = t.replace('<', '&lt;').replace('>', '&gt;')
+
+    # Phase 1: strip formatting commands globally
+    for cmd in STRIP_CMDS:
+        t = strip_text_braces(t, cmd)
+
+    # Phase 2: process remaining LaTeX
+    result = []
+    i = 0
+    while i < len(t):
+        c = t[i]
+        # Skip existing $...$ math, clean it up
+        if c == '$':
+            j = t.find('$', i + 1)
+            if j == -1:
+                result.append(t[i:])
+                break
+            inner = process_math_block(t[i+1:j])
+            if inner:
+                result.append(inner)
+            i = j + 1
+            continue
+        # Skip \(...\) math
+        if t[i:i+2] == r'\(':
+            j = t.find(r'\)', i + 2)
+            if j == -1:
+                result.append(t[i:])
+                break
+            inner = process_math_block(t[i+2:j])
+            if inner:
+                result.append(inner)
+            i = j + 2
+            continue
+        # Skip \[...\] math
+        if t[i:i+2] == r'\[':
+            j = t.find(r'\]', i + 2)
+            if j == -1:
+                result.append(t[i:])
+                break
+            inner = process_math_block(t[i+2:j])
+            if inner:
+                result.append(inner)
+            i = j + 2
+            continue
+        # {\command} → Unicode
+        m = re.match(r'\{(\\([a-zA-Z]+))\}', t[i:])
+        if m:
+            name = m.group(2)
+            if name in LATEX_UNICODE:
+                result.append(LATEX_UNICODE[name])
+            else:
+                result.append('$' + m.group(1) + '$')
+            i += len(m.group(0))
+            continue
+        # ^{...} or _{...} outside math → $^{...}$ or $_{...}$
+        m = re.match(r'[_^](\{[^}]*\}|\w)', t[i:])
+        if m:
+            result.append('$' + m.group(0) + '$')
+            i += len(m.group(0))
+            continue
+        # \command{...} outside math → $\command{...}$ (keep as math)
+        m = re.match(r'\\([a-zA-Z]+)((?:\{[^}]*\})+)\s*', t[i:])
+        if m:
+            result.append('$' + m.group(0).strip() + '$')
+            i += len(m.group(0))
+            continue
+        # \command with sub/super, e.g. \ell_1
+        m = re.match(r'\\([a-zA-Z]+)[_^](?:\{[^}]*\}|\w)', t[i:])
+        if m:
+            result.append('$' + m.group(0) + '$')
+            i += len(m.group(0))
+            continue
+        # standalone \command → Unicode if possible, else $\command$
+        m = re.match(r'\\([a-zA-Z]+)', t[i:])
+        if m:
+            name = m.group(1)
+            if name in LATEX_UNICODE:
+                result.append(LATEX_UNICODE[name])
+            else:
+                result.append('$' + m.group(0) + '$')
+            i += len(m.group(0))
+            continue
+        result.append(c)
+        i += 1
+    return ''.join(result)
+
 def read_conference_papers(conf_name: str, conf_path: str):
-    entries = []
+    raw = []
     for year_file in os.listdir(conf_path):
         if not year_file.endswith('.txt'):
             continue
@@ -47,8 +211,15 @@ def read_conference_papers(conf_name: str, conf_path: str):
                 title = line.strip()
                 if not title:
                     continue
-                entries.append({"y": year, "t": title})
-    # 按年份倒序、标题正序排序，方便前端分页
+                raw.append({"y": year, "t": clean_title(title)})
+    # Dedup by title, keep latest year
+    best_year = {}
+    for entry in raw:
+        t = entry["t"]
+        y = int(entry["y"])
+        if t not in best_year or y > best_year[t][0]:
+            best_year[t] = (y, entry)
+    entries = [v[1] for v in best_year.values()]
     entries.sort(key=lambda item: (-int(item["y"]), item["t"]))
     return entries
 

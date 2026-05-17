@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top AI Papers</title>
+    <title>Top AI Papers · 顶会论文</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -121,7 +121,7 @@
         .year-selector {
             display: inline-flex;
             align-items: center;
-            min-width: 320px;
+            gap: 6px;
         }
 
         .search-group {
@@ -1596,50 +1596,72 @@
             background-color: #3a3a3a !important;
         }
         
-        /* 返回顶部按钮样式 */
+        /* 返回顶部+语言切换浮动按钮 */
         .back-to-top {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            width: 50px;
-            height: 50px;
-            background-color: #3498db;
-            color: white;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .float-btn {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-            transition: all 0.3s ease;
-            z-index: 1000;
-            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+            user-select: none;
+            background: #fff;
+            color: #333;
+            border: 1px solid #d9e2ec;
         }
-        
-        .back-to-top:hover {
-            background-color: #2980b9;
+        .float-btn:hover {
+            background: #f0f4f8;
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
-        
-        .dark-mode .back-to-top {
-            background-color: #34495e;
-            box-shadow: 0 4px 12px rgba(52, 73, 94, 0.3);
+        .float-btn.primary {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
         }
-        
-        .dark-mode .back-to-top:hover {
-            background-color: #4a5568;
-            box-shadow: 0 6px 16px rgba(74, 85, 104, 0.4);
+        .float-btn.primary:hover {
+            background: #2980b9;
         }
-        
-        /* 移动端适配 */
+        .dark-mode .float-btn {
+            background: #2d2d2d;
+            color: #ecf0f1;
+            border-color: #444;
+        }
+        .dark-mode .float-btn:hover {
+            background: #3a3a3a;
+        }
+        .dark-mode .float-btn.primary {
+            background: #34495e;
+            border-color: #34495e;
+        }
+        .dark-mode .float-btn.primary:hover {
+            background: #4a5568;
+        }
         @media (max-width: 768px) {
             .back-to-top {
                 bottom: 20px;
                 right: 20px;
-                width: 45px;
-                height: 45px;
-                font-size: 16px;
+            }
+            .float-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
             }
         }
         
@@ -2207,24 +2229,24 @@
             position: fixed;
             top: 88px;
             right: 18px;
-            width: 248px;
-            max-height: calc(100vh - 108px);
+            width: 260px;
             margin: 0;
-            padding: 14px 14px 12px;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-            background: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            padding: 16px 16px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
             box-sizing: border-box;
-            overflow: hidden;
             z-index: 9000;
+            display: flex;
+            flex-direction: column;
         }
 
         .conference-timeline-head {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            margin-bottom: 10px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
 
         .conference-timeline-head-row {
@@ -2237,62 +2259,126 @@
 
         .conference-timeline-title {
             margin: 0;
-            font-size: 14px;
-            font-weight: 700;
-            color: #2c3e50;
+            font-size: 15px;
+            font-weight: 800;
+            color: #1e293b;
+            letter-spacing: -0.3px;
         }
 
         .conference-timeline-note {
             margin: 0;
             font-size: 11px;
-            color: #6f7b86;
+            color: #94a3b8;
             line-height: 1.4;
         }
 
         .conference-timeline-legend {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            font-weight: 700;
+            gap: 10px;
+            font-size: 10px;
+            font-weight: 600;
             white-space: nowrap;
         }
 
         .conference-timeline-legend-item {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            color: #5d6b78;
+            gap: 5px;
+            color: #64748b;
         }
 
         .conference-timeline-legend-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             display: inline-block;
         }
 
         .conference-timeline-legend-dot.deadline {
-            background: #2f7fd3;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            box-shadow: 0 0 6px rgba(59, 130, 246, 0.4);
         }
 
         .conference-timeline-legend-dot.result {
-            background: #e07b39;
+            background: linear-gradient(135deg, #fb923c, #f97316);
+            box-shadow: 0 0 6px rgba(249, 115, 22, 0.4);
+        }
+
+        #result-charts {
+            background: #fff;
+            border: 1px solid #e1e8f0;
+            border-radius: 8px;
+            padding: 14px 14px 12px;
+            min-height: 130px;
+        }
+        .charts-title {
+            margin: 0 0 14px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        .chart-row {
+            display: flex;
+            align-items: stretch;
+            margin-bottom: 12px;
+        }
+        .chart-bars {
+            flex: 1;
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 64px;
+        }
+        .chart-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            min-width: 0;
+        }
+        .chart-bar {
+            width: 100%;
+            border-radius: 2px 2px 0 0;
+            min-height: 0;
+            transition: height 0.3s;
+        }
+        .chart-bar-value {
+            font-size: 9px;
+            font-weight: 500;
+            color: #888;
+            line-height: 1.2;
+        }
+        .chart-bar-label {
+            font-size: 10px;
+            color: #999;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            text-align: center;
+        }
+        .dark-mode .chart-bar-value { color: #aaa; }
+        .dark-mode .chart-bar-label { color: #777; }
+        .dark-mode .charts-title { color: #e8edf2; }
+
+        /* Timeline card - tighter spacing when charts are above */
+        .conference-timeline-card {
+            margin-top: 0;
         }
 
         .conference-timeline-scroll {
-            overflow-x: hidden;
-            overflow-y: auto;
-            max-height: calc(100vh - 170px);
+            overflow: visible;
             padding-right: 4px;
         }
 
         .conference-timeline-footnote {
-            margin: 8px 0 0;
-            font-size: 11px;
-            color: #6f7b86;
-            line-height: 1.4;
-            text-align: center;
+            margin: 2px 0 0;
+            font-size: 10px;
+            color: #aaa;
+            line-height: 1.3;
+            text-align: left;
         }
 
         .conference-timeline-track {
@@ -2309,10 +2395,14 @@
             top: 20px;
             bottom: 20px;
             left: 50%;
-            width: 3px;
+            width: 2px;
             transform: translateX(-50%);
             border-radius: 999px;
-            background: linear-gradient(180deg, #8fb6e8 0%, #5d9ce5 55%, #3f82d6 100%);
+            background: linear-gradient(180deg,
+                rgba(148, 163, 184, 0.15) 0%,
+                rgba(148, 163, 184, 0.35) 20%,
+                rgba(148, 163, 184, 0.35) 80%,
+                rgba(148, 163, 184, 0.15) 100%);
         }
 
         .conference-timeline-today {
@@ -2320,24 +2410,31 @@
             left: 18px;
             right: 18px;
             height: 0;
-            border-top: 2px dashed #ff8c42;
+            border-top: 2px dashed #f59e0b;
             z-index: 2;
             pointer-events: none;
+            animation: todayPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes todayPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
         .conference-timeline-today-label {
             position: absolute;
-            top: -18px;
+            top: -20px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 11px;
-            color: #a85314;
-            background: #ffe9db;
-            border: 1px solid #ffd0b0;
+            font-size: 10px;
+            color: #92400e;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #fcd34d;
             border-radius: 999px;
-            padding: 2px 8px;
+            padding: 3px 10px;
             white-space: nowrap;
-            font-weight: 600;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
         }
 
         .conference-timeline-node {
@@ -2506,12 +2603,23 @@
         /* Final layout overrides: classic 75/25 two-column */
         .main-content {
             display: grid !important;
-            grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
+            grid-template-columns: 379px minmax(0, 1fr);
             grid-template-areas:
                 "top top"
-                "content timeline";
+                "sidebar content";
             align-items: start;
-            gap: 18px;
+            column-gap: 18px;
+            row-gap: 10px;
+        }
+
+        .main-content > .sidebar {
+            grid-area: sidebar;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: auto;
+            max-width: 379px;
+            margin-left: 23px;
         }
 
         .main-content > .top-bar {
@@ -2521,29 +2629,43 @@
             left: auto !important;
             right: auto !important;
             width: 100%;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
         }
 
         .main-content > .content-wrapper {
             grid-area: content;
-            max-width: none;
-            margin: 0;
+            max-width: none !important;
+            margin-left: 0 !important;
+            margin-right: 19px !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
             padding: 0 !important;
-            width: 100%;
+            width: auto;
             min-width: 0;
         }
 
-        .main-content > .conference-timeline-card {
-            grid-area: timeline;
+        .main-content > .sidebar > #result-charts {
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .main-content > .sidebar > .conference-timeline-card {
             position: sticky;
             top: 14px;
-            right: auto;
             width: 100%;
             max-height: calc(100vh - 28px);
             margin: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         .main-content > .sidebar {
-            display: none !important;
+            display: flex !important;
         }
 
         .top-bar-inner {
@@ -2565,16 +2687,33 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            border: 1px solid #d9e2ec;
-            background: #f8fbff;
-            border-radius: 10px;
-            padding: 10px 12px;
-            min-height: 62px;
         }
 
+        .top-bar-row.control-panel {
+            position: relative;
+        }
         .control-group-main {
             flex: 1 1 auto;
             min-width: 0;
+            display: flex;
+            align-items: center;
+        }
+        .control-group-main > .field-group {
+            flex: 0 0 367px;
+        }
+        .control-group-main > .search-controls {
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+        #clear-btn {
+            position: static;
+        }
+        .control-group-main > .search-controls > #topic-input {
+            width: 300px !important;
+            flex: 0 0 300px;
+        }
+        .control-group-main > .control-group-year-inline {
+            flex: 0 0 auto;
         }
 
         .control-group-year-inline {
@@ -2592,9 +2731,60 @@
             padding: 10px;
         }
 
-        #lang-toggle-btn {
-            min-width: 78px;
+        .lang-toggle {
+            position: relative;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #d9e2ec;
+            border-radius: 20px;
+            padding: 2px;
+            cursor: pointer;
+            user-select: none;
+            min-width: 30px;
+            height: 56px;
+            box-sizing: border-box;
+        }
+        .lang-option {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
             font-weight: 700;
+            color: #999;
+            transition: color 0.25s;
+            line-height: 1;
+        }
+        .lang-option.active {
+            color: #fff;
+        }
+        .lang-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: calc(100% - 4px);
+            height: calc(50% - 2px);
+            background: #34c759;
+            border-radius: 18px;
+            transition: top 0.25s;
+            z-index: 1;
+        }
+        .lang-toggle.en .lang-slider {
+            top: calc(50% + 0px);
+        }
+        .dark-mode .lang-toggle {
+            background: #1f2b37;
+            border-color: #395069;
+        }
+        .dark-mode .lang-option {
+            color: #777;
+        }
+        .dark-mode .lang-option.active {
+            color: #fff;
         }
 
         .control-group-main .field-group {
@@ -2614,9 +2804,9 @@
         }
 
         #topic-input.search-input {
-            width: 220px !important;
-            min-width: 220px;
-            flex: 0 0 220px;
+            width: 240px !important;
+            min-width: 160px;
+            flex: 0 0 240px;
         }
 
         .top-bar-input,
@@ -2636,6 +2826,28 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+        }
+        #recent-btn {
+            margin-left: 4px;
+            width: 36px;
+            height: 36px;
+            padding: 0 !important;
+            border-radius: 10px !important;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(135deg, #3498db, #2980b9) !important;
+            border: none;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+        #recent-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 14px rgba(52, 152, 219, 0.45);
+        }
+        #recent-btn:active {
+            transform: scale(0.95);
+        }
+        #recent-btn.pressed {
+            background: linear-gradient(135deg, #2980b9, #1f5f8b) !important;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3), 0 2px 8px rgba(52, 152, 219, 0.3) !important;
         }
 
         .field-group {
@@ -2704,10 +2916,63 @@
             margin: 0 2px;
         }
 
-        .year-select {
-            min-width: 92px;
-            background: #fff;
+        .year-stepper {
+            display: inline-flex;
+            align-items: center;
             border: 1px solid #cdd8e4;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .year-btn {
+            width: 28px;
+            height: 32px;
+            border: none;
+            background: #f0f4f8;
+            color: #333;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+            padding: 0;
+            line-height: 1;
+        }
+        .year-btn:hover {
+            background: #d9e2ec;
+        }
+        .year-btn:active {
+            background: #c0cbd8;
+        }
+        .year-input {
+            width: 48px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #2c3e50;
+            padding: 0 4px;
+            line-height: 32px;
+            border: none;
+            background: transparent;
+            user-select: none;
+        }
+        .dark-mode .year-stepper {
+            background: #2d2d2d;
+            border-color: #444;
+        }
+        .dark-mode .year-btn {
+            background: #3a3a3a;
+            color: #ecf0f1;
+        }
+        .dark-mode .year-btn:hover {
+            background: #4a5568;
+        }
+        .dark-mode .year-input {
+            color: #ecf0f1;
+        }
+        .year-select {
+            min-width: 0;
         }
 
         .year-slider,
@@ -2719,15 +2984,12 @@
             display: none !important;
         }
 
-        .main-content > .conference-timeline-card {
-            position: static;
-            max-height: none;
-        }
-
         .conference-timeline-scroll {
-            overflow: visible !important;
-            max-height: none !important;
-            padding-right: 0;
+            overflow: visible;
+            padding-right: 4px;
+        }
+        .main-content > .sidebar > .conference-timeline-card {
+            max-height: none;
         }
 
         .conference-timeline-track {
@@ -2745,29 +3007,35 @@
 
         .conference-timeline-month-label {
             position: absolute;
-            left: calc(50% - 86px);
-            width: 74px;
+            left: calc(50% - 90px);
+            width: 78px;
             transform: translateY(-50%);
             text-align: right;
-            font-size: 11px;
-            color: #6d7b89;
-            font-weight: 700;
-            background: transparent;
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 600;
+            background: rgba(248, 250, 252, 0.8);
             border: none;
-            padding: 0;
+            padding: 2px 6px;
+            border-radius: 4px;
             line-height: 1.2;
             z-index: 2;
             pointer-events: none;
             white-space: nowrap;
+            letter-spacing: 0.3px;
         }
 
         .conference-timeline-month-tick {
             position: absolute;
-            left: calc(50% - 8px);
-            width: 16px;
-            border-top: 1px dashed #bdd0e4;
+            left: calc(50% - 3px);
+            width: 6px;
+            height: 6px;
+            background: #cbd5e1;
+            border-radius: 50%;
             transform: translateY(-50%);
             z-index: 2;
+            border: 2px solid #f8fafc;
+            box-shadow: 0 0 0 1px rgba(203, 213, 225, 0.5);
         }
 
         .conference-timeline-side-label {
@@ -2799,43 +3067,60 @@
             position: absolute;
             transform: translateY(-50%);
             z-index: 4;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .conference-timeline-event:hover {
+            transform: translateY(-50%) scale(1.08);
+            z-index: 10;
         }
 
         .conference-timeline-event-chip {
-            border-radius: 8px;
-            padding: 5px 8px;
+            border-radius: 10px;
+            padding: 5px 10px;
             font-size: 11px;
-            line-height: 1.25;
+            line-height: 1.3;
             font-weight: 700;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
             border: 1px solid transparent;
             background: #fff;
             white-space: nowrap;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            min-width: 110px;
+            transition: all 0.25s ease;
+        }
+
+        .conference-timeline-event:hover .conference-timeline-event-chip {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
         }
 
         .conference-timeline-event-main {
             display: block;
-            font-size: 12px;
-            line-height: 1.2;
+            font-size: 11px;
+            line-height: 1.3;
             text-align: left;
+            letter-spacing: 0.2px;
         }
 
         .conference-timeline-date-tag {
             position: absolute;
             transform: translateY(-50%);
             border-radius: 999px;
-            padding: 2px 8px;
-            font-size: 11px;
+            padding: 3px 9px;
+            font-size: 10px;
             font-weight: 700;
-            line-height: 1.2;
+            line-height: 1.3;
             white-space: nowrap;
             z-index: 6;
             pointer-events: none;
+            opacity: 0.85;
+            transition: opacity 0.2s ease;
+        }
+
+        .conference-timeline-event:hover + .conference-timeline-date-tag,
+        .conference-timeline-event:hover ~ .conference-timeline-date-tag {
+            opacity: 1;
         }
 
         .conference-timeline-event.side-left .conference-timeline-event-chip {
@@ -2847,80 +3132,101 @@
         }
 
         .conference-timeline-event.event-deadline .conference-timeline-event-chip {
-            color: #1a4f8f;
-            background: #edf5ff;
-            border-color: #b9d4f5;
+            color: #1d4ed8;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-color: rgba(59, 130, 246, 0.25);
+        }
+        .conference-timeline-event.event-deadline:hover .conference-timeline-event-chip {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-color: rgba(59, 130, 246, 0.4);
         }
         .conference-timeline-date-tag.event-deadline {
-            color: #1a4f8f;
-            background: #edf5ff;
-            border: 1px solid #b9d4f5;
+            color: #1d4ed8;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 1px solid rgba(59, 130, 246, 0.25);
         }
 
         .conference-timeline-event.event-result .conference-timeline-event-chip {
-            color: #9a4c12;
-            background: #fff2e6;
-            border-color: #ffd0a8;
+            color: #c2410c;
+            background: linear-gradient(135deg, #fff7ed, #ffedd5);
+            border-color: rgba(249, 115, 22, 0.25);
+        }
+        .conference-timeline-event.event-result:hover .conference-timeline-event-chip {
+            background: linear-gradient(135deg, #ffedd5, #fed7aa);
+            border-color: rgba(249, 115, 22, 0.4);
         }
         .conference-timeline-date-tag.event-result {
-            color: #9a4c12;
-            background: #fff2e6;
-            border: 1px solid #ffd0a8;
+            color: #c2410c;
+            background: linear-gradient(135deg, #fff7ed, #ffedd5);
+            border: 1px solid rgba(249, 115, 22, 0.25);
         }
 
         .conference-timeline-event.event-today .conference-timeline-event-chip {
-            color: #155e38;
-            background: #e9fff1;
-            border-color: #9ad8b4;
+            color: #15803d;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-color: rgba(34, 197, 94, 0.25);
+        }
+        .conference-timeline-event.event-today:hover .conference-timeline-event-chip {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border-color: rgba(34, 197, 94, 0.4);
         }
         .conference-timeline-date-tag.event-today {
-            color: #155e38;
-            background: #e9fff1;
-            border: 1px solid #9ad8b4;
+            color: #15803d;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 1px solid rgba(34, 197, 94, 0.25);
         }
 
         .conference-timeline-connector {
             position: absolute;
             z-index: 3;
-        }
-
-        .conference-timeline-connector.connector-horizontal {
-            height: 2px;
+            height: 1.5px;
+            border-radius: 999px;
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
         }
 
         .conference-timeline-connector.event-deadline {
-            background: #2f7fd3;
+            background: linear-gradient(90deg, transparent, #60a5fa);
         }
 
         .conference-timeline-connector.event-result {
-            background: #e07b39;
+            background: linear-gradient(90deg, transparent, #fb923c);
         }
 
         .conference-timeline-connector.event-today {
-            background: #2ea55f;
+            background: linear-gradient(90deg, transparent, #34d399);
         }
 
         .conference-timeline-marker {
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
+            border: 2.5px solid #ffffff;
             z-index: 4;
+            transition: transform 0.2s ease;
         }
 
         .conference-timeline-marker.event-deadline {
-            background: #2f7fd3;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 0 12px rgba(59, 130, 246, 0.3);
         }
 
         .conference-timeline-marker.event-result {
-            background: #e07b39;
+            background: linear-gradient(135deg, #fb923c, #f97316);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15), 0 0 12px rgba(249, 115, 22, 0.3);
         }
 
         .conference-timeline-marker.event-today {
-            background: #2ea55f;
+            background: linear-gradient(135deg, #34d399, #22c55e);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15), 0 0 12px rgba(34, 197, 94, 0.3);
+            animation: markerPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes markerPulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15), 0 0 12px rgba(34, 197, 94, 0.3); }
+            50% { box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.1), 0 0 18px rgba(34, 197, 94, 0.45); }
         }
 
         .dark-mode .control-group {
@@ -2939,70 +3245,117 @@
             border-color: #3f556c;
         }
 
+        .dark-mode .conference-timeline-card {
+            background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-mode .conference-timeline-title {
+            color: #f1f5f9;
+        }
+
+        .dark-mode .conference-timeline-line {
+            background: linear-gradient(180deg,
+                rgba(71, 85, 105, 0.2) 0%,
+                rgba(71, 85, 105, 0.5) 20%,
+                rgba(71, 85, 105, 0.5) 80%,
+                rgba(71, 85, 105, 0.2) 100%);
+        }
+
         .dark-mode .conference-timeline-month-label {
-            color: #d0dfef;
+            color: #64748b;
+            background: rgba(15, 23, 42, 0.8);
         }
 
         .dark-mode .conference-timeline-month-tick {
-            border-top-color: #45617d;
+            background: #475569;
+            border-color: #0f172a;
+            box-shadow: 0 0 0 1px rgba(71, 85, 105, 0.5);
         }
 
         .dark-mode .conference-timeline-event.event-deadline .conference-timeline-event-chip {
-            color: #d8e8fb;
-            background: #22364c;
-            border-color: #3e5f81;
+            color: #93c5fd;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6), rgba(30, 64, 175, 0.4));
+            border-color: rgba(96, 165, 250, 0.2);
+        }
+        .dark-mode .conference-timeline-event.event-deadline:hover .conference-timeline-event-chip {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.5), rgba(37, 99, 235, 0.4));
+            border-color: rgba(96, 165, 250, 0.35);
         }
         .dark-mode .conference-timeline-date-tag.event-deadline {
-            color: #d8e8fb;
-            background: #22364c;
-            border-color: #3e5f81;
+            color: #93c5fd;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6), rgba(30, 64, 175, 0.4));
+            border: 1px solid rgba(96, 165, 250, 0.2);
         }
 
         .dark-mode .conference-timeline-event.event-result .conference-timeline-event-chip {
-            color: #ffdfc7;
-            background: #4b3425;
-            border-color: #7e5a41;
+            color: #fdba74;
+            background: linear-gradient(135deg, rgba(124, 45, 18, 0.5), rgba(154, 52, 18, 0.3));
+            border-color: rgba(251, 146, 60, 0.2);
+        }
+        .dark-mode .conference-timeline-event.event-result:hover .conference-timeline-event-chip {
+            background: linear-gradient(135deg, rgba(154, 52, 18, 0.5), rgba(194, 65, 12, 0.3));
+            border-color: rgba(251, 146, 60, 0.35);
         }
         .dark-mode .conference-timeline-date-tag.event-result {
-            color: #ffdfc7;
-            background: #4b3425;
-            border-color: #7e5a41;
+            color: #fdba74;
+            background: linear-gradient(135deg, rgba(124, 45, 18, 0.5), rgba(154, 52, 18, 0.3));
+            border: 1px solid rgba(251, 146, 60, 0.2);
         }
 
         .dark-mode .conference-timeline-event.event-today .conference-timeline-event-chip {
-            color: #d7ffe6;
-            background: #1f4a34;
-            border-color: #3f7a59;
+            color: #86efac;
+            background: linear-gradient(135deg, rgba(20, 83, 45, 0.5), rgba(22, 101, 52, 0.3));
+            border-color: rgba(52, 211, 153, 0.2);
+        }
+        .dark-mode .conference-timeline-event.event-today:hover .conference-timeline-event-chip {
+            background: linear-gradient(135deg, rgba(22, 101, 52, 0.5), rgba(21, 128, 61, 0.3));
+            border-color: rgba(52, 211, 153, 0.35);
         }
         .dark-mode .conference-timeline-date-tag.event-today {
-            color: #d7ffe6;
-            background: #1f4a34;
-            border-color: #3f7a59;
+            color: #86efac;
+            background: linear-gradient(135deg, rgba(20, 83, 45, 0.5), rgba(22, 101, 52, 0.3));
+            border: 1px solid rgba(52, 211, 153, 0.2);
         }
 
-        .dark-mode .conference-timeline-side-label.side-left {
-            color: #d8e8fb;
-            background: #22364c;
-            border-color: #3e5f81;
+        .dark-mode .conference-timeline-connector.event-deadline {
+            background: linear-gradient(90deg, transparent, #60a5fa);
         }
 
-        .dark-mode .conference-timeline-side-label.side-right {
-            color: #ffdfc7;
-            background: #4b3425;
-            border-color: #7e5a41;
+        .dark-mode .conference-timeline-connector.event-result {
+            background: linear-gradient(90deg, transparent, #fb923c);
         }
 
-        .dark-mode .conference-timeline-legend-item {
-            color: #d0dfef;
-        }
-
-        .dark-mode .conference-timeline-footnote {
-            color: #aeb9c4;
+        .dark-mode .conference-timeline-connector.event-today {
+            background: linear-gradient(90deg, transparent, #34d399);
         }
 
         .dark-mode .conference-timeline-marker {
-            border-color: #1f2b37;
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+            border-color: #0f172a;
+        }
+
+        .dark-mode .conference-timeline-marker.event-deadline {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2), 0 0 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .dark-mode .conference-timeline-marker.event-result {
+            background: linear-gradient(135deg, #fb923c, #f97316);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2), 0 0 12px rgba(249, 115, 22, 0.4);
+        }
+
+        .dark-mode .conference-timeline-marker.event-today {
+            background: linear-gradient(135deg, #34d399, #22c55e);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2), 0 0 12px rgba(34, 197, 94, 0.4);
+        }
+
+        .dark-mode .conference-timeline-legend-item {
+            color: #94a3b8;
+        }
+
+        .dark-mode .conference-timeline-footnote {
+            color: #475569;
         }
 
         @media (min-width: 1101px) {
@@ -3017,10 +3370,10 @@
                 grid-template-areas:
                     "top"
                     "content"
-                    "timeline";
+                    "sidebar";
             }
 
-            .main-content > .conference-timeline-card {
+            .main-content > .sidebar > .conference-timeline-card {
                 position: static;
                 max-height: none;
             }
@@ -3082,7 +3435,17 @@
 <body>
     <div class="container">
         <div class="main-content">
-            <section class="conference-timeline-card" aria-label="会议时间轴">
+            <div class="sidebar">
+                <div id="result-charts">
+                <div class="charts-title" id="charts-title">论文分布（年份/会议）</div>
+                <div class="chart-row">
+                    <div class="chart-bars" id="year-chart-bars"></div>
+                </div>
+                <div class="chart-row">
+                    <div class="chart-bars" id="conf-chart-bars"></div>
+                </div>
+                </div>
+                <section class="conference-timeline-card" aria-label="会议时间轴">
                 <div class="conference-timeline-head">
                     <div class="conference-timeline-head-row">
                         <h2 id="timeline-title" class="conference-timeline-title">会议时间轴</h2>
@@ -3098,24 +3461,20 @@
                         </div>
                     </div>
                     <p id="timeline-note" class="conference-timeline-note">主要参考 2025 年时间安排，实际每年会有调整。</p>
+                    <p id="timeline-footnote" class="conference-timeline-footnote">主要参考2025年的数据</p>
                 </div>
                 <div class="conference-timeline-scroll">
                     <div class="conference-timeline-track" id="conference-timeline-track">
                         <div class="conference-timeline-line"></div>
                     </div>
                 </div>
-                <p id="timeline-footnote" class="conference-timeline-footnote">主要参考2025年的数据</p>
             </section>
+            </div>
 
             <!-- 顶部导航栏 -->
             <div class="top-bar">
-                <div class="top-bar-inner">
                     <div class="top-bar-row top-bar-row-1 control-panel">
                         <div class="control-group control-group-main">
-                            <div class="search-controls">
-                                <input type="text" id="topic-input" class="top-bar-input search-input" placeholder="flow matching">
-                                <button id="search-btn" class="top-bar-button" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></button>
-                            </div>
                             <div class="field-group">
                                 <div class="field-dropdown" data-field="ML">
                                     <div class="field-label dropdown-toggle" data-field="ML">
@@ -3141,47 +3500,36 @@
                                     </div>
                                     <div class="dropdown-content" id="dropdown-AI"></div>
                                 </div>
-                                <div class="field-dropdown" data-field="All">
-                                    <div class="field-label" data-field="All">
-                                        <input type="checkbox" id="select-all-checkbox" class="field-main-checkbox" data-field="All">
-                                        <span>All</span>
-                                    </div>
-                                </div>
+                            </div>
+                            <div class="search-controls">
+                                <button id="clear-btn" class="top-bar-button" aria-label="清空"><i class="fas fa-times"></i></button>
+                                <input type="text" id="topic-input" class="top-bar-input search-input" placeholder="for with">
+                                <button id="search-btn" class="top-bar-button" aria-label="搜索"><i class="fas fa-search" aria-hidden="true"></i></button>
                             </div>
                             <div class="control-group-year-inline">
-                                <label class="year-recent">
-                                <input type="checkbox" id="recent-checkbox">
-                                    <span id="recent-label">最近</span>
-                                </label>
                                 <div class="year-selector">
-                                    <select id="start-year" class="top-bar-input year-select">
-                                        <option value="2026">2026</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2024" selected>2024</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2022">2022</option>
-                                        <option value="2021">2021</option>
-                                        <option value="2020">2020</option>
-                                        <option value="2019">2019</option>
-                                    </select>
+                                    <select id="start-year" style="display:none"></select>
+                                    <div class="year-stepper">
+                                        <button class="year-btn" data-target="start" data-dir="-1">−</button>
+                                        <span id="start-year-display" class="year-input">-</span>
+                                        <button class="year-btn" data-target="start" data-dir="1">+</button>
+                                    </div>
+                                    <select id="end-year" style="display:none"></select>
                                     <span id="year-separator">&rarr;</span>
-                                    <select id="end-year" class="top-bar-input year-select">
-                                        <option value="2025" selected>2025</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2022">2022</option>
-                                        <option value="2021">2021</option>
-                                        <option value="2020">2020</option>
-                                        <option value="2019">2019</option>
-                                    </select>
+                                    <div class="year-stepper">
+                                        <button class="year-btn" data-target="end" data-dir="-1">−</button>
+                                        <span id="end-year-display" class="year-input">-</span>
+                                        <button class="year-btn" data-target="end" data-dir="1">+</button>
+                                    </div>
+                                    <button id="recent-btn" class="top-bar-button" title="最近">
+                                        <i id="recent-label" class="fas fa-crosshairs"></i>
+                                    </button>
                                 </div>
+                                <button id="copy-page-btn" class="top-bar-button" title="复制本页"><i class="fas fa-copy"></i></button>
+                                <button id="copy-all-btn" class="top-bar-button" title="复制全部"><i class="fas fa-copy"></i><i class="fas fa-copy" style="margin-left:-10px;opacity:0.45;font-size:0.85em"></i></button>
                             </div>
                         </div>
-                        <div class="control-group control-group-lang">
-                            <button id="lang-toggle-btn" class="top-bar-button secondary">中 / EN</button>
-                        </div>
                     </div>
-                </div>
             </div>
             
             <!-- 原来的侧边栏 - 隐藏 -->
@@ -3247,9 +3595,10 @@
 
     <!-- 移动端侧边栏切换按钮 -->
 
-    <!-- 返回顶部按钮 -->
-    <div id="back-to-top" class="back-to-top" style="display: none;">
-        <i class="fas fa-chevron-up"></i>
+    <!-- 返回顶部 + 语言切换 -->
+    <div id="back-to-top" class="back-to-top">
+        <div id="lang-toggle" class="float-btn">EN</div>
+        <i class="fas fa-chevron-up float-btn primary"></i>
     </div>
 
     <script src="js/script.js"></script>

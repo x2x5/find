@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const versionBadge = document.querySelector('.version-badge');
     const searchBtn = document.getElementById('search-btn');
     const topicInput = document.getElementById('topic-input');
-    const langToggleBtn = document.getElementById('lang-toggle-btn');
+    const oldLangToggleBtn = null;
     const recentLabel = document.getElementById('recent-label');
     const timelineTitle = document.getElementById('timeline-title');
     const timelineNote = document.getElementById('timeline-note');
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const startYearLabel = document.getElementById('start-year-label');
     const endYearLabel = document.getElementById('end-year-label');
     const yearSliderFill = document.getElementById('year-slider-fill');
-    const recentCheckbox = document.getElementById('recent-checkbox');
+    const recentCheckbox = null;
     const fieldMainCheckboxes = document.querySelectorAll('.field-main-checkbox');
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
     const paginationContainer = document.getElementById('pagination-container');
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let prefetchTimer = null;
     let availableYears = [];
     let isSyncingYearControls = false;
-    let currentLang = localStorage.getItem('uiLang') || 'zh';
+    let currentLang = 'zh';
 
     function getTimelineMonthLabel(monthDate) {
         const month = monthDate.getMonth() + 1;
@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
             searchBtn.innerHTML = '<i class="fas fa-search" aria-hidden="true"></i>';
             searchBtn.setAttribute('aria-label', isEn ? 'Search' : '搜索');
         }
-        if (topicInput) topicInput.placeholder = 'flow matching';
-        if (recentLabel) recentLabel.textContent = isEn ? 'Recent' : '最近';
+        if (topicInput) topicInput.placeholder = 'for with';
+        if (recentLabel) recentLabel.title = isEn ? 'Recent years' : '最近';
         if (timelineTitle) timelineTitle.textContent = isEn ? 'Conf Timeline' : '会议时间轴';
         if (timelineNote) {
             timelineNote.textContent = '';
@@ -101,6 +101,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 ? 'Mainly based on 2025 data.'
                 : '主要参考2025年的数据';
         }
+        const chartsTitle = document.getElementById('charts-title');
+        if (chartsTitle) chartsTitle.textContent = isEn ? 'Paper Distribution (Year / Conf)' : '论文分布（年份/会议）';
         if (legendDeadlineLabel) legendDeadlineLabel.textContent = isEn ? 'Submit' : '投稿';
         if (legendResultLabel) legendResultLabel.textContent = isEn ? 'Accept' : '接受';
         if (conferenceHeader) conferenceHeader.textContent = isEn ? 'Conference' : '会议';
@@ -116,16 +118,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     ? 'Enter keywords, then find papers.'
                     : '输入关键词，然后查找论文。');
         }
-        if (langToggleBtn) langToggleBtn.textContent = isEn ? 'EN / 中' : '中 / EN';
+        const langToggleBtn = document.getElementById('lang-toggle');
+        if (langToggleBtn) {
+            langToggleBtn.textContent = isEn ? '中' : 'EN';
+        }
         document.documentElement.lang = isEn ? 'en' : 'zh-CN';
     }
 
     if (versionInfo) {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        versionInfo.textContent = `Top AI Papers · updated ${year}-${month}-${day}`;
+        versionInfo.textContent = 'Top AI Papers · updated 2026-05-01 19:21:42';
     }
 
     function formatMonthDay(month, day) {
@@ -402,32 +403,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (event.side === 'left') {
                 const targetX = axisTargetX;
-                const connectorLeft = targetX - arrowLineLength;
-                const desiredLeft = connectorLeft - connectorGap - nodeWidth;
-                const nodeLeft = Math.max(sidePadding + monthColumnWidth + 2, desiredLeft);
+                const gap = 4;
+                const connLen = 12;
+                const rightEdge = targetX - connLen - gap;
+                const nodeLeft = rightEdge - nodeWidth;
                 eventNode.style.left = `${nodeLeft}px`;
+                const connectorLeft = targetX - connLen;
                 appendTimelineConnector(
                     conferenceTimelineTrack,
                     event.typeClass,
                     connectorLeft,
                     event.labelY,
-                    arrowLineLength,
+                    connLen,
                     'horizontal'
                 );
                 appendTimelineMarker(conferenceTimelineTrack, event.typeClass, targetX, event.labelY);
             } else {
                 const targetX = axisTargetX;
-                const connectorLeft = targetX;
-                const desiredLeft = connectorLeft + arrowLineLength + connectorGap;
-                const maxLeft = Math.max(sidePadding, timelineWidth - sidePadding - nodeWidth);
-                const nodeLeft = Math.min(desiredLeft, maxLeft);
+                const rightEdge = timelineWidth - sidePadding;
+                const nodeLeft = rightEdge - nodeWidth;
                 eventNode.style.left = `${nodeLeft}px`;
+                const connLen = nodeLeft - targetX;
                 appendTimelineConnector(
                     conferenceTimelineTrack,
                     event.typeClass,
-                    connectorLeft,
+                    targetX,
                     event.labelY,
-                    arrowLineLength,
+                    connLen,
                     'horizontal'
                 );
                 appendTimelineMarker(conferenceTimelineTrack, event.typeClass, targetX, event.labelY);
@@ -451,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (manifestCache.loaded) {
             return manifestCache.data;
         }
-        const response = await fetch(DATA_MANIFEST_URL, { cache: 'force-cache' });
+        const response = await fetch(DATA_MANIFEST_URL + '?t=' + Date.now());
         if (!response.ok) {
             throw new Error('Failed to load manifest');
         }
@@ -473,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return [];
         }
 
-        const response = await fetch(confInfo.file, { cache: 'force-cache' });
+        const response = await fetch(confInfo.file + '?t=' + Date.now());
         if (!response.ok) {
             throw new Error(`Failed to load data for ${conference}`);
         }
@@ -552,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 翻页相关变量
     let allFilteredPapers = []; // 存储所有过滤后的论文
     let currentPage = 1; // 当前页数，从1开始
-    const papersPerPage = 50; // 每页显示的论文数量
+    const papersPerPage = 33;
     let totalPages = 0; // 总页数
 
     function updateTitleHeaderSummary(shown, total) {
@@ -700,10 +702,10 @@ document.addEventListener('DOMContentLoaded', function() {
         searchBtn.addEventListener('click', async function() {
             let searchTerm = topicInput.value.trim();
             
-            // 如果输入框是默认的placeholder内容或为空，使用"flow matching"
-            if (!searchTerm || searchTerm === 'flow matching') {
-                searchTerm = 'flow matching';
-                topicInput.value = searchTerm; // 更新输入框显示
+            // 如果输入框为空，使用默认搜索词
+            if (!searchTerm) {
+                searchTerm = 'for with';
+                topicInput.value = searchTerm;
             }
             
             currentSearchTerm = searchTerm; // 保存当前搜索词
@@ -721,6 +723,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 如果没有选中任何会议，显示提示
                 if (conferences.length === 0) {
                     showNoResultsMessage(true);
+                    renderSearchCharts([]);
                     alert(currentLang === 'en'
                         ? 'Please select at least one field or conference to search.'
                         : '请至少选择一个领域或会议后再搜索。');
@@ -740,6 +743,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         const papers = data || [];
                         const keywords = searchTerm.split(' ').filter(k => k.trim() !== '');
 
+                        // 驼峰分词：CrossView → ["Cross", "View"]
+                        function splitCamelCase(word) {
+                            return word.split(/(?<=[a-z])(?=[A-Z])/);
+                        }
+                        function makeFlexiblePattern(keyword) {
+                            const parts = splitCamelCase(keyword);
+                            if (parts.length <= 1) return null;
+                            const escaped = parts.map(p => p.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+                            return escaped.join('[^a-zA-Z]*');
+                        }
+
                         const filteredPapers = papers.filter(paper => {
                             if (conferences.length > 0 && !conferences.includes(paper.conference)) {
                                 return false;
@@ -754,10 +768,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             if (keywords.length === 0) return true;
                             const titleLower = paper.title.toLowerCase();
-                            return keywords.every(keyword => titleLower.includes(keyword.toLowerCase()));
+                            return keywords.every(keyword => {
+                                const kw = keyword.toLowerCase();
+                                if (titleLower.includes(kw)) return true;
+                                const fp = makeFlexiblePattern(keyword);
+                                if (fp && new RegExp(fp).test(titleLower)) return true;
+                                return false;
+                            });
                         });
                     
-                    // 随机排序所有过滤后的论文
+                    // 随机打乱用于分页
                     const shuffledPapers = [...filteredPapers].sort(() => 0.5 - Math.random());
                     
                     console.log('Filtered papers:', shuffledPapers.length);
@@ -768,10 +788,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     // 存储所有过滤后的论文
                     allFilteredPapers = shuffledPapers;
                     
+                    renderSearchCharts(shuffledPapers);
+                    
                     // 显示过滤后的论文
                     if (shuffledPapers.length > 0) {
                         // 计算总页数
                         totalPages = Math.ceil(shuffledPapers.length / papersPerPage);
+
                         currentPage = 1;
                         
                         // 显示第一页
@@ -798,9 +821,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             } else {
                 showNoResultsMessage(true);
+                renderSearchCharts([]);
             }
         });
         
+        const clearBtn = document.getElementById('clear-btn');
+        if (clearBtn && topicInput) {
+            clearBtn.addEventListener('click', function() {
+                topicInput.value = '';
+                topicInput.focus();
+            });
+        }
+
         // Support Enter key for search
         topicInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -1000,20 +1032,36 @@ document.addEventListener('DOMContentLoaded', function() {
             'aaai': 'ai', 'ijcai': 'ai', 'mm': 'ai'
         };
         
-        // 计算标题的字母个数（忽略空格、数字和标点）
-        function countLetters(title) {
-            return (title.match(/[A-Za-z]/g) || []).length;
-        }
-
-        // 当前页内按字母个数从少到多排序
-        papers.sort((a, b) => {
-            const aLetterCount = countLetters(a.title);
-            const bLetterCount = countLetters(b.title);
-            if (aLetterCount !== bLetterCount) {
-                return aLetterCount - bLetterCount;
+        // 当前页内排序：先按是否"顺序整词匹配"分组，同分按标题长度排
+        if (currentSearchTerm && currentSearchTerm.trim()) {
+            const keywords = currentSearchTerm.split(' ').filter(k => k.trim() !== '');
+            function escapeReg(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+            function makeOrderedPattern(keywords) {
+                const parts = [];
+                for (const kw of keywords) {
+                    const k = kw.toLowerCase();
+                    const camelParts = k.split(/(?<=[a-z])(?=[A-Z])/);
+                    if (camelParts.length > 1) {
+                        parts.push(camelParts.map(p => '\\b' + escapeReg(p) + '\\b').join('[^a-zA-Z]*'));
+                    } else {
+                        parts.push('\\b' + escapeReg(k) + '\\b');
+                    }
+                }
+                return parts.join('\\b.*\\b');
             }
-            return a.title.localeCompare(b.title);
-        });
+            const orderedPattern = makeOrderedPattern(keywords);
+            const orderedRegex = new RegExp(orderedPattern);
+            function scorePaper(paper) {
+                const titleLower = paper.title.toLowerCase();
+                if (orderedRegex.test(titleLower)) return 2;
+                return 1;
+            }
+            papers.sort((a, b) => {
+                const diff = scorePaper(b) - scorePaper(a);
+                if (diff !== 0) return diff;
+                return a.title.length - b.title.length;
+            });
+        }
         
         const listTbody = papersList.querySelector('tbody');
         if (!listTbody) return;
@@ -1414,12 +1462,74 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     applyLanguage(currentLang);
+    const langToggleBtn = document.getElementById('lang-toggle');
     if (langToggleBtn) {
-        langToggleBtn.addEventListener('click', function() {
+        langToggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
             currentLang = currentLang === 'zh' ? 'en' : 'zh';
             localStorage.setItem('uiLang', currentLang);
             applyLanguage(currentLang);
             renderConferenceTimeline();
+        });
+    }
+
+    function showToast(msg) {
+        let toast = document.getElementById('copy-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'copy-toast';
+            toast.style.cssText = 'position:fixed;bottom:90px;right:30px;background:#333;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = msg;
+        toast.style.opacity = '1';
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+    }
+
+    function copyText(text, btn, msg) {
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(msg);
+            }).catch(() => {});
+        } else {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast(msg);
+        }
+    }
+
+    const copyAllBtn = document.getElementById('copy-all-btn');
+    if (copyAllBtn) {
+        copyAllBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (!allFilteredPapers || allFilteredPapers.length === 0) return;
+            const text = allFilteredPapers.map(p =>
+                `- ${p.conference} ${p.year} ${p.title}`
+            ).join('\n');
+            const isEn = currentLang === 'en';
+            copyText(text, this, isEn ? 'Copied all' : '已复制全部');
+        });
+    }
+
+    const copyPageBtn = document.getElementById('copy-page-btn');
+    if (copyPageBtn) {
+        copyPageBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (!allFilteredPapers || allFilteredPapers.length === 0) return;
+            const startIndex = (currentPage - 1) * papersPerPage;
+            const endIndex = Math.min(startIndex + papersPerPage, allFilteredPapers.length);
+            const pagePapers = allFilteredPapers.slice(startIndex, endIndex);
+            const text = pagePapers.map(p =>
+                `- ${p.conference} ${p.year} ${p.title}`
+            ).join('\n');
+            const isEn = currentLang === 'en';
+            copyText(text, this, isEn ? 'Copied page' : '已复制本页');
         });
     }
 
@@ -1465,10 +1575,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function updateYearDisplay() {
+        const sd = document.getElementById('start-year-display');
+        const ed = document.getElementById('end-year-display');
+        if (sd && startYearSelect) sd.textContent = startYearSelect.value;
+        if (ed && endYearSelect) ed.textContent = endYearSelect.value;
+    }
+
     function rebuildYearSliderModel() {
         if (!startYearSelect || !endYearSelect) return;
-        const years = collectAvailableYears();
+        let years = collectAvailableYears();
         if (years.length === 0) return;
+        // Ensure full range from availableYears minimum to current year
+        const fullMin = Math.min(...years, 2013);
+        const fullMax = Math.max(...years, new Date().getFullYear());
+        for (let y = fullMin; y <= fullMax; y++) {
+            if (!years.includes(y)) years.push(y);
+        }
+        years.sort((a, b) => a - b);
 
         years.forEach(year => {
             ensureYearExistsInSelect(startYearSelect, year);
@@ -1479,7 +1603,39 @@ document.addEventListener('DOMContentLoaded', function() {
         normalizeYearSelectOptions(endYearSelect, yearsDesc);
 
         availableYears = years;
-        if (startYearRange && endYearRange) {
+    }
+
+    document.querySelectorAll('.year-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const target = this.dataset.target;
+            const dir = parseInt(this.dataset.dir, 10);
+            const sel = target === 'start' ? startYearSelect : endYearSelect;
+            if (!sel) return;
+            let val = parseInt(sel.value, 10);
+            if (!Number.isFinite(val)) val = target === 'start' ? 2025 : 2026;
+            val += dir;
+            const minYear = availableYears && availableYears.length > 0 ? availableYears[0] : 2013;
+            const maxYear = new Date().getFullYear();
+            if (val < minYear || val > maxYear) return;
+            const vs = String(val);
+            const otherSel = target === 'start' ? endYearSelect : startYearSelect;
+            [sel, otherSel].forEach(s => {
+                if (!s || s.querySelector(`option[value="${vs}"]`)) return;
+                const opt = document.createElement('option');
+                opt.value = vs; opt.textContent = vs;
+                s.add(opt);
+            });
+            if (availableYears && !availableYears.includes(val)) {
+                availableYears.push(val);
+                availableYears.sort((a, b) => a - b);
+            }
+            sel.value = vs;
+            validateYearRange();
+            updateYearDisplay();
+        });
+    });
+
+    if (startYearRange && endYearRange) {
             const maxIndex = Math.max(availableYears.length - 1, 0);
             startYearRange.min = '0';
             startYearRange.max = String(maxIndex);
@@ -1488,7 +1644,6 @@ document.addEventListener('DOMContentLoaded', function() {
             endYearRange.max = String(maxIndex);
             endYearRange.step = '1';
         }
-    }
 
     function yearToSliderIndex(year) {
         if (availableYears.length === 0) return 0;
@@ -1638,6 +1793,7 @@ document.addEventListener('DOMContentLoaded', function() {
         validateYearRange();
         startYearSelect.dispatchEvent(new Event('change'));
         endYearSelect.dispatchEvent(new Event('change'));
+        updateYearDisplay();
         flashYearSelector();
         updateRecentCheckboxState();
     }
@@ -1667,17 +1823,13 @@ document.addEventListener('DOMContentLoaded', function() {
         return parseInt(startYearSelect.value, 10) === s && parseInt(endYearSelect.value, 10) === e;
     }
 
-    function updateRecentCheckboxState() {
-        if (!recentCheckbox) return;
-        recentCheckbox.checked = isRecentRangeSelected();
-    }
-
-    if (recentCheckbox) {
-        recentCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                applyRecentRange();
-            }
-            updateRecentCheckboxState();
+    function updateRecentCheckboxState() {}
+    const recentBtn = document.getElementById('recent-btn');
+    if (recentBtn) {
+        recentBtn.addEventListener('click', function() {
+            applyRecentRange();
+            this.classList.add('pressed');
+            setTimeout(() => this.classList.remove('pressed'), 400);
         });
     }
 
@@ -1903,6 +2055,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         validateYearRange();
         syncYearSliderFromSelects();
+        updateYearDisplay();
     }
 
     // 设置最近三年
@@ -1936,9 +2089,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 更新年份选项并初始化滑块状态
     updateYearOptions();
-    // 首次加载默认锁定为“去年 -> 今年”，避免被静态selected年份覆盖
+    // 首次加载默认锁定为"去年 -> 今年"，避免被静态selected年份覆盖
     setRecentThreeYears();
-    // 初始化“最近”状态
+    updateYearDisplay();
+    // 初始化"最近"状态
     updateRecentCheckboxState();
     
     // 移除旧的Recent按钮逻辑（已由复选框替代）
@@ -2026,29 +2180,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 返回顶部按钮功能
     const backToTopBtn = document.getElementById('back-to-top');
 
-    // 添加滚动监听器实现返回顶部按钮控制
-    window.addEventListener('scroll', function() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // 控制返回顶部按钮的显示
-        if (scrollTop > 300) {
-            if (backToTopBtn) {
-                backToTopBtn.style.display = 'flex';
-            }
-        } else {
-            if (backToTopBtn) {
-                backToTopBtn.style.display = 'none';
-            }
-        }
-    });
-    
     // 返回顶部按钮点击事件
     if (backToTopBtn) {
-        backToTopBtn.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+        backToTopBtn.addEventListener('click', function(e) {
+            if (e.target.closest('#lang-toggle')) return;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
@@ -2074,24 +2210,66 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // 获取统计信息元素
         const displayedCount = document.getElementById('displayed-count');
         const totalCount = document.getElementById('total-count');
         
         const totalPapers = allFilteredPapers.length;
-        // 计算当前页实际显示的论文数量
         const startIndex = (currentPage - 1) * papersPerPage + 1;
         const endIndex = Math.min(currentPage * papersPerPage, totalPapers);
         const currentDisplayed = endIndex - startIndex + 1;
         
-        // 更新统计数字
         totalPapersCount.textContent = totalPapers;
         
-        // 更新统计信息（如果存在）
         if (displayedCount) displayedCount.textContent = currentDisplayed;
         if (totalCount) totalCount.textContent = totalPapers;
         
-        // 永远不显示统计信息区域，因为All按钮左边已经有统计信息了
         if (papersStats) papersStats.style.display = 'none';
+    }
+
+    function renderSearchCharts(papers) {
+        const yearColors = {
+            '2026': '#cc5200', '2025': '#e65c00', '2024': '#ff6600',
+            '2023': '#ff751a', '2022': '#ff8533', '2021': '#ff944d',
+            '2020': '#ffa366', '2019': '#ffb380', '2018': '#ffc299',
+            '2017': '#ffd1b3',
+        };
+        function getYearColor(year) {
+            return yearColors[year] || '#ffd1b3';
+        }
+
+        const confColors = {
+            'nips': '#d4a5ff', 'icml': '#d4a5ff', 'iclr': '#d4a5ff',
+            'cvpr': '#8ecf70', 'eccv': '#8ecf70', 'iccv': '#8ecf70',
+            'aaai': '#ff9a9a', 'ijcai': '#ff9a9a', 'mm': '#ff9a9a',
+        };
+
+        const yearBars = document.getElementById('year-chart-bars');
+        const confBars = document.getElementById('conf-chart-bars');
+
+        if (!papers || papers.length === 0) {
+            yearBars.innerHTML = '';
+            confBars.innerHTML = '';
+            return;
+        }
+
+        const yearCounts = {};
+        for (const p of papers) yearCounts[p.year] = (yearCounts[p.year] || 0) + 1;
+        const years = Object.keys(yearCounts).sort((a, b) => parseInt(a) - parseInt(b));
+        const yearMax = Math.max(...Object.values(yearCounts), 1);
+        yearBars.innerHTML = years.map(y => {
+            const h = (yearCounts[y] / yearMax * 34 + 4);
+            return `<div class="chart-bar-wrap"><div class="chart-bar-value">${yearCounts[y]}</div><div class="chart-bar" style="height:${h}px;background:${getYearColor(y)}"></div><div class="chart-bar-label">${y}</div></div>`;
+        }).join('');
+
+        const confCounts = {};
+        for (const p of papers) confCounts[p.conference] = (confCounts[p.conference] || 0) + 1;
+        const confOrder = ['iclr', 'nips', 'icml', 'cvpr', 'iccv', 'eccv', 'aaai', 'ijcai', 'mm'];
+        const confs = confOrder.filter(c => confCounts[c]);
+        const confMax = Math.max(...Object.values(confCounts), 1);
+        confBars.innerHTML = confs.map(c => {
+            const h = (confCounts[c] / confMax * 34 + 4);
+            const color = confColors[c.toLowerCase()] || '#ccc';
+            return `<div class="chart-bar-wrap"><div class="chart-bar-value">${confCounts[c]}</div><div class="chart-bar" style="height:${h}px;background:${color}"></div><div class="chart-bar-label">${c.toUpperCase()}</div></div>`;
+        }).join('');
     }
 }); 

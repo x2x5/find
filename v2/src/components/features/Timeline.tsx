@@ -12,7 +12,7 @@ const RAW_DATA = [
   { deadline: '11-15', result: '02-26', conference: 'CVPR' },
 ];
 
-const MONTH_LABELS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '翌年1月', '翌年2月'];
+const MONTH_LABELS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '次年1月', '次年2月'];
 
 const HEIGHTS = [24, 36, 48];
 
@@ -102,6 +102,8 @@ export default function Timeline() {
               style={{ left: `${(i / 14) * 100}%` }}
             />
           ))}
+          {/* 右端箭头 */}
+          <div className="absolute top-[-5px] right-[-10px] w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-zinc-300 dark:border-l-zinc-600 border-b-[6px] border-b-transparent" />
         </div>
 
         {/* 事件 */}
@@ -111,7 +113,6 @@ export default function Timeline() {
           const dotColor = ev.type === 'deadline' ? 'bg-rose-500' : ev.type === 'result' ? 'bg-emerald-500' : 'bg-indigo-500';
           const lineColor = ev.type === 'deadline' ? 'bg-rose-300 dark:bg-rose-700/60' : ev.type === 'result' ? 'bg-emerald-300 dark:bg-emerald-700/60' : 'bg-indigo-300 dark:bg-indigo-700/60';
           const textColor = ev.type === 'deadline' ? 'text-rose-600 dark:text-rose-300' : ev.type === 'result' ? 'text-emerald-600 dark:text-emerald-300' : 'text-indigo-600 dark:text-indigo-300';
-          const dotSize = ev.type === 'today' ? 'w-2.5 h-2.5' : 'w-2 h-2';
           const lineWidth = ev.type === 'today' ? 'w-[2px]' : 'w-px';
 
           return (
@@ -120,17 +121,26 @@ export default function Timeline() {
               className={`absolute flex flex-col items-center ${isAbove ? 'flex-col-reverse bottom-[80px]' : 'top-[80px]'}`}
               style={{ left: `${ev.position}%`, transform: 'translateX(-50%)' }}
             >
-              {/* 圆点 */}
-              <div className={`${dotSize} rounded-full ${dotColor} border-2 border-white dark:border-zinc-900 flex-shrink-0`} />
+              {/* 圆点（统一大小，中心在横线） */}
+              <div className={`w-2 h-2 rounded-full ${dotColor} border-2 border-white dark:border-zinc-900 flex-shrink-0 ${isAbove ? '-mb-1' : '-mt-1'}`} />
 
               {/* 竖线 */}
               <div className={`${lineWidth} ${lineColor} flex-shrink-0`} style={{ height: `${ev.height}px` }} />
 
               {/* 文字 */}
-              <div className={`text-center leading-tight whitespace-nowrap ${textColor}`}>
-                <div className="text-[11px] font-semibold">{ev.label}</div>
-                <div className="text-[10px] font-normal opacity-70">{ev.date}</div>
-              </div>
+              {isAbove ? (
+                // 横线上方：日期 → 会议名
+                <div className={`text-center leading-tight whitespace-nowrap ${textColor}`}>
+                  <div className="text-[10px] font-normal opacity-70">{ev.date}</div>
+                  <div className="text-[11px] font-semibold">{ev.label}</div>
+                </div>
+              ) : (
+                // 横线下方：会议名 → 日期
+                <div className={`text-center leading-tight whitespace-nowrap ${textColor}`}>
+                  <div className="text-[11px] font-semibold">{ev.label}</div>
+                  <div className="text-[10px] font-normal opacity-70">{ev.date}</div>
+                </div>
+              )}
             </div>
           );
         })}

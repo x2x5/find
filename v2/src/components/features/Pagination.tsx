@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useAppContext } from '@/context/AppContext';
 
 interface PaginationProps {
   currentPage: number;
@@ -8,6 +9,7 @@ interface PaginationProps {
 }
 
 export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+  const { t } = useAppContext();
   const [jumpValue, setJumpValue] = useState('');
 
   const handleJump = useCallback(() => {
@@ -38,8 +40,8 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
           <ChevronLeft className="w-4 h-4" />
         </button>
         <span className="text-sm text-zinc-600 dark:text-zinc-400 px-2">
-          Page <span className="font-medium text-zinc-900 dark:text-zinc-100">{currentPage}</span> of{' '}
-          <span className="font-medium text-zinc-900 dark:text-zinc-100">{totalPages}</span>
+          {t.pagination.page} <span className="font-medium text-zinc-900 dark:text-zinc-100">{currentPage}</span>{' '}
+          {t.pagination.of} <span className="font-medium text-zinc-900 dark:text-zinc-100">{totalPages}</span>
         </span>
         <button
           onClick={() => onPageChange(currentPage + 1)}
@@ -51,7 +53,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-xs text-zinc-500">Go to</span>
+        <span className="text-xs text-zinc-500">{t.pagination.goTo}</span>
         <input
           type="text"
           inputMode="numeric"
@@ -64,7 +66,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
           onClick={handleJump}
           className="px-2 py-1 text-xs rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
         >
-          Go
+          {t.pagination.go}
         </button>
       </div>
     </div>

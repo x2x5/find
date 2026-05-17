@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { Search, X } from 'lucide-react';
+import { useAppContext } from '@/context/AppContext';
 
 interface SearchBarProps {
   value: string;
@@ -9,6 +10,7 @@ interface SearchBarProps {
 
 export default function SearchBar({ value, onChange, onSearch }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const { t } = useAppContext();
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -34,8 +36,8 @@ export default function SearchBar({ value, onChange, onSearch }: SearchBarProps)
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Search papers..."
-          className="w-full pl-9 pr-16 py-1.5 text-sm rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          placeholder={t.search.placeholder}
+          className="w-full pl-9 pr-20 py-1.5 text-sm rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
           {value && (
@@ -50,7 +52,7 @@ export default function SearchBar({ value, onChange, onSearch }: SearchBarProps)
             onClick={onSearch}
             className="px-2 py-1 text-xs font-medium rounded bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
           >
-            Search
+            {t.search.button}
           </button>
         </div>
       </div>

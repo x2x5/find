@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Manifest } from '@/types';
+import { useAppContext } from '@/context/AppContext';
 
 interface YearStepperProps {
   manifest: Manifest | null;
@@ -9,6 +10,7 @@ interface YearStepperProps {
 }
 
 export default function YearStepper({ manifest, yearRange, onChange }: YearStepperProps) {
+  const { t } = useAppContext();
   const [startYear, endYear] = yearRange;
 
   const { minYear, maxYear } = useMemo(() => {
@@ -46,18 +48,18 @@ export default function YearStepper({ manifest, yearRange, onChange }: YearStepp
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Year Range</span>
+        <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{t.sidebar.yearRange}</span>
         <button
           onClick={setRecent}
           className="text-xs px-2 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
         >
-          Recent 2y
+          {t.sidebar.recent2y}
         </button>
       </div>
 
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-zinc-500 w-8">From</span>
+          <span className="text-xs text-zinc-500 w-8">{t.sidebar.from}</span>
           <button
             onClick={() => adjustStart(-1)}
             disabled={startYear <= minYear}
@@ -78,7 +80,7 @@ export default function YearStepper({ manifest, yearRange, onChange }: YearStepp
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-zinc-500 w-8">To</span>
+          <span className="text-xs text-zinc-500 w-8">{t.sidebar.to}</span>
           <button
             onClick={() => adjustEnd(-1)}
             disabled={endYear <= startYear}
@@ -97,10 +99,6 @@ export default function YearStepper({ manifest, yearRange, onChange }: YearStepp
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
-      </div>
-
-      <div className="text-xs text-zinc-400">
-        Range: {minYear} – {maxYear}
       </div>
     </div>
   );

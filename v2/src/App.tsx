@@ -1,4 +1,5 @@
 import { useMemo, useState, useCallback } from 'react';
+import { AppProvider } from './context/AppContext';
 import Header from './components/layout/Header';
 import Sidebar from './components/layout/Sidebar';
 import PapersTable from './components/features/PapersTable';
@@ -7,7 +8,7 @@ import { usePapers } from './hooks/usePapers';
 import { filterPapers } from './lib/search';
 import { shuffle } from './lib/shuffle';
 
-export default function App() {
+function AppContent() {
   const { manifest, loading: manifestLoading, error: manifestError } = useManifest();
 
   const [selectedConfs, setSelectedConfs] = useState<Set<string>>(
@@ -85,5 +86,13 @@ export default function App() {
         </section>
       </main>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 }

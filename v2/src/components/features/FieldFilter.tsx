@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { Manifest } from '@/types';
-import { CONFERENCE_FIELDS, FIELD_LABELS, CONFERENCE_NAMES } from '@/lib/conferences';
+import { CONFERENCE_FIELDS, CONFERENCE_NAMES } from '@/lib/conferences';
+import { useAppContext } from '@/context/AppContext';
 
 interface FieldFilterProps {
   manifest: Manifest | null;
@@ -12,6 +13,7 @@ interface FieldFilterProps {
 const FIELDS = ['CV', 'AI', 'ML'] as const;
 
 export default function FieldFilter({ manifest, selectedConfs, onToggleConf }: FieldFilterProps) {
+  const { t } = useAppContext();
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['CV', 'AI', 'ML']));
 
   const confsByField = manifest
@@ -85,7 +87,7 @@ export default function FieldFilter({ manifest, selectedConfs, onToggleConf }: F
                   />
                 </div>
                 <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                  {FIELD_LABELS[field]}
+                  {(t.fields as Record<string, string>)[field]}
                 </span>
                 <span className="text-xs text-zinc-500">({confs.length})</span>
               </div>

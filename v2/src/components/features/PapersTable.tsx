@@ -3,6 +3,7 @@ import { MathJax } from 'better-react-mathjax';
 import { Copy, Check } from 'lucide-react';
 import type { Paper } from '@/types';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
+import { useAppContext } from '@/context/AppContext';
 import Pagination from './Pagination';
 
 interface PapersTableProps {
@@ -17,6 +18,7 @@ const FIELD_COLORS: Record<string, { bg: string; text: string; darkBg: string; d
 };
 
 export default function PapersTable({ papers = [], pageSize = 50 }: PapersTableProps) {
+  const { t } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
@@ -53,7 +55,7 @@ export default function PapersTable({ papers = [], pageSize = 50 }: PapersTableP
     <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
       <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
         <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          Papers
+          {t.table.title}
         </h2>
         <div className="flex items-center gap-3">
           <button
@@ -61,11 +63,11 @@ export default function PapersTable({ papers = [], pageSize = 50 }: PapersTableP
             disabled={pagePapers.length === 0}
             className="text-xs px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-30 transition-colors"
           >
-            Copy All
+            {t.table.copyAll}
           </button>
           <span className="text-xs text-zinc-500">
-            {papers.length} results
-            {papers.length > 0 && ` (showing ${startIdx + 1}-${Math.min(startIdx + pageSize, papers.length)})`}
+            {papers.length} {t.table.results}
+            {papers.length > 0 && ` (${t.table.showing} ${startIdx + 1}-${Math.min(startIdx + pageSize, papers.length)})`}
           </span>
         </div>
       </div>
@@ -73,7 +75,7 @@ export default function PapersTable({ papers = [], pageSize = 50 }: PapersTableP
       <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
         {papers.length === 0 ? (
           <div className="p-8 text-center text-sm text-zinc-500">
-            No papers match your filters
+            {t.table.noResults}
           </div>
         ) : (
           pagePapers.map((paper, i) => {

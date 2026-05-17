@@ -7,7 +7,6 @@ import Pagination from './Pagination';
 interface PapersTableProps {
   papers?: Paper[];
   pageSize?: number;
-  onPageSizeChange?: (size: number) => void;
   searchTrigger?: string;
   onShowToast?: (message: string) => void;
   onAddToCart?: (paper: Paper) => void;
@@ -45,7 +44,7 @@ const FIELD_COLORS: Record<string, { bg: string; text: string; darkBg: string; d
   ML: { bg: 'bg-emerald-100', text: 'text-emerald-700', darkBg: 'dark:bg-emerald-950', darkText: 'dark:text-emerald-300' },
 };
 
-export default function PapersTable({ papers = [], pageSize = 50, onPageSizeChange, searchTrigger = '', onShowToast, onAddToCart }: PapersTableProps) {
+export default function PapersTable({ papers = [], pageSize = 50, searchTrigger = '', onShowToast, onAddToCart }: PapersTableProps) {
   const { t } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -102,25 +101,12 @@ export default function PapersTable({ papers = [], pageSize = 50, onPageSizeChan
   return (
     <div className="w-full min-w-0 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
       <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-        <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 shrink-0">
-          {t.table.title}
-        </h2>
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] text-indigo-300 dark:text-indigo-500 mr-0.5">{t.pagination.perPage}</span>
-          {[10, 50, 100].map((n) => (
-            <button
-              key={n}
-              onClick={() => onPageSizeChange?.(n)}
-              className={`text-xs px-1.5 py-0.5 rounded font-medium tabular-nums transition-colors ${
-                pageSize === n
-                  ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300'
-                  : 'text-indigo-400 hover:text-indigo-600 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/40'
-              }`}
-            >
-              {n}
-            </button>
-          ))}
-        </div>
+        <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">
+          {papers.length > 0 ? `${papers.length} 篇` : ''}
+        </span>
+        <span className="text-xs text-zinc-500">
+          {papers.length > 0 ? `${startIdx + 1}-${Math.min(startIdx + pageSize, papers.length)}` : ''}
+        </span>
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleCopyPage}

@@ -91,13 +91,14 @@ function AppContent() {
       <Header
         searchValue={searchValue}
         onSearchChange={setSearchValue}
-        resultCount={filteredPapers.length}
         luckyPaper={luckyPaper}
         showTimeline={showTimeline}
         onToggleTimeline={() => setShowTimeline((v) => !v)}
         manifest={manifest}
         yearRange={yearRange}
         onYearChange={handleYearChange}
+        pageSize={pageSize}
+        onPageSizeChange={setPageSize}
       />
 
       {showTimeline && <Timeline />}
@@ -139,13 +140,13 @@ function AppContent() {
           )}
 
           {!combinedLoading && !combinedError && (
-            <PapersTable papers={shuffledPapers} pageSize={pageSize} onPageSizeChange={setPageSize} searchTrigger={searchValue} onShowToast={showToast} onAddToCart={handleAddToCart} />
+            <PapersTable papers={shuffledPapers} pageSize={pageSize} searchTrigger={searchValue} onShowToast={showToast} onAddToCart={handleAddToCart} />
           )}
         </section>
       </main>
 
       <footer className="max-w-7xl mx-auto px-4 pb-6 text-center text-xs text-zinc-400 dark:text-zinc-500">
-        淘顶网 · 来淘点顶会吧
+        淘顶网 · 来淘点顶会吧 · <a href="about.html" className="hover:text-indigo-500">关于</a>
       </footer>
 
       <Toast

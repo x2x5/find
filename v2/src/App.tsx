@@ -80,7 +80,7 @@ function AppContent() {
           onYearChange={handleYearChange}
         />
 
-        <section className="space-y-4">
+        <section className="space-y-4 max-w-5xl">
           {combinedLoading && (
             <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
               <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">

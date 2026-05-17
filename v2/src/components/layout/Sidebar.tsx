@@ -24,15 +24,17 @@ export default function Sidebar({
   return (
     <aside className="space-y-4">
       <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-3">
-          {t.sidebar.filters}
-        </h2>
         <YearStepper
           manifest={manifest}
           yearRange={yearRange}
           onChange={onYearChange}
         />
-        <div className="my-3 border-t border-zinc-200 dark:border-zinc-800" />
+      </div>
+
+      <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-3">
+          {t.sidebar.filters}
+        </h2>
         <FieldFilter
           manifest={manifest}
           selectedConfs={selectedConfs}

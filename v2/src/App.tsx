@@ -76,6 +76,7 @@ function AppContent() {
       <main className="max-w-7xl mx-auto px-4 pt-0 pb-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
         <Sidebar
           manifest={manifest}
+          papers={filteredPapers}
           selectedConfs={selectedConfs}
           onToggleConf={handleToggleConf}
         />

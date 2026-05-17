@@ -138,33 +138,28 @@
 </div>
 
 <h2>怎么部署到自己的电脑？</h2>
-<p style="margin-top:1rem">假设你<strong>完全没接触过编程</strong>，跟着下面一步步来：</p>
 
 <h3>第一步：安装 Node.js</h3>
 <div class="card">
-  <div class="step"><span class="step-num">1</span><span>打开 <a href="https://nodejs.org">nodejs.org</a>，下载左边的 LTS 版本</span></div>
-  <div class="step"><span class="step-num">2</span><span>双击安装包，一路点 <strong>Next</strong> 直到完成</span></div>
-  <div class="step"><span class="step-num">3</span><span>打开终端（Mac 搜"终端"，Windows 搜"cmd"），输入 <code>node -v</code> 回车，看到版本号就成功了</span></div>
+  <p>打开终端，用包管理器安装：</p>
+  <pre><code># macOS
+brew install node
+
+# 或从官网下载: https://nodejs.org</code></pre>
+  <p>验证安装：<code>node -v && npm -v</code></p>
 </div>
 
-<h3>第二步：下载项目</h3>
+<h3>第二步：克隆项目</h3>
 <div class="card">
-  <div class="step"><span class="step-num">1</span><span>打开 <a href="https://github.com/x2x5/find">github.com/x2x5/find</a></span></div>
-  <div class="step"><span class="step-num">2</span><span>点绿色 <strong>Code</strong> 按钮 → <strong>Download ZIP</strong></span></div>
-  <div class="step"><span class="step-num">3</span><span>解压到任意文件夹，比如桌面上的 <code>find</code> 文件夹</span></div>
+  <pre><code>git clone https://github.com/x2x5/find.git
+cd find/v2</code></pre>
 </div>
 
-<h3>第三步：安装依赖</h3>
+<h3>第三步：安装依赖并启动</h3>
 <div class="card">
-  <div class="step"><span class="step-num">1</span><span>终端里进入项目目录：<code>cd ~/Desktop/find/v2</code>（换成你的实际路径）</span></div>
-  <div class="step"><span class="step-num">2</span><span>输入 <code>npm install</code> 回车，等待下载完成（约 1-2 分钟）</span></div>
-</div>
-
-<h3>第四步：启动</h3>
-<div class="card">
-  <div class="step"><span class="step-num">1</span><span>输入 <code>npm run dev</code> 回车</span></div>
-  <div class="step"><span class="step-num">2</span><span>看到 <code>Local: http://localhost:5173</code> 就成功了</span></div>
-  <div class="step"><span class="step-num">3</span><span>浏览器打开这个地址，搞定 🎉</span></div>
+  <pre><code>npm install
+npm run dev</code></pre>
+  <p>浏览器打开 <code>http://localhost:5173</code> 即可。</p>
 </div>
 
 <h2>怎么更新论文数据？</h2>

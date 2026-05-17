@@ -114,6 +114,6 @@ export const en: Translations = {
     cart: 'Cart',
     copy: 'Copy',
     clear: 'Clear',
-    empty: 'Click + to add papers',
+    empty: 'Click a paper title to add',
   },
 };

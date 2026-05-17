@@ -56,6 +56,6 @@ export const zh: Translations = {
     cart: '购物车',
     copy: '复制',
     clear: '清空',
-    empty: '点击论文旁 + 号添加',
+    empty: '点击论文标题加入',
   },
 };

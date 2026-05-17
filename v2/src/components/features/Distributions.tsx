@@ -34,9 +34,10 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
   }, [papers]);
 
   const confMax = Math.max(1, ...Object.values(confCounts));
+  const yearMax = Math.max(1, ...Object.values(yearCounts));
 
   const sortedYearEntries = useMemo(() => {
-    return Object.entries(yearCounts).sort(([a], [b]) => parseInt(a) - parseInt(b));
+    return Object.entries(yearCounts).sort(([a], [b]) => parseInt(b) - parseInt(a));
   }, [yearCounts]);
 
   const toggleField = (confs: string[]) => {
@@ -106,19 +107,22 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
         const yMax = Math.max(...yearNums);
 
         return (
-          <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2 space-y-1">
+          <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2 space-y-1 relative pl-7 bg-indigo-50/30 dark:bg-indigo-950/10 rounded">
+            <div className="absolute left-0 top-0 bottom-0 w-6 flex items-center justify-center">
+              <span className="text-[10px] font-bold text-indigo-400 dark:text-indigo-500">Year</span>
+            </div>
             {sortedYearEntries.map(([year, count]) => {
               const n = parseInt(year);
               const t = yMax > yMin ? (n - yMin) / (yMax - yMin) : 0.5;
               const alpha = 0.12 + t * 0.28;
               return (
-                <div key={year} className="flex items-center gap-1.5 pl-7">
-                  <span className="w-14 shrink-0 text-right text-zinc-600 dark:text-zinc-400">{year}</span>
+                <div key={year} className="flex items-center gap-1.5">
+                  <span className="w-14 shrink-0 text-right font-medium" style={{ color: `rgba(99, 102, 241, ${0.4 + t * 0.6})` }}>{year}</span>
                   <div className="flex-1 h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-sm overflow-hidden">
                     <div
                       className="h-full rounded-sm transition-all"
                       style={{
-                        width: `${(count / confMax) * 100}%`,
+                        width: `${(count / yearMax) * 100}%`,
                         background: `rgba(99, 102, 241, ${alpha})`,
                       }}
                     />

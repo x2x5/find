@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Sun, Moon, ChevronLeft, ChevronRight, ArrowRight, RotateCcw, ChevronUp } from 'lucide-react';
+import { Sun, Moon, ChevronLeft, ChevronRight, Undo2, PanelTopClose, PanelTopOpen } from 'lucide-react';
 import SearchBar from '@/components/features/SearchBar';
 import { useAppContext } from '@/context/AppContext';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
@@ -63,37 +63,38 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
     <header className="sticky top-0 z-50 max-w-7xl mx-auto px-4">
       <div className="py-3 flex items-center gap-4 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center gap-2 shrink-0">
-          <button onClick={setRecent} className="p-1 rounded-md bg-amber-50 dark:bg-amber-900/20 text-amber-500 hover:text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/40 dark:text-amber-400 dark:hover:text-amber-200" title={t.sidebar.recent2y}>
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
-          <button onClick={() => adjustStart(-1)} disabled={startYear <= minYear} className="p-0.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
-            <ChevronLeft className="w-3 h-3" />
+          <button onClick={() => adjustStart(-1)} disabled={startYear <= minYear} className="p-1 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
+            <ChevronLeft className="w-4 h-4" />
           </button>
           <span className="text-xs font-medium tabular-nums">{startYear}</span>
-          <button onClick={() => adjustStart(1)} disabled={startYear >= endYear} className="p-0.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
-            <ChevronRight className="w-3 h-3" />
+          <button onClick={() => adjustStart(1)} disabled={startYear >= endYear} className="p-1 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
+            <ChevronRight className="w-4 h-4" />
           </button>
-          <ArrowRight className="w-3 h-3 text-emerald-300 dark:text-emerald-600" />
-          <button onClick={() => adjustEnd(-1)} disabled={endYear <= startYear} className="p-0.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
-            <ChevronLeft className="w-3 h-3" />
+          <button onClick={setRecent} className="p-1 rounded-md bg-amber-50 dark:bg-amber-900/20 text-amber-500 hover:text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/40 dark:text-amber-400 dark:hover:text-amber-200" title={t.sidebar.recent2y}>
+            <Undo2 className="w-4 h-4" />
+          </button>
+          <button onClick={() => adjustEnd(-1)} disabled={endYear <= startYear} className="p-1 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
+            <ChevronLeft className="w-4 h-4" />
           </button>
           <span className="text-xs font-medium tabular-nums">{endYear}</span>
-          <button onClick={() => adjustEnd(1)} disabled={endYear >= maxYear} className="p-0.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
-            <ChevronRight className="w-3 h-3" />
+          <button onClick={() => adjustEnd(1)} disabled={endYear >= maxYear} className="p-1 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-indigo-600 dark:text-indigo-400 whitespace-nowrap font-medium">
-            {t.table.results}{' '}
-            <span className="inline-block text-left tabular-nums min-w-[2.8rem]">{resultCount}</span>
-          </span>
+          {searchValue.trim() && (
+            <span className="text-xs text-indigo-600 dark:text-indigo-400 whitespace-nowrap font-medium">
+              {t.table.results}{' '}
+              <span className="inline-block text-left tabular-nums min-w-[2.8rem]">{resultCount}</span>
+            </span>
+          )}
           <div className="ml-2">
             <SearchBar
               value={searchValue}
               onChange={onSearchChange}
             />
           </div>
-          {luckyPaper && (() => {
+          {luckyPaper && searchValue.trim() && (() => {
             const field = CONFERENCE_FIELDS[luckyPaper.conference] || 'ML';
             const fc = FIELD_COLORS[field] || FIELD_COLORS.ML;
             return (
@@ -111,7 +112,7 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
                       await navigator.clipboard.writeText(luckyPaper.title);
                     } catch {}
                   }}
-                  className="text-zinc-700 dark:text-zinc-200 truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 max-w-[280px]"
+                  className="text-zinc-700 dark:text-zinc-200 truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 max-w-[30rem]"
                   title={luckyPaper.title}
                 >
                   {luckyPaper.title}
@@ -122,13 +123,13 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
         </div>
         <div className="flex-1 text-center min-w-0" />
         <div className="flex items-center gap-1 shrink-0 ml-auto">
-          <button onClick={onToggleTimeline} className="p-1 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200" title="时间轴">
-            <ChevronUp className={`w-3.5 h-3.5 transition-transform ${showTimeline ? '' : 'rotate-180'}`} />
+          <button onClick={onToggleTimeline} className="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200" title="时间轴">
+            {showTimeline ? <PanelTopClose className="w-4 h-4" /> : <PanelTopOpen className="w-4 h-4" />}
           </button>
-          <button onClick={toggleTheme} className="p-1 rounded-md bg-rose-50 dark:bg-rose-900/20 text-rose-400 hover:text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/40 dark:text-rose-300 dark:hover:text-rose-100" title={theme === 'dark' ? t.theme.light : t.theme.dark}>
-            {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+          <button onClick={toggleTheme} className="p-1.5 rounded-md bg-rose-50 dark:bg-rose-900/20 text-rose-400 hover:text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/40 dark:text-rose-300 dark:hover:text-rose-100" title={theme === 'dark' ? t.theme.light : t.theme.dark}>
+            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
-          <button onClick={toggleLanguage} className="text-xs px-1.5 py-0.5 rounded-md bg-rose-50 dark:bg-rose-900/20 text-rose-400 hover:text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/40 dark:text-rose-300 dark:hover:text-rose-100">
+          <button onClick={toggleLanguage} className="text-sm px-2 py-1 rounded-md bg-rose-50 dark:bg-rose-900/20 text-rose-400 hover:text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/40 dark:text-rose-300 dark:hover:text-rose-100">
             {language === 'zh' ? t.language.en : t.language.zh}
           </button>
         </div>

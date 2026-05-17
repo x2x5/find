@@ -73,16 +73,6 @@ export default function PapersTable({ papers = [], pageSize = 50, onPageSizeChan
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  const handleCopyTitle = useCallback(async (paper: Paper) => {
-    const text = `${paper.conference.toUpperCase()} ${paper.year} ${paper.title}`;
-    try {
-      await navigator.clipboard.writeText(text);
-      onShowToast?.('Copied');
-    } catch {
-      // ignore
-    }
-  }, [onShowToast]);
-
   const handleCopyPage = useCallback(async () => {
     const titles = pagePapers.map((p) => p.title).join('\n');
     try {
@@ -163,15 +153,8 @@ export default function PapersTable({ papers = [], pageSize = 50, onPageSizeChan
             return (
               <div
                 key={globalIdx}
-                className="px-4 py-2.5 flex items-center gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors group"
+                className="px-4 py-2.5 flex items-center gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors"
               >
-                <button
-                  onClick={() => onAddToCart?.(paper)}
-                  className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-zinc-300 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-sm leading-none opacity-0 group-hover:opacity-100 transition-all"
-                  title="Add to cart"
-                >
-                  +
-                </button>
                 <span className={`inline-flex items-center justify-center w-[4.5rem] shrink-0 px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}>
                   {paper.conference.toUpperCase()}
                 </span>
@@ -182,9 +165,9 @@ export default function PapersTable({ papers = [], pageSize = 50, onPageSizeChan
                   {paper.year}
                 </span>
                 <span
-                  onClick={() => handleCopyTitle(paper)}
+                  onClick={() => onAddToCart?.(paper)}
                   className="text-sm text-zinc-900 dark:text-zinc-100 flex-1 min-w-0 truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                  title="Click to copy"
+                  title="Add to cart"
                 >
                   {highlightText(paper.title, searchTrigger)}
                 </span>

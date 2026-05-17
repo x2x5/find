@@ -56,7 +56,7 @@ export const en: Translations = {
   },
   sidebar: {
     timeline: 'Timeline',
-    filters: 'Filters',
+    filters: 'Field',
     yearRange: 'Year Range',
     from: 'From',
     to: 'To',

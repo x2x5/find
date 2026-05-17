@@ -27,16 +27,16 @@ export default function Sidebar({
         <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-3">
           {t.sidebar.filters}
         </h2>
-        <FieldFilter
-          manifest={manifest}
-          selectedConfs={selectedConfs}
-          onToggleConf={onToggleConf}
-        />
-        <div className="my-3 border-t border-zinc-200 dark:border-zinc-800" />
         <YearStepper
           manifest={manifest}
           yearRange={yearRange}
           onChange={onYearChange}
+        />
+        <div className="my-3 border-t border-zinc-200 dark:border-zinc-800" />
+        <FieldFilter
+          manifest={manifest}
+          selectedConfs={selectedConfs}
+          onToggleConf={onToggleConf}
         />
       </div>
 

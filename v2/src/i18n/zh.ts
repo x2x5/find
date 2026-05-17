@@ -8,7 +8,7 @@ export const zh: Translations = {
   },
   sidebar: {
     timeline: '时间轴',
-    filters: '筛选',
+    filters: '领域',
     yearRange: '年份范围',
     from: '起始',
     to: '结束',

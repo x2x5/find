@@ -82,12 +82,10 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
           </button>
         </div>
         <div className="flex items-center gap-2">
-          {searchValue.trim() && (
-            <span className="text-xs text-indigo-600 dark:text-indigo-400 whitespace-nowrap font-medium">
-              {t.table.results}{' '}
-              <span className="inline-block text-left tabular-nums min-w-[2.8rem]">{resultCount}</span>
-            </span>
-          )}
+          <span className="text-xs text-indigo-600 dark:text-indigo-400 whitespace-nowrap font-medium min-w-[7rem] inline-block">
+            {searchValue.trim() ? `${t.table.results} ` : ''}
+            <span className="inline-block text-left tabular-nums min-w-[2.8rem]">{searchValue.trim() ? resultCount : ''}</span>
+          </span>
           <div className="ml-2">
             <SearchBar
               value={searchValue}
@@ -132,7 +130,7 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
           <button onClick={toggleLanguage} className="text-sm px-2 py-1 rounded-md bg-rose-50 dark:bg-rose-900/20 text-rose-400 hover:text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/40 dark:text-rose-300 dark:hover:text-rose-100">
             {language === 'zh' ? t.language.en : t.language.zh}
           </button>
-          <a href="/about.html" className="p-1.5 rounded-md bg-indigo-50 dark:bg-indigo-900/20 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 dark:text-indigo-300 dark:hover:text-indigo-100" title={t.language.about}>
+          <a href="about.html" className="p-1.5 rounded-md bg-indigo-50 dark:bg-indigo-900/20 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 dark:text-indigo-300 dark:hover:text-indigo-100" title={t.language.about}>
             <Info className="w-4 h-4" />
           </a>
         </div>

@@ -1,4 +1,4 @@
-# README for AI | [README for Human](https://x2x5.github.io/find/about)
+# README for AI | [README for Human](https://x2x5.github.io/find/about.html)
 
 ## Project: 淘鼎 (TaoDing)
 

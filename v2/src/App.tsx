@@ -21,8 +21,8 @@ function AppContent() {
   );
   const [yearRange, setYearRange] = useState<[number, number]>([defaultYear - 1, defaultYear]);
   const [searchValue, setSearchValue] = useState('');
-  const [pageSize, setPageSize] = useState(50);
-  const [showTimeline, setShowTimeline] = useState(true);
+  const [pageSize, setPageSize] = useState(10);
+  const [showTimeline, setShowTimeline] = useState(false);
   const [cart, setCart] = useState<Paper[]>([]);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
 

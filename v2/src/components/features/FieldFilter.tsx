@@ -10,11 +10,11 @@ interface FieldFilterProps {
   onToggleConf: (conf: string) => void;
 }
 
-const FIELDS = ['CV', 'AI', 'ML'] as const;
+const FIELDS = ['ML', 'CV', 'AI'] as const;
 
 export default function FieldFilter({ manifest, selectedConfs, onToggleConf }: FieldFilterProps) {
   const { t } = useAppContext();
-  const [expanded, setExpanded] = useState<Set<string>>(new Set(['CV', 'AI', 'ML']));
+  const [expanded, setExpanded] = useState<Set<string>>(new Set(['ML', 'CV', 'AI']));
 
   const confsByField = manifest
     ? Object.keys(manifest.conferences).reduce((acc, conf) => {

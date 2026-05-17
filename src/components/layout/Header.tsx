@@ -63,10 +63,6 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
     <header className="sticky top-0 z-50 max-w-7xl mx-auto px-4">
       <div className="py-2 flex flex-col gap-2 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 md:flex-row md:items-center md:gap-4 md:py-3">
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs text-indigo-600 dark:text-indigo-400 whitespace-nowrap font-medium min-w-[7rem] inline-block">
-            {searchValue.trim() ? `${t.table.results} ` : ''}
-            <span className="inline-block text-left tabular-nums min-w-[2.8rem]">{searchValue.trim() ? resultCount : ''}</span>
-          </span>
           <button onClick={() => adjustStart(-1)} disabled={startYear <= minYear} className="p-1 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -86,6 +82,10 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
           </button>
         </div>
         <div className="flex items-center gap-2 flex-1">
+          <span className="text-xs text-indigo-600 dark:text-indigo-400 whitespace-nowrap font-medium min-w-[7rem] inline-block">
+            {searchValue.trim() ? `${t.table.results} ` : ''}
+            <span className="inline-block text-left tabular-nums min-w-[2.8rem]">{searchValue.trim() ? resultCount : ''}</span>
+          </span>
           <SearchBar value={searchValue} onChange={onSearchChange} />
         </div>
         {luckyPaper && searchValue.trim() && (() => {

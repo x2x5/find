@@ -7,7 +7,34 @@ import Pagination from './Pagination';
 interface PapersTableProps {
   papers?: Paper[];
   pageSize?: number;
+  searchTrigger?: string;
   onShowToast?: (message: string) => void;
+}
+
+function highlightText(text: string, query: string): React.ReactNode {
+  if (!query.trim()) return text;
+
+  const words = query.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return text;
+
+  // Escape regex special characters
+  const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const escaped = words.map(escapeRegExp);
+
+  // Build regex matching any word, case-insensitive
+  const regex = new RegExp(`(${escaped.join('|')})`, 'gi');
+  const parts = text.split(regex);
+
+  if (parts.length <= 1) return text;
+
+  return parts.map((part, i) => {
+    if (i % 2 === 0) return part;
+    return (
+      <mark key={i} className="bg-yellow-200 dark:bg-yellow-800 rounded-sm px-0.5">
+        {part}
+      </mark>
+    );
+  });
 }
 
 const FIELD_COLORS: Record<string, { bg: string; text: string; darkBg: string; darkText: string }> = {
@@ -16,7 +43,7 @@ const FIELD_COLORS: Record<string, { bg: string; text: string; darkBg: string; d
   ML: { bg: 'bg-emerald-100', text: 'text-emerald-700', darkBg: 'dark:bg-emerald-950', darkText: 'dark:text-emerald-300' },
 };
 
-export default function PapersTable({ papers = [], pageSize = 50, onShowToast }: PapersTableProps) {
+export default function PapersTable({ papers = [], pageSize = 50, searchTrigger = '', onShowToast }: PapersTableProps) {
   const { t } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -121,7 +148,7 @@ export default function PapersTable({ papers = [], pageSize = 50, onShowToast }:
                   className="text-sm text-zinc-900 dark:text-zinc-100 flex-1 truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                   title="Click to copy"
                 >
-                  {paper.title}
+                  {highlightText(paper.title, searchTrigger)}
                 </span>
               </div>
             );

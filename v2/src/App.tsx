@@ -105,7 +105,7 @@ function AppContent() {
           )}
 
           {!combinedLoading && !combinedError && (
-            <PapersTable papers={shuffledPapers} onShowToast={showToast} />
+            <PapersTable papers={shuffledPapers} searchTrigger={searchTrigger} onShowToast={showToast} />
           )}
         </section>
       </main>

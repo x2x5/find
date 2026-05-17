@@ -12,11 +12,12 @@ import { shuffle } from './lib/shuffle';
 
 function AppContent() {
   const { manifest, loading: manifestLoading, error: manifestError } = useManifest();
+  const defaultYear = new Date().getFullYear();
 
   const [selectedConfs, setSelectedConfs] = useState<Set<string>>(
     () => new Set(['nips', 'icml', 'iclr', 'cvpr', 'eccv', 'iccv'])
   );
-  const [yearRange, setYearRange] = useState<[number, number]>([2024, 2025]);
+  const [yearRange, setYearRange] = useState<[number, number]>([defaultYear - 1, defaultYear]);
   const [searchValue, setSearchValue] = useState('');
   const [searchTrigger, setSearchTrigger] = useState('');
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });

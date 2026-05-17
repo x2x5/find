@@ -122,7 +122,10 @@ export default function Timeline() {
               style={{ left: `${ev.position}%`, transform: 'translateX(-50%)' }}
             >
               {/* 圆点（统一大小，中心在横线） */}
-              <div className={`w-2 h-2 rounded-full ${dotColor} border-2 border-white dark:border-zinc-900 flex-shrink-0 ${isAbove ? '-mb-1' : '-mt-1'}`} />
+              <div
+                className={`w-2 h-2 rounded-full ${dotColor} border-2 border-white dark:border-zinc-900 flex-shrink-0`}
+                style={{ transform: isAbove ? 'translateY(4px)' : 'translateY(-4px)' }}
+              />
 
               {/* 竖线 */}
               <div className={`${lineWidth} ${lineColor} flex-shrink-0`} style={{ height: `${ev.height}px` }} />

@@ -64,7 +64,7 @@ export default function Timeline() {
       if (count === 0) continue;
 
       for (let i = 0; i < count; i++) {
-        const innerPct = count === 1 ? 50 : ((i + 0.5) / count) * 100;
+        const innerPct = ((i + 1) / (count + 1)) * 100;
         result.push({
           ...events[i],
           position: m * monthWidth + monthWidth * (innerPct / 100),

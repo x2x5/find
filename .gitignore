@@ -2,3 +2,6 @@
 .claude/
 __pycache__/
 *.pyc
+v2/node_modules/
+v2/dist/
+v2/public/data/

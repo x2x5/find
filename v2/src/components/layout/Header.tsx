@@ -12,8 +12,8 @@ export default function Header({ searchValue, onSearchChange, onSearch }: Header
   const { theme, toggleTheme, language, toggleLanguage, t } = useAppContext();
 
   return (
-    <header className="bg-white dark:bg-zinc-900 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-8 py-3 flex items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800">
+    <header className="sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-8 py-3 flex items-center justify-between gap-4 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
         <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
           {t.appTitle}
         </h1>

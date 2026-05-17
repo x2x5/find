@@ -15,7 +15,7 @@ function AppContent() {
   const defaultYear = new Date().getFullYear();
 
   const [selectedConfs, setSelectedConfs] = useState<Set<string>>(
-    () => new Set(['nips', 'icml', 'iclr', 'cvpr', 'eccv', 'iccv', 'aaai', 'ijcai', 'mm'])
+    () => new Set(['nips', 'icml', 'iclr', 'cvpr', 'eccv', 'iccv'])
   );
   const [yearRange, setYearRange] = useState<[number, number]>([defaultYear - 1, defaultYear]);
   const [searchValue, setSearchValue] = useState('');

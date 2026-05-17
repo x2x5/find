@@ -70,8 +70,8 @@ export default function PapersTable({ papers = [], pageSize = 50, onShowToast }:
   }, [papers, onShowToast]);
 
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
-      <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+    <div className="max-w-5xl mx-auto rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+      <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-4">
         <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
           {t.table.title}
         </h2>

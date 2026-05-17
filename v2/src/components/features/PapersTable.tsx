@@ -113,10 +113,10 @@ export default function PapersTable({ papers = [], pageSize = 50, onShowToast }:
                 key={globalIdx}
                 className="px-4 py-2.5 flex items-center gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors group"
               >
-                <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}>
+                <span className={`inline-flex items-center w-[4.5rem] shrink-0 px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}>
                   {paper.conference.toUpperCase()}
                 </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 tabular-nums">
+                <span className="inline-flex items-center w-14 shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 tabular-nums">
                   {paper.year}
                 </span>
                 <span className="text-sm text-zinc-900 dark:text-zinc-100 flex-1 truncate">

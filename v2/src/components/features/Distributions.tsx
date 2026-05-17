@@ -108,7 +108,7 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
 
         return (
           <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2 space-y-1 relative pl-7 bg-indigo-50/30 dark:bg-indigo-950/10 rounded">
-            <div className="absolute left-0 top-0 bottom-0 w-6 flex items-center justify-center">
+            <div className="absolute left-0 top-2 bottom-0 w-6 flex items-center justify-center">
               <span className="text-[10px] font-bold text-indigo-400 dark:text-indigo-500">Year</span>
             </div>
             {sortedYearEntries.map(([year, count]) => {

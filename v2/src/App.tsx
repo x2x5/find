@@ -144,6 +144,10 @@ function AppContent() {
         </section>
       </main>
 
+      <footer className="max-w-7xl mx-auto px-4 pb-6 text-center text-xs text-zinc-400 dark:text-zinc-500">
+        淘顶网 · 来淘点顶会吧
+      </footer>
+
       <Toast
         message={toast.message}
         visible={toast.visible}

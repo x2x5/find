@@ -1,8 +1,8 @@
 import type { Translations } from './en';
 
 export const zh: Translations = {
-  appTitle: '淘顶',
-  subtitle: '运气最佳',
+  appTitle: '淘顶网',
+  subtitle: '最有缘分',
   search: {
     placeholder: '搜索论文...',
     button: '搜索',

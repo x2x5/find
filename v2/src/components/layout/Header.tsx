@@ -97,7 +97,7 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
             const fc = FIELD_COLORS[field] || FIELD_COLORS.ML;
             return (
               <div className="flex items-center gap-1.5 text-xs min-w-0 ml-2">
-                <span className="text-amber-500 font-medium shrink-0">{t.subtitle}</span>
+                <span className="text-pink-500 font-medium shrink-0">{t.subtitle}</span>
                 <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0 ${fc.bg} ${fc.text}`}>
                   {luckyPaper.conference.toUpperCase()}
                 </span>
@@ -110,7 +110,7 @@ export default function Header({ searchValue, onSearchChange, resultCount, lucky
                       await navigator.clipboard.writeText(luckyPaper.title);
                     } catch {}
                   }}
-                  className="text-zinc-700 dark:text-zinc-200 truncate cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 max-w-[30rem]"
+                  className="text-pink-600 dark:text-pink-400 truncate cursor-pointer hover:text-pink-700 dark:hover:text-pink-300 max-w-[30rem]"
                   title={luckyPaper.title}
                 >
                   {luckyPaper.title}

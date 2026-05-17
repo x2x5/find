@@ -60,7 +60,7 @@ export interface Translations {
 }
 
 export const en: Translations = {
-  appTitle: 'TaoDing',
+  appTitle: '淘顶网',
   subtitle: 'Lucky Pick',
   search: {
     placeholder: 'Search papers...',

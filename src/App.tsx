@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import type { Paper } from '@/types';
 import { AppProvider } from './context/AppContext';
 import Header from './components/layout/Header';
@@ -27,6 +27,14 @@ function AppContent() {
   const [cart, setCart] = useState<Paper[]>([]);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
   const [pinnedPaper, setPinnedPaper] = useState<{ key: string; position: number } | null>(null);
+  const [visitCount, setVisitCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch('https://api.countapi.xyz/hit/x2x5-find/visits')
+      .then((res) => res.json())
+      .then((data) => setVisitCount(data.value))
+      .catch(() => {});
+  }, []);
 
   const { papers: loadedPapers, loading: papersLoading, error: papersError } = usePapers(
     selectedConfs,
@@ -180,6 +188,7 @@ function AppContent() {
 
       <footer className="max-w-7xl mx-auto px-4 pb-6 text-center text-xs text-zinc-400 dark:text-zinc-500">
         淘顶网 · 淘点顶会 · <a href="about.html" className="hover:text-indigo-500">关于</a>
+        {visitCount !== null && <span> · 访问 {visitCount.toLocaleString()}</span>}
       </footer>
 
       <Toast

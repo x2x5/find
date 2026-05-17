@@ -3,8 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { cleanTitle } from './clean-title.js';
 
-// Scripts run from v2/ directory (npm run gen:data)
-const PAPERS_DIR = path.resolve(process.cwd(), '..', 'papers');
+const PAPERS_DIR = path.resolve(process.cwd(), 'papers');
 const OUTPUT_DIR = path.resolve(process.cwd(), 'public', 'data');
 
 const CONFERENCE_META: Record<string, { name: string; field: 'CV' | 'AI' | 'ML' }> = {

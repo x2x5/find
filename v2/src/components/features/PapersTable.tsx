@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { MathJax } from 'better-react-mathjax';
 import { Copy, Check } from 'lucide-react';
 import type { Paper } from '@/types';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
@@ -108,7 +107,6 @@ export default function PapersTable({ papers = [], pageSize = 50, onShowToast }:
             const globalIdx = startIdx + i;
             const field = CONFERENCE_FIELDS[paper.conference] || 'ML';
             const colors = FIELD_COLORS[field] || FIELD_COLORS.ML;
-            const hasMath = paper.title.includes('$');
 
             return (
               <div
@@ -122,11 +120,7 @@ export default function PapersTable({ papers = [], pageSize = 50, onShowToast }:
                   {paper.year}
                 </span>
                 <span className="text-sm text-zinc-900 dark:text-zinc-100 flex-1 truncate">
-                  {hasMath ? (
-                    <MathJax inline>{paper.title}</MathJax>
-                  ) : (
-                    paper.title
-                  )}
+                  {paper.title}
                 </span>
                 <button
                   onClick={() => handleCopy(paper.title, globalIdx)}

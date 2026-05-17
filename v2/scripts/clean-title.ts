@@ -50,20 +50,23 @@ function processMathBlock(s: string): string {
     let m = /^\\([a-zA-Z]+)((?:\{[^}]*\})+)/.exec(s.slice(j));
     if (m) {
       const name = m[1];
-      out.push(name in LATEX_UNICODE ? LATEX_UNICODE[name] : '$' + m[0] + '$');
+      out.push(name in LATEX_UNICODE ? LATEX_UNICODE[name] : m[0]);
       j += m[0].length;
       continue;
     }
     m = /^\\([a-zA-Z]+)/.exec(s.slice(j));
     if (m) {
       const name = m[1];
-      out.push(name in LATEX_UNICODE ? LATEX_UNICODE[name] : '$' + m[0] + '$');
+      out.push(name in LATEX_UNICODE ? LATEX_UNICODE[name] : m[0]);
       j += m[0].length;
       continue;
     }
     m = /^[_^](\{[^}]*\}|\w)/.exec(s.slice(j));
     if (m) {
-      out.push('$' + m[0] + '$');
+      // Flatten subscripts/superscripts: keep only the content
+      const raw = m[0];
+      const content = raw.startsWith('{') ? raw.slice(1, -1) : raw.slice(1);
+      out.push(content);
       j += m[0].length;
       continue;
     }

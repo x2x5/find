@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import Header from './components/layout/Header';
 import Sidebar from './components/layout/Sidebar';
 import PapersTable from './components/features/PapersTable';
@@ -8,10 +8,10 @@ import { usePapers } from './hooks/usePapers';
 export default function App() {
   const { manifest, loading: manifestLoading, error: manifestError } = useManifest();
 
-  const [selectedConfs] = useState<Set<string>>(
+  const [selectedConfs, setSelectedConfs] = useState<Set<string>>(
     () => new Set(['nips', 'icml', 'iclr', 'cvpr', 'eccv', 'iccv'])
   );
-  const [yearRange] = useState<[number, number]>([2024, 2025]);
+  const [yearRange, setYearRange] = useState<[number, number]>([2024, 2025]);
 
   const { papers, loading: papersLoading, error: papersError } = usePapers(
     selectedConfs,
@@ -33,25 +33,43 @@ export default function App() {
     return Array.from(years).sort((a, b) => b - a);
   }, [manifest]);
 
+  const handleToggleConf = useCallback((conf: string) => {
+    setSelectedConfs((prev) => {
+      const next = new Set(prev);
+      if (next.has(conf)) next.delete(conf);
+      else next.add(conf);
+      return next;
+    });
+  }, []);
+
+  const handleYearChange = useCallback((range: [number, number]) => {
+    setYearRange(range);
+  }, []);
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-200">
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
-        <Sidebar />
+        <Sidebar
+          manifest={manifest}
+          selectedConfs={selectedConfs}
+          onToggleConf={handleToggleConf}
+          yearRange={yearRange}
+          onYearChange={handleYearChange}
+        />
 
         <section className="space-y-4">
-          {/* Verification panel — remove after Phase 3 */}
           {manifest && (
             <div className="p-4 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950 text-sm">
               <p className="font-medium text-indigo-900 dark:text-indigo-100">
-                Phase 3 验证
+                Phase 3+4 验证
               </p>
               <p className="text-indigo-700 dark:text-indigo-300">
-                Manifest loaded: {Object.keys(manifest.conferences).length} conferences
+                Selected: {selectedConfs.size} conferences × {yearRange[0]}-{yearRange[1]}
               </p>
               <p className="text-indigo-700 dark:text-indigo-300">
-                Papers loaded: {papers.length} ({selectedConfs.size} confs × {yearRange[0]}-{yearRange[1]})
+                Papers loaded: {papers.length}
               </p>
               <p className="text-indigo-700 dark:text-indigo-300">
                 Available years: {yearOptions.join(', ')}

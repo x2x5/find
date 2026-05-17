@@ -1,4 +1,22 @@
-export default function Sidebar() {
+import FieldFilter from '@/components/features/FieldFilter';
+import YearStepper from '@/components/features/YearStepper';
+import type { Manifest } from '@/types';
+
+interface SidebarProps {
+  manifest: Manifest | null;
+  selectedConfs: Set<string>;
+  onToggleConf: (conf: string) => void;
+  yearRange: [number, number];
+  onYearChange: (range: [number, number]) => void;
+}
+
+export default function Sidebar({
+  manifest,
+  selectedConfs,
+  onToggleConf,
+  yearRange,
+  onYearChange,
+}: SidebarProps) {
   return (
     <aside className="space-y-4">
       <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
@@ -11,14 +29,20 @@ export default function Sidebar() {
       </div>
 
       <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+        <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-3">
           Filters
         </h2>
-        <div className="space-y-2">
-          <div className="text-sm text-zinc-500">Field: CV / AI / ML</div>
-          <div className="text-sm text-zinc-500">Conference list</div>
-          <div className="text-sm text-zinc-500">Year range</div>
-        </div>
+        <FieldFilter
+          manifest={manifest}
+          selectedConfs={selectedConfs}
+          onToggleConf={onToggleConf}
+        />
+        <div className="my-3 border-t border-zinc-200 dark:border-zinc-800" />
+        <YearStepper
+          manifest={manifest}
+          yearRange={yearRange}
+          onChange={onYearChange}
+        />
       </div>
     </aside>
   );

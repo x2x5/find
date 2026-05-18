@@ -124,8 +124,8 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
         <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">
           {papers.length > 0 ? `${papers.length} 篇` : ''}
         </span>
-        <span className="text-xs text-zinc-500">
-          {papers.length > 0 ? `${startIdx + 1}-${Math.min(startIdx + pageSize, papers.length)}` : ''}
+        <span className="text-base text-zinc-500">
+          {papers.length > 0 ? `${startIdx + 1}-${Math.min(startIdx + pageSize, papers.length)}（点击单词即可加入搜索）` : ''}
         </span>
         <div className="flex items-center gap-2 shrink-0">
           <button

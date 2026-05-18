@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect } from 'react';
+import { useMemo, useState, useCallback, useEffect, useRef } from 'react';
 import type { Paper } from '@/types';
 import { AppProvider } from './context/AppContext';
 import Header from './components/layout/Header';
@@ -28,9 +28,12 @@ function AppContent() {
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
   const [pinnedPaper, setPinnedPaper] = useState<{ key: string; position: number } | null>(null);
   const [visitCount, setVisitCount] = useState<number | null>(null);
+  const visitFetched = useRef(false);
 
   useEffect(() => {
-    fetch('https://api.countapi.xyz/hit/x2x5-top-find/visits')
+    if (visitFetched.current) return;
+    visitFetched.current = true;
+    fetch('https://abacus.jasoncameron.dev/hit/x2x5-top-find/visits')
       .then((res) => res.json())
       .then((data) => setVisitCount(data.value))
       .catch(() => {});
@@ -186,9 +189,10 @@ function AppContent() {
         </section>
       </main>
 
-      <footer className="max-w-7xl mx-auto px-4 pb-6 text-center text-xs text-zinc-400 dark:text-zinc-500">
-        淘顶网 · 淘点顶会 · <a href="about.html" className="hover:text-indigo-500">关于</a>
-        <span> · 访问 {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
+      <footer className="max-w-7xl mx-auto px-4 pb-6 text-xs text-zinc-400 dark:text-zinc-500 grid grid-cols-3 items-center">
+        <span>当前访问量: {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
+        <span className="text-center">淘顶网 · 淘点顶会</span>
+        <span className="text-right"><a href="about.html" className="hover:text-indigo-500">给人看的README</a></span>
       </footer>
 
       <Toast

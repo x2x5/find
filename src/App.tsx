@@ -30,7 +30,7 @@ function AppContent() {
   const [visitCount, setVisitCount] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('https://api.countapi.xyz/hit/x2x5-find/visits')
+    fetch('https://api.countapi.xyz/hit/x2x5-top-find/visits')
       .then((res) => res.json())
       .then((data) => setVisitCount(data.value))
       .catch(() => {});
@@ -188,7 +188,7 @@ function AppContent() {
 
       <footer className="max-w-7xl mx-auto px-4 pb-6 text-center text-xs text-zinc-400 dark:text-zinc-500">
         淘顶网 · 淘点顶会 · <a href="about.html" className="hover:text-indigo-500">关于</a>
-        {visitCount !== null && <span> · 访问 {visitCount.toLocaleString()}</span>}
+        <span> · 访问 {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
       </footer>
 
       <Toast

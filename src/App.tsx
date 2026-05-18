@@ -28,7 +28,9 @@ function AppContent() {
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
   const [pinnedPaper, setPinnedPaper] = useState<{ key: string; position: number } | null>(null);
   const [visitCount, setVisitCount] = useState<number | null>(null);
+  const [searchCount, setSearchCount] = useState<number | null>(null);
   const visitFetched = useRef(false);
+  const searchFetched = useRef(false);
 
   useEffect(() => {
     if (visitFetched.current) return;
@@ -36,6 +38,22 @@ function AppContent() {
     fetch('https://abacus.jasoncameron.dev/hit/x2x5-top-find/visits')
       .then((res) => res.json())
       .then((data) => setVisitCount(data.value))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (searchFetched.current) return;
+    searchFetched.current = true;
+    fetch('https://abacus.jasoncameron.dev/get/x2x5-top-find/searches')
+      .then((res) => res.json())
+      .then((data) => setSearchCount(data.value ?? 0))
+      .catch(() => {});
+  }, []);
+
+  const incrementSearchCount = useCallback(() => {
+    fetch('https://abacus.jasoncameron.dev/hit/x2x5-top-find/searches')
+      .then((res) => res.json())
+      .then((data) => setSearchCount(data.value))
       .catch(() => {});
   }, []);
 
@@ -121,7 +139,8 @@ function AppContent() {
       return prev ? prev + ' ' + word : word;
     });
     setPinnedPaper({ key: getPaperKey(_paper), position: globalIdx });
-  }, []);
+    incrementSearchCount();
+  }, [incrementSearchCount]);
 
   const hideToast = useCallback(() => {
     setToast((prev) => ({ ...prev, visible: false }));
@@ -189,8 +208,11 @@ function AppContent() {
         </section>
       </main>
 
-      <footer className="max-w-7xl mx-auto px-4 pb-6 text-xs text-zinc-400 dark:text-zinc-500 grid grid-cols-3 items-center">
-        <span>当前访问量: {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
+      <footer className="fixed bottom-0 left-0 right-0 px-4 py-2 text-xs text-zinc-400 dark:text-zinc-500 bg-zinc-50/90 dark:bg-zinc-950/90 backdrop-blur-sm border-t border-zinc-200 dark:border-zinc-800 grid grid-cols-3 items-center">
+        <div className="flex flex-col gap-0.5">
+          <span>当前访问量: {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
+          <span>搜索次数: {searchCount != null ? searchCount.toLocaleString() : '···'}</span>
+        </div>
         <span className="text-center">淘顶网 · 淘点顶会</span>
         <span className="text-right"><a href="about.html" className="hover:text-indigo-500">给人看的README</a></span>
       </footer>

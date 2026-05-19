@@ -177,7 +177,7 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
             return (
               <div
                 key={globalIdx}
-                className="px-4 py-2.5 flex items-center gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors"
+                className="px-4 py-2.5 flex items-center gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors group"
               >
                 <span
                   className="inline-flex items-center justify-center w-14 shrink-0 px-2 py-0.5 rounded text-xs font-medium tabular-nums"
@@ -201,6 +201,16 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
                 >
                   {highlightText(paper.title, searchTrigger, (word) => onWordClick?.(word, paper, globalIdx))}
                 </span>
+                <button
+                  onClick={async () => {
+                    try { await navigator.clipboard.writeText(paper.title); onShowToast?.('已复制标题'); }
+                    catch {}
+                  }}
+                  className="shrink-0 text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                  title="复制标题"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                </button>
               </div>
             );
           })

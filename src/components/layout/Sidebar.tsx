@@ -32,7 +32,7 @@ export default function Sidebar({
   const [cartHeight, setCartHeight] = useState<number | null>(null);
 
   useEffect(() => {
-    const measure = () => {
+    const measure = (force = false) => {
       if (window.innerWidth < 1024) {
         setCartHeight(null);
         return;
@@ -50,21 +50,25 @@ export default function Sidebar({
         Math.round(table.getBoundingClientRect().height - distributions.getBoundingClientRect().height - gap),
         160
       );
-      setCartHeight(nextHeight);
+      setCartHeight((prev) => {
+        if (force || prev == null) return nextHeight;
+        return Math.max(prev, nextHeight);
+      });
     };
 
-    const frame = window.requestAnimationFrame(measure);
-    window.addEventListener('resize', measure);
+    const frame = window.requestAnimationFrame(() => measure());
+    const handleResize = () => measure(true);
+    window.addEventListener('resize', handleResize);
 
     const table = document.querySelector('[data-papers-table]') as HTMLElement | null;
     const distributions = distributionsRef.current;
-    const observer = new ResizeObserver(measure);
+    const observer = new ResizeObserver(() => measure());
     if (table) observer.observe(table);
     if (distributions) observer.observe(distributions);
 
     return () => {
       window.cancelAnimationFrame(frame);
-      window.removeEventListener('resize', measure);
+      window.removeEventListener('resize', handleResize);
       observer.disconnect();
     };
   }, [papers, cart.length]);

@@ -16,6 +16,7 @@ const RAW_DATA = [
 const MONTH_LABELS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '次年1月', '次年2月'];
 
 const HEIGHTS = [24, 36, 48];
+const AXIS_TOP = 86;
 
 interface PlacedEvent {
   label: string;
@@ -94,10 +95,10 @@ export default function Timeline() {
   }, [today]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-3 pb-0">
-      <div className="relative h-[170px]">
+    <div className="max-w-[1560px] mx-auto px-4 pt-4 pb-2">
+      <div className="relative h-[178px] rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 pt-3 overflow-visible">
         {/* 图示 */}
-        <div className="absolute top-0 left-0 flex items-center gap-3 text-[10px] text-zinc-500 dark:text-zinc-400">
+        <div className="absolute top-2 left-4 flex items-center gap-3 text-[10px] text-zinc-500 dark:text-zinc-400">
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
             {t.timeline.deadline}
@@ -114,24 +115,24 @@ export default function Timeline() {
             className={`absolute text-[10px] font-medium leading-none ${
               i >= 12 ? 'text-indigo-400 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500'
             }`}
-            style={{ left: `${(i / 14) * 100}%`, top: '66px', transform: 'translateX(6px)' }}
+            style={{ left: `${(i / 14) * 100}%`, top: '70px', transform: 'translateX(22px)' }}
           >
             {label}
           </div>
         ))}
 
         {/* 横线 */}
-        <div className="absolute top-[80px] left-0 right-0 h-[2px] bg-zinc-300 dark:bg-zinc-600">
+        <div className="absolute top-[86px] left-4 right-4 h-[2px] bg-orange-200 dark:bg-orange-900/70">
           {/* 刻度 */}
           {Array.from({ length: 15 }).map((_, i) => (
             <div
               key={i}
-              className="absolute top-[-4px] w-px h-[10px] bg-zinc-400 dark:bg-zinc-500"
+              className="absolute top-[-4px] w-px h-[10px] bg-orange-300 dark:bg-orange-700/80"
               style={{ left: `${(i / 14) * 100}%` }}
             />
           ))}
           {/* 右端箭头 */}
-          <div className="absolute top-[-5px] right-[-10px] w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-zinc-300 dark:border-l-zinc-600 border-b-[6px] border-b-transparent" />
+          <div className="absolute top-[-5px] right-[-10px] w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-orange-200 dark:border-l-orange-900/70 border-b-[6px] border-b-transparent" />
         </div>
 
         {/* 事件 */}
@@ -141,37 +142,54 @@ export default function Timeline() {
           const dotColor = ev.type === 'deadline' ? 'bg-rose-500' : ev.type === 'result' ? 'bg-emerald-500' : 'bg-indigo-500';
           const lineColor = ev.type === 'deadline' ? 'bg-rose-300 dark:bg-rose-700/60' : ev.type === 'result' ? 'bg-emerald-300 dark:bg-emerald-700/60' : 'bg-indigo-300 dark:bg-indigo-700/60';
           const textColor = ev.type === 'deadline' ? 'text-rose-600 dark:text-rose-300' : ev.type === 'result' ? 'text-emerald-600 dark:text-emerald-300' : 'text-indigo-600 dark:text-indigo-300';
-          const lineWidth = ev.type === 'today' ? 'w-[2px]' : 'w-px';
+          const lineWidth = ev.type === 'today' ? 2 : 1;
 
           return (
             <div
               key={i}
-              className={`absolute flex flex-col items-center ${isAbove ? 'flex-col-reverse bottom-[90px]' : 'top-[80px]'}`}
-              style={{ left: `${ev.position}%`, transform: 'translateX(-50%)' }}
+              className="absolute"
+              style={{ left: `calc(${ev.position}% + 16px)`, top: `${AXIS_TOP}px` }}
             >
-              {/* 圆点（统一大小，中心在横线） */}
               <div
-                className={`w-2 h-2 rounded-full ${dotColor} border-2 border-white dark:border-zinc-900 flex-shrink-0`}
-                style={{ transform: isAbove ? 'translateY(4px)' : 'translateY(-4px)' }}
+                className={`absolute w-2 h-2 rounded-full ${dotColor} border-2 border-white dark:border-zinc-900`}
+                style={{ transform: 'translate(-50%, -50%)' }}
               />
-
-              {/* 竖线 */}
-              <div className={`${lineWidth} ${lineColor} flex-shrink-0`} style={{ height: `${ev.height}px` }} />
-
-              {/* 文字 */}
-              {isAbove ? (
-                // 横线上方：日期 → 会议名
-                <div className={`text-center leading-tight whitespace-nowrap ${textColor}`}>
-                  <div className="text-[10px] font-normal opacity-70">{ev.date}</div>
-                  <div className="text-[11px] font-semibold">{ev.label}</div>
-                </div>
-              ) : (
-                // 横线下方：会议名 → 日期
-                <div className={`text-center leading-tight whitespace-nowrap ${textColor}`}>
-                  <div className="text-[11px] font-semibold">{ev.label}</div>
-                  <div className="text-[10px] font-normal opacity-70">{ev.date}</div>
-                </div>
-              )}
+              <div
+                className={`absolute ${lineColor}`}
+                style={
+                  isAbove
+                    ? {
+                        width: `${lineWidth}px`,
+                        height: `${ev.height}px`,
+                        transform: 'translate(-50%, -100%)',
+                      }
+                    : {
+                        width: `${lineWidth}px`,
+                        height: `${ev.height}px`,
+                        transform: 'translateX(-50%)',
+                      }
+                }
+              />
+              <div
+                className={`absolute text-center leading-tight whitespace-nowrap ${textColor}`}
+                style={
+                  isAbove
+                    ? { transform: `translate(-50%, calc(-100% - ${ev.height + 10}px))` }
+                    : { transform: `translate(-50%, ${ev.height + 10}px)` }
+                }
+              >
+                {isAbove ? (
+                  <>
+                    <div className="text-[10px] font-normal opacity-70">{ev.date}</div>
+                    <div className="text-[11px] font-semibold">{ev.label}</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-[11px] font-semibold">{ev.label}</div>
+                    <div className="text-[10px] font-normal opacity-70">{ev.date}</div>
+                  </>
+                )}
+              </div>
             </div>
           );
         })}

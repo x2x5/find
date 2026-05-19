@@ -17,7 +17,7 @@ export default function SearchBar({ value, onChange }: SearchBarProps) {
   }, [onChange]);
 
   return (
-    <div className="w-44 relative">
+    <div className="w-60 relative">
       <div className="relative">
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
         <input

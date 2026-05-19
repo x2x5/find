@@ -3,6 +3,7 @@ import type { Paper } from '@/types';
 import { AppProvider } from './context/AppContext';
 import Header from './components/layout/Header';
 import Sidebar from './components/layout/Sidebar';
+import RightSidebar from './components/layout/RightSidebar';
 import Timeline from './components/features/Timeline';
 import PapersTable from './components/features/PapersTable';
 import Toast from './components/ui/Toast';
@@ -156,6 +157,7 @@ function AppContent() {
           setSearchValue(value);
           setPinnedPaper(null);
         }}
+        totalCount={filteredPapers.length}
         luckyPaper={luckyPaper}
         showTimeline={showTimeline}
         onToggleTimeline={() => setShowTimeline((v) => !v)}
@@ -166,20 +168,15 @@ function AppContent() {
 
       {showTimeline && <Timeline />}
 
-      <main className="max-w-7xl mx-auto px-4 pt-0 pb-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] lg:grid-rows-1 gap-6 lg:items-start">
+      <main className="max-w-[1560px] mx-auto px-4 pt-2 pb-0 grid grid-cols-1 lg:grid-cols-[216px_minmax(0,1fr)_264px] lg:grid-rows-1 gap-4 lg:items-start">
         <Sidebar
           manifest={manifest}
           papers={filteredPapers}
           selectedConfs={selectedConfs}
           onToggleConf={handleToggleConf}
-          cart={cart}
-          onRemoveFromCart={handleRemoveFromCart}
-          onCopyCart={handleCopyCart}
-          onClearCart={handleClearCart}
-          onShowToast={showToast}
         />
 
-        <section className="space-y-4 min-w-0 min-h-[calc(100vh-5rem)]">
+        <section className="space-y-3 min-w-0 min-h-[calc(100vh-5rem)]">
           {combinedLoading && (
             <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
               <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
@@ -207,20 +204,32 @@ function AppContent() {
             <PapersTable papers={shuffledPapers} pageSize={pageSize} searchTrigger={searchValue} onShowToast={showToast} cart={cart} onToggleCart={handleToggleCart} onWordClick={handleWordClick} />
           )}
         </section>
+
+        <RightSidebar
+          paperCount={filteredPapers.length}
+          tableReady={!combinedLoading && !combinedError}
+          cart={cart}
+          onRemoveFromCart={handleRemoveFromCart}
+          onCopyCart={handleCopyCart}
+          onClearCart={handleClearCart}
+          onShowToast={showToast}
+        />
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 px-4 py-2 text-xs text-zinc-400 dark:text-zinc-500 bg-zinc-50/90 dark:bg-zinc-950/90 backdrop-blur-sm border-t border-zinc-200 dark:border-zinc-800 grid grid-cols-3 items-center">
-        <div className="flex flex-col gap-0.5">
-          <span>当前访问量: {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
-          <span>搜索次数: {searchCount != null ? searchCount.toLocaleString() : '···'}</span>
+      <footer className="max-w-[1560px] mx-auto mt-4 px-4 py-2 text-xs text-zinc-400 dark:text-zinc-500">
+        <div className="pt-2 grid grid-cols-3 items-center">
+          <div className="flex flex-col gap-0.5">
+            <span>当前访问量: {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
+            <span>搜索次数: {searchCount != null ? searchCount.toLocaleString() : '···'}</span>
+          </div>
+          <span className="text-center">
+            <a href="about.html" className="hover:text-indigo-500">淘顶网 · 淘点顶会</a>
+          </span>
+          <span className="text-right space-x-1.5">
+            <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">想要新功能？</button>
+            <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">发现 Bug！</button>
+          </span>
         </div>
-        <span className="text-center">
-          <a href="about.html" className="hover:text-indigo-500">淘顶网 · 淘点顶会</a>
-        </span>
-        <span className="text-right space-x-1.5">
-          <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">想要新功能？</button>
-          <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">发现 Bug！</button>
-        </span>
       </footer>
 
       <IssueDialog

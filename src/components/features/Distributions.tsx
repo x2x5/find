@@ -17,12 +17,10 @@ const FIELDS = [
 const CONF_ORDER = Object.keys(CONFERENCE_FIELDS);
 
 export default function Distributions({ papers, selectedConfs, onToggleConf }: DistributionsProps) {
-  const { confCounts, yearCounts, fieldGroups } = useMemo(() => {
+  const { confCounts, fieldGroups } = useMemo(() => {
     const cc: Record<string, number> = {};
-    const yc: Record<string, number> = {};
     for (const p of papers) {
       cc[p.conference] = (cc[p.conference] || 0) + 1;
-      yc[p.year] = (yc[p.year] || 0) + 1;
     }
     const groups: Record<string, string[]> = {};
     for (const c of CONF_ORDER) {
@@ -30,15 +28,10 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
       if (!groups[field]) groups[field] = [];
       groups[field].push(c);
     }
-    return { confCounts: cc, yearCounts: yc, fieldGroups: groups };
+    return { confCounts: cc, fieldGroups: groups };
   }, [papers]);
 
   const confMax = Math.max(1, ...Object.values(confCounts));
-  const yearMax = Math.max(1, ...Object.values(yearCounts));
-
-  const sortedYearEntries = useMemo(() => {
-    return Object.entries(yearCounts).sort(([a], [b]) => parseInt(b) - parseInt(a));
-  }, [yearCounts]);
 
   const toggleField = (confs: string[]) => {
     const allField = confs.every((c) => selectedConfs.has(c));
@@ -50,89 +43,54 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
   };
 
   return (
-    <div className="text-xs space-y-3">
-      <div>
-        {FIELDS.map(({ key, label, bar, barDim, text, bg }) => {
-          const confs = fieldGroups[key] || [];
-          const fieldAll = confs.every((c) => selectedConfs.has(c));
-          const fieldAny = confs.some((c) => selectedConfs.has(c));
-
-          return (
-            <div key={key} className={`relative pl-7 rounded ${bg}`}>
-              <button
-                onClick={() => toggleField(confs)}
-                className="absolute left-0.5 top-0 bottom-0 w-5 flex items-center justify-center"
-              >
-                <span className={`text-[11px] font-extrabold leading-none ${text} ${
-                  fieldAll ? '' : fieldAny ? 'opacity-50' : 'opacity-30'
-                }`}>
-                  {label}
-                </span>
-              </button>
-
-              {confs.map((conf) => {
-                const name = CONFERENCE_NAMES[conf] || conf.toUpperCase();
-                const count = confCounts[conf] || 0;
-                const sel = selectedConfs.has(conf);
-
-                return (
-                  <button
-                    key={conf}
-                    onClick={() => onToggleConf(conf)}
-                    className="flex items-center gap-1.5 w-full py-[1px]"
-                  >
-                    <span className={`w-14 shrink-0 text-right font-medium ${
-                      sel ? text : 'text-zinc-300 dark:text-zinc-600'
-                    }`}>
-                      {name}
-                    </span>
-                    <div className="flex-1 h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-sm overflow-hidden">
-                      <div
-                        className={`h-full rounded-sm transition-all ${sel ? bar : barDim}`}
-                        style={{ width: `${confMax > 0 ? (count / confMax) * 100 : 0}%` }}
-                      />
-                    </div>
-                    <span className={`w-8 shrink-0 text-right tabular-nums ${sel ? 'text-zinc-500' : 'text-zinc-300 dark:text-zinc-600'}`}>{count}</span>
-                  </button>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
-
-      {Object.keys(yearCounts).length > 0 && (() => {
-        const yearNums = sortedYearEntries.map(([y]) => parseInt(y));
-        const yMin = Math.min(...yearNums);
-        const yMax = Math.max(...yearNums);
+    <div className="text-xs">
+      {FIELDS.map(({ key, label, bar, barDim, text, bg }) => {
+        const confs = fieldGroups[key] || [];
+        const fieldAll = confs.every((c) => selectedConfs.has(c));
+        const fieldAny = confs.some((c) => selectedConfs.has(c));
 
         return (
-          <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2 space-y-1 relative pl-7 bg-orange-50/30 dark:bg-orange-950/10 rounded">
-            <div className="absolute left-0 top-2 bottom-0 w-6 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-orange-400 dark:text-orange-500">Year</span>
-            </div>
-            {sortedYearEntries.map(([year, count]) => {
-              const n = parseInt(year);
-              const t = yMax > yMin ? (n - yMin) / (yMax - yMin) : 0.5;
+          <div key={key} className={`relative pl-7 rounded ${bg}`}>
+            <button
+              onClick={() => toggleField(confs)}
+              className="absolute left-0.5 top-0 bottom-0 w-5 flex items-center justify-center"
+            >
+              <span className={`text-[11px] font-extrabold leading-none ${text} ${
+                fieldAll ? '' : fieldAny ? 'opacity-50' : 'opacity-30'
+              }`}>
+                {label}
+              </span>
+            </button>
+
+            {confs.map((conf) => {
+              const name = CONFERENCE_NAMES[conf] || conf.toUpperCase();
+              const count = confCounts[conf] || 0;
+              const sel = selectedConfs.has(conf);
+
               return (
-                <div key={year} className="flex items-center gap-1.5">
-                  <span className="w-14 shrink-0 text-right font-medium" style={{ color: `rgba(234, 88, 12, ${0.65 + t * 0.35})` }}>{year}</span>
+                <button
+                  key={conf}
+                  onClick={() => onToggleConf(conf)}
+                  className="flex items-center gap-1.5 w-full py-[1px]"
+                >
+                  <span className={`w-14 shrink-0 text-right font-medium ${
+                    sel ? text : 'text-zinc-300 dark:text-zinc-600'
+                  }`}>
+                    {name}
+                  </span>
                   <div className="flex-1 h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-sm overflow-hidden">
                     <div
-                      className="h-full rounded-sm transition-all"
-                      style={{
-                        width: `${(count / yearMax) * 100}%`,
-                        background: `rgba(234, 88, 12, ${0.25 + t * 0.35})`,
-                      }}
+                      className={`h-full rounded-sm transition-all ${sel ? bar : barDim}`}
+                      style={{ width: `${confMax > 0 ? (count / confMax) * 100 : 0}%` }}
                     />
                   </div>
-                  <span className="w-8 shrink-0 text-right text-zinc-500 tabular-nums">{count}</span>
-                </div>
+                  <span className={`w-8 shrink-0 text-right tabular-nums ${sel ? 'text-zinc-500' : 'text-zinc-300 dark:text-zinc-600'}`}>{count}</span>
+                </button>
               );
             })}
           </div>
         );
-      })()}
+      })}
     </div>
   );
 }

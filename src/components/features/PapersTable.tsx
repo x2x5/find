@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Minus, Copy, Files, Sparkles } from 'lucide-react';
 import type { Paper } from '@/types';
 import { getPaperKey } from '@/lib/utils';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
@@ -119,31 +119,47 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
 
   return (
     <div data-papers-table className="w-full min-w-0 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
-      <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-        <div></div>
-        <span className="text-sm text-zinc-400">
-          {papers.length > 0 ? (
-            <>{startIdx + 1} – {Math.min(startIdx + pageSize, papers.length)} / <strong className="text-lg text-pink-600 dark:text-pink-400 font-bold">{papers.length}</strong></>
-          ) : ''}
-        </span>
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs text-zinc-400">
-            {papers.length > 0 ? '点击单词即可加入搜索' : ''}
-          </span>
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-gradient-to-r from-zinc-50 via-white to-amber-50/70 dark:from-zinc-900 dark:via-zinc-900 dark:to-amber-950/20">
+        <div className="px-4 py-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/80 dark:border-amber-900/70 bg-white/90 dark:bg-zinc-950/80 px-2.5 py-1 shadow-sm">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-300">
+                <Sparkles className="h-3 w-3" />
+              </span>
+              <div className="leading-none">
+                <div className="text-[10px] font-medium tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
+                  THIS PAGE
+                </div>
+                <div className="mt-1 text-sm font-semibold text-zinc-700 dark:text-zinc-200 tabular-nums">
+                  {papers.length > 0 ? `${startIdx + 1} – ${Math.min(startIdx + pageSize, papers.length)}` : '0'}
+                </div>
+              </div>
+            </div>
+            <span className="hidden sm:inline text-xs text-zinc-400 dark:text-zinc-500 truncate">
+              {papers.length > 0 ? '点论文标题里的单词，可以继续缩小范围' : t.table.noResults}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="sm:hidden text-[11px] text-zinc-400 dark:text-zinc-500">
+              {papers.length > 0 ? '点词继续搜' : t.table.noResults}
+            </span>
           <button
             onClick={handleCopyPage}
             disabled={pagePapers.length === 0}
-            className="text-xs px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-30 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white/90 dark:bg-zinc-950 px-3 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 transition-colors"
           >
+            <Copy className="h-3.5 w-3.5" />
             {t.table.copyPage}
           </button>
           <button
             onClick={handleCopyAll}
             disabled={papers.length === 0}
-            className="text-xs px-2 py-1 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-900 disabled:opacity-30 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full bg-amber-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-600 disabled:opacity-30 transition-colors shadow-sm shadow-amber-500/20"
           >
+            <Files className="h-3.5 w-3.5" />
             {t.table.copyAll}
           </button>
+          </div>
         </div>
       </div>
 

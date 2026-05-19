@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 interface IssueDialogProps {
-  type: 'feature' | 'bug' | null;
+  type: 'feature' | 'bug' | 'chitchat' | null;
   onClose: () => void;
 }
 
@@ -38,6 +38,22 @@ const CONFIGS = {
     ],
     descPlaceholder: '详细描述问题以及复现步骤...',
   },
+  chitchat: {
+    template: '',
+    labels: '',
+    accent: 'indigo',
+    accentBg: 'bg-indigo-600',
+    accentBgHover: 'hover:bg-indigo-700',
+    ringColor: 'focus:ring-indigo-500',
+    titles: [
+      '吐槽',
+      '想法',
+      '建议',
+      '随便聊聊',
+      '其他',
+    ],
+    descPlaceholder: '随便说点啥...',
+  },
 };
 
 export default function IssueDialog({ type, onClose }: IssueDialogProps) {
@@ -56,8 +72,13 @@ export default function IssueDialog({ type, onClose }: IssueDialogProps) {
   if (!type || !config) return null;
 
   const handleSubmit = () => {
-    const url = `https://github.com/x2x5/find/issues/new?template=${config.template}&labels=${config.labels}&title=${encodeURIComponent(title)}&body=${encodeURIComponent(description)}`;
-    window.open(url, '_blank');
+    if (type === 'chitchat') {
+      const url = `https://github.com/x2x5/find/discussions/new?category=general&title=${encodeURIComponent(title)}&body=${encodeURIComponent(description)}`;
+      window.open(url, '_blank');
+    } else {
+      const url = `https://github.com/x2x5/find/issues/new?template=${config.template}&labels=${config.labels}&title=${encodeURIComponent(title)}&body=${encodeURIComponent(description)}`;
+      window.open(url, '_blank');
+    }
     onClose();
   };
 
@@ -93,9 +114,9 @@ export default function IssueDialog({ type, onClose }: IssueDialogProps) {
         </div>
         <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 dark:border-zinc-700">
           <button onClick={onClose} className="px-3 py-1.5 text-xs font-medium rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800">取消</button>
-          <button onClick={handleSubmit} className={`px-3 py-1.5 text-xs font-medium rounded-lg text-white ${config.accentBg} ${config.accentBgHover}`}>
-            提交到 GitHub Issues
-          </button>
+            <button onClick={handleSubmit} className={`px-3 py-1.5 text-xs font-medium rounded-lg text-white ${config.accentBg} ${config.accentBgHover}`}>
+              {type === 'chitchat' ? '去 GitHub 开聊' : '提交到 GitHub Issues'}
+            </button>
         </div>
       </div>
     </div>

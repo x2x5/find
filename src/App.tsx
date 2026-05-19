@@ -29,7 +29,7 @@ function AppContent() {
   const [cart, setCart] = useState<Paper[]>([]);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
   const [pinnedPaper, setPinnedPaper] = useState<{ key: string; position: number } | null>(null);
-  const [issueDialogType, setIssueDialogType] = useState<'feature' | 'bug' | null>(null);
+  const [issueDialogType, setIssueDialogType] = useState<'feature' | 'bug' | 'chitchat' | null>(null);
   const [visitCount, setVisitCount] = useState<number | null>(null);
   const [searchCount, setSearchCount] = useState<number | null>(null);
   const visitFetched = useRef(false);
@@ -228,6 +228,7 @@ function AppContent() {
           <span className="text-right space-x-1.5">
             <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">想要新功能？</button>
             <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">发现 Bug！</button>
+            <button onClick={() => setIssueDialogType('chitchat')} className="hover:text-indigo-500 text-indigo-400">说点没用的</button>
           </span>
         </div>
       </footer>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ShoppingCart, Github } from 'lucide-react';
+import { ShoppingCart, Github, Copy, Trash2, CircleHelp, KeyRound, Eraser, Save } from 'lucide-react';
 import { CONFERENCE_FIELDS, CONFERENCE_NAMES } from '@/lib/conferences';
 import { getPaperKey } from '@/lib/utils';
 import { useCitationCount } from '@/hooks/useCitationCount';
@@ -19,9 +19,9 @@ interface CartProps {
 }
 
 const FIELD_COLORS: Record<string, { bg: string; text: string }> = {
+  ML: { bg: 'bg-violet-100 dark:bg-violet-950', text: 'text-violet-700 dark:text-violet-300' },
   CV: { bg: 'bg-blue-100 dark:bg-blue-950', text: 'text-blue-700 dark:text-blue-300' },
-  AI: { bg: 'bg-amber-100 dark:bg-amber-950', text: 'text-amber-700 dark:text-amber-300' },
-  ML: { bg: 'bg-emerald-100 dark:bg-emerald-950', text: 'text-emerald-700 dark:text-emerald-300' },
+  AI: { bg: 'bg-emerald-100 dark:bg-emerald-950', text: 'text-emerald-700 dark:text-emerald-300' },
 };
 const GITHUB_TOKEN_STORAGE_KEY = 'github_token';
 
@@ -124,11 +124,23 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={onCopy} disabled={items.length === 0} className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 disabled:opacity-30">
-            {t.copy}
+          <button
+            onClick={onCopy}
+            disabled={items.length === 0}
+            title={t.copy}
+            aria-label={t.copy}
+            className="inline-flex h-5 w-5 items-center justify-center rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 disabled:opacity-30"
+          >
+            <Copy className="h-3 w-3" />
           </button>
-          <button onClick={onClear} disabled={items.length === 0} className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500 disabled:opacity-30">
-            {t.clear}
+          <button
+            onClick={onClear}
+            disabled={items.length === 0}
+            title={t.clear}
+            aria-label={t.clear}
+            className="inline-flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500 disabled:opacity-30"
+          >
+            <Trash2 className="h-3 w-3" />
           </button>
         </div>
       </div>
@@ -183,9 +195,11 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
             />
             <button
               onClick={handleSaveToken}
-              className="text-[10px] px-2 py-1 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300"
+              title="保存 Token"
+              aria-label="保存 Token"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300"
             >
-              保存
+              <Save className="h-3.5 w-3.5" />
             </button>
           </div>
         )}
@@ -194,15 +208,19 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
             href="github-token.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[10px] px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
+            title="怎么获取 Token"
+            aria-label="怎么获取 Token"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
           >
-            怎么获取
+            <CircleHelp className="h-3.5 w-3.5" />
           </a>
           <button
             onClick={() => setShowTokenInput((prev) => !prev)}
-            className={`text-[10px] px-2 py-1 rounded-full transition-colors ${token ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300'}`}
+            title={token ? 'Token 已设置' : '设置 Token'}
+            aria-label={token ? 'Token 已设置' : '设置 Token'}
+            className={`inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors ${token ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300'}`}
           >
-            {token ? 'Token 已设' : 'Token'}
+            <KeyRound className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={() => {
@@ -213,9 +231,11 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
               onShowToast?.('GitHub Token 已清空');
             }}
             disabled={!token && !tokenDraft}
-            className="text-[10px] px-2 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 disabled:opacity-30"
+            title="清空 Token"
+            aria-label="清空 Token"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 disabled:opacity-30"
           >
-            清空
+            <Eraser className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={async () => {
@@ -223,10 +243,11 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
               handleCheckout();
             }}
             disabled={fetching}
-            className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 disabled:opacity-30 transition-all shadow-sm"
+            title={fetching ? '正在查询 GitHub' : '查询 GitHub 并结算'}
+            aria-label={fetching ? '正在查询 GitHub' : '查询 GitHub 并结算'}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 disabled:opacity-30 transition-all shadow-sm"
           >
-            <Github className="w-3 h-3" />
-            {fetching ? '···' : '结算'}
+            {fetching ? <span className="text-[10px] leading-none">···</span> : <Github className="h-3.5 w-3.5" />}
           </button>
         </div>
       </div>

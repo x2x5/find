@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ShoppingCart, Github } from 'lucide-react';
 import { CONFERENCE_FIELDS, CONFERENCE_NAMES } from '@/lib/conferences';
 import { getPaperKey } from '@/lib/utils';
@@ -23,6 +23,7 @@ const FIELD_COLORS: Record<string, { bg: string; text: string }> = {
   AI: { bg: 'bg-amber-100 dark:bg-amber-950', text: 'text-amber-700 dark:text-amber-300' },
   ML: { bg: 'bg-emerald-100 dark:bg-emerald-950', text: 'text-emerald-700 dark:text-emerald-300' },
 };
+const GITHUB_TOKEN_STORAGE_KEY = 'github_token';
 
 function repoText(repo: { stars: number; url: string } | null | undefined): string {
   if (repo && repo.stars > 0) return `★${repo.stars >= 1000 ? (repo.stars / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : repo.stars} ${repo.url}`;
@@ -30,7 +31,10 @@ function repoText(repo: { stars: number; url: string } | null | undefined): stri
 }
 
 export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t }: CartProps) {
-  const { citations, fetchBatch, fetching } = useCitationCount('');
+  const [token, setToken] = useState('');
+  const [tokenDraft, setTokenDraft] = useState('');
+  const [showTokenInput, setShowTokenInput] = useState(false);
+  const { citations, fetchBatch, fetching } = useCitationCount(token);
   const lastAddedRef = useRef<HTMLDivElement | null>(null);
   const previousLengthRef = useRef(items.length);
 
@@ -47,11 +51,33 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
 
   const handleFetch = useCallback(async () => {
     if (items.length === 0) return;
-    const { found, limited, badToken } = await fetchBatch(pageKeys);
-    if (badToken) onShowToast?.('GitHub Token 无效');
-    else if (limited) onShowToast?.('API 限流，请稍后重试');
-    else onShowToast?.(`找到 ${found}/${items.length} 个 GitHub 仓库`);
-  }, [fetchBatch, pageKeys, items.length, onShowToast]);
+    const { found, searched, unmatched, blocked, failed, limited, badToken } = await fetchBatch(pageKeys);
+    if (badToken) {
+      onShowToast?.('GitHub Token 无效');
+      return;
+    }
+    if (limited) {
+      onShowToast?.(
+        token
+          ? `GitHub API 限流：仅完成 ${searched}/${items.length} 个查询，找到 ${found} 个，${blocked} 个未完成`
+          : `GitHub API 限流：仅完成 ${searched}/${items.length} 个查询，可先填写 Token`
+      );
+      return;
+    }
+    if (failed > 0) {
+      onShowToast?.(`GitHub 查询失败：${failed} 篇没查成，已成功检查 ${searched}/${items.length} 篇`);
+      return;
+    }
+    if (found === 0) {
+      onShowToast?.(unmatched > 0 ? `没搜到匹配仓库（已检查 ${searched} 篇）` : '没有可搜索的论文');
+      return;
+    }
+    if (unmatched > 0) {
+      onShowToast?.(`找到 ${found}/${searched} 个仓库，另有 ${unmatched} 篇没搜到`);
+      return;
+    }
+    onShowToast?.(`找到 ${found}/${searched} 个 GitHub 仓库`);
+  }, [fetchBatch, pageKeys, items.length, onShowToast, token]);
 
   const handleCheckout = useCallback(async () => {
     const lines = items.map((item) => {
@@ -63,7 +89,6 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
     const text = lines.join('\n') + total;
     try {
       await navigator.clipboard.writeText(text);
-      onShowToast?.(`已复制 ${items.length} 篇论文${totalStars > 0 ? `（总 ★ ${totalStars.toLocaleString()}）` : ''}`);
     } catch {}
   }, [items, citations, totalStars, onShowToast]);
 
@@ -74,6 +99,20 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
     }
     previousLengthRef.current = items.length;
   }, [items]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || '';
+    setToken(saved);
+    setTokenDraft(saved);
+  }, []);
+
+  const handleSaveToken = useCallback(() => {
+    const next = tokenDraft.trim();
+    localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, next);
+    setToken(next);
+    setShowTokenInput(false);
+    onShowToast?.(next ? 'GitHub Token 已保存到本地浏览器' : 'GitHub Token 已清空');
+  }, [tokenDraft, onShowToast]);
 
   return (
     <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 h-full flex flex-col overflow-hidden">
@@ -132,18 +171,64 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
           {totalStars > 0 ? `★ ${totalStars.toLocaleString()}` : '★ 0'}
         </span>
       </div>
-      <div className="mt-1.5 flex justify-end shrink-0">
-        <button
-          onClick={async () => {
-            await handleFetch();
-            handleCheckout();
-          }}
-          disabled={fetching}
-          className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 disabled:opacity-30 transition-all shadow-sm"
-        >
-          <Github className="w-3 h-3" />
-          {fetching ? '···' : '结算'}
-        </button>
+      <div className="mt-1.5 space-y-1.5 shrink-0">
+        {showTokenInput && (
+          <div className="flex items-center gap-1.5">
+            <input
+              type="password"
+              value={tokenDraft}
+              onChange={(e) => setTokenDraft(e.target.value)}
+              placeholder="GitHub token"
+              className="flex-1 min-w-0 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-[10px] text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400 outline-none focus:border-indigo-400"
+            />
+            <button
+              onClick={handleSaveToken}
+              className="text-[10px] px-2 py-1 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300"
+            >
+              保存
+            </button>
+          </div>
+        )}
+        <div className="flex items-center justify-end gap-1.5">
+          <a
+            href="github-token.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
+          >
+            怎么获取
+          </a>
+          <button
+            onClick={() => setShowTokenInput((prev) => !prev)}
+            className={`text-[10px] px-2 py-1 rounded-full transition-colors ${token ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300'}`}
+          >
+            {token ? 'Token 已设' : 'Token'}
+          </button>
+          <button
+            onClick={() => {
+              setTokenDraft('');
+              localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
+              setToken('');
+              setShowTokenInput(false);
+              onShowToast?.('GitHub Token 已清空');
+            }}
+            disabled={!token && !tokenDraft}
+            className="text-[10px] px-2 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 disabled:opacity-30"
+          >
+            清空
+          </button>
+          <button
+            onClick={async () => {
+              await handleFetch();
+              handleCheckout();
+            }}
+            disabled={fetching}
+            className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 disabled:opacity-30 transition-all shadow-sm"
+          >
+            <Github className="w-3 h-3" />
+            {fetching ? '···' : '结算'}
+          </button>
+        </div>
       </div>
     </div>
   );

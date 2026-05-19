@@ -23,7 +23,7 @@ function AppContent() {
   );
   const [yearRange, setYearRange] = useState<[number, number]>([defaultYear - 1, defaultYear]);
   const [searchValue, setSearchValue] = useState('');
-  const [pageSize, setPageSize] = useState(10);
+  const pageSize = 10;
   const [showTimeline, setShowTimeline] = useState(false);
   const [cart, setCart] = useState<Paper[]>([]);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
@@ -162,13 +162,11 @@ function AppContent() {
         manifest={manifest}
         yearRange={yearRange}
         onYearChange={handleYearChange}
-        pageSize={pageSize}
-        onPageSizeChange={setPageSize}
       />
 
       {showTimeline && <Timeline />}
 
-      <main className="max-w-7xl mx-auto px-4 pt-0 pb-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
+      <main className="max-w-7xl mx-auto px-4 pt-0 pb-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] lg:grid-rows-1 gap-6 lg:items-start">
         <Sidebar
           manifest={manifest}
           papers={filteredPapers}
@@ -178,9 +176,10 @@ function AppContent() {
           onRemoveFromCart={handleRemoveFromCart}
           onCopyCart={handleCopyCart}
           onClearCart={handleClearCart}
+          onShowToast={showToast}
         />
 
-        <section className="space-y-4 min-w-0">
+        <section className="space-y-4 min-w-0 min-h-[calc(100vh-5rem)]">
           {combinedLoading && (
             <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
               <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
@@ -219,8 +218,8 @@ function AppContent() {
           <a href="about.html" className="hover:text-indigo-500">淘顶网 · 淘点顶会</a>
         </span>
         <span className="text-right space-x-1.5">
-          <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">想要新功能！</button>
-          <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">发现一个 Bug</button>
+          <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">想要新功能？</button>
+          <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">发现 Bug！</button>
         </span>
       </footer>
 

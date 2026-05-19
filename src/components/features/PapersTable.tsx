@@ -118,17 +118,18 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
   }, [papers, onShowToast]);
 
   return (
-    <div className="w-full min-w-0 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+    <div data-papers-table className="w-full min-w-0 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
       <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-        <span className="text-sm text-zinc-500">
-          {papers.length > 0 ? '点击单词即可加入搜索' : ''}
-        </span>
+        <div></div>
         <span className="text-sm text-zinc-400">
           {papers.length > 0 ? (
             <>{startIdx + 1} – {Math.min(startIdx + pageSize, papers.length)} / <strong className="text-lg text-pink-600 dark:text-pink-400 font-bold">{papers.length}</strong></>
           ) : ''}
         </span>
         <div className="flex items-center gap-2 shrink-0">
+          <span className="text-xs text-zinc-400">
+            {papers.length > 0 ? '点击单词即可加入搜索' : ''}
+          </span>
           <button
             onClick={handleCopyPage}
             disabled={pagePapers.length === 0}

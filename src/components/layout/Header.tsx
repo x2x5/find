@@ -20,12 +20,10 @@ interface HeaderProps {
   manifest: Manifest | null;
   yearRange: [number, number];
   onYearChange: (range: [number, number]) => void;
-  pageSize: number;
-  onPageSizeChange: (size: number) => void;
 }
 
 export default function Header(props: HeaderProps) {
-  const { searchValue, onSearchChange, luckyPaper, showTimeline, onToggleTimeline, manifest, yearRange, onYearChange, pageSize, onPageSizeChange } = props;
+  const { searchValue, onSearchChange, luckyPaper, showTimeline, onToggleTimeline, manifest, yearRange, onYearChange } = props;
   const { theme, toggleTheme, language, toggleLanguage, t } = useAppContext();
   const [startYear, endYear] = yearRange;
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -135,18 +133,7 @@ export default function Header(props: HeaderProps) {
             </button>
             {settingsOpen && (
               <div className="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-3 space-y-3 z-50">
-                <div>
-                  <div className="text-[10px] text-zinc-400 mb-1.5">{t.pagination.perPage}</div>
-                  <div className="flex gap-1">
-                    {[10, 50, 100].map((n) => (
-                      <button key={n} onClick={() => { onPageSizeChange(n); setSettingsOpen(false); }}
-                        className={`flex-1 text-xs py-1 rounded font-medium tabular-nums ${
-                          pageSize === n ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300' : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                        }`}>{n}</button>
-                    ))}
-                  </div>
-                </div>
-                <div className="border-t border-zinc-100 dark:border-zinc-800 pt-2 flex items-center justify-between">
+                <div className="border-t-0 flex items-center justify-between">
                   <span className="text-[10px] text-zinc-400">{t.theme.light}/{t.theme.dark}</span>
                   <button onClick={toggleTheme} className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500">
                     {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}

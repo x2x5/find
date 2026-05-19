@@ -25,4 +25,5 @@ export interface Paper {
   conference: string;
   year: string;
   title: string;
+  citationCount?: number;
 }

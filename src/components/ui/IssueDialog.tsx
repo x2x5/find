@@ -103,7 +103,9 @@ export default function IssueDialog({ type, onClose }: IssueDialogProps) {
                   title === t
                     ? config.accent === 'emerald'
                       ? 'bg-emerald-600 text-white border-emerald-600'
-                      : 'bg-red-600 text-white border-red-600'
+                      : config.accent === 'indigo'
+                        ? 'bg-indigo-600 text-white border-indigo-600'
+                        : 'bg-red-600 text-white border-red-600'
                     : 'border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600'
                 }`}
               >

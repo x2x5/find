@@ -226,7 +226,7 @@ function AppContent() {
             <a href="about.html" className="hover:text-indigo-500">淘顶网 · 淘点顶会</a>
           </span>
           <span className="text-right space-x-1.5">
-            <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">想要新功能？</button>
+            <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">加个新功能</button>
             <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">发现 Bug！</button>
             <button onClick={() => setIssueDialogType('chitchat')} className="hover:text-indigo-500 text-indigo-400">说点没用的</button>
           </span>

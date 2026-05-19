@@ -9,9 +9,9 @@ interface DistributionsProps {
 }
 
 const FIELDS = [
-  { key: 'ML', label: 'ML', bar: 'bg-emerald-400 dark:bg-emerald-500', barDim: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50/50 dark:bg-emerald-950/20' },
-  { key: 'CV', label: 'CV', bar: 'bg-blue-400 dark:bg-blue-500',          barDim: 'bg-blue-100 dark:bg-blue-900/40',       text: 'text-blue-700 dark:text-blue-300',       bg: 'bg-blue-50/50 dark:bg-blue-950/20' },
-  { key: 'AI', label: 'AI', bar: 'bg-amber-400 dark:bg-amber-500',        barDim: 'bg-amber-100 dark:bg-amber-900/40',     text: 'text-amber-700 dark:text-amber-300',     bg: 'bg-amber-50/50 dark:bg-amber-950/20' },
+  { key: 'ML', label: 'ML', bar: 'bg-violet-400 dark:bg-violet-500',    barDim: 'bg-violet-100 dark:bg-violet-900/40',    text: 'text-violet-700 dark:text-violet-300',    bg: 'bg-violet-50/50 dark:bg-violet-950/20' },
+  { key: 'CV', label: 'CV', bar: 'bg-blue-400 dark:bg-blue-500',        barDim: 'bg-blue-100 dark:bg-blue-900/40',        text: 'text-blue-700 dark:text-blue-300',        bg: 'bg-blue-50/50 dark:bg-blue-950/20' },
+  { key: 'AI', label: 'AI', bar: 'bg-emerald-400 dark:bg-emerald-500',  barDim: 'bg-emerald-100 dark:bg-emerald-900/40',  text: 'text-emerald-700 dark:text-emerald-300',  bg: 'bg-emerald-50/50 dark:bg-emerald-950/20' },
 ] as const;
 
 const CONF_ORDER = Object.keys(CONFERENCE_FIELDS);
@@ -107,23 +107,22 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
         const yMax = Math.max(...yearNums);
 
         return (
-          <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2 space-y-1 relative pl-7 bg-indigo-50/30 dark:bg-indigo-950/10 rounded">
+          <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2 space-y-1 relative pl-7 bg-orange-50/30 dark:bg-orange-950/10 rounded">
             <div className="absolute left-0 top-2 bottom-0 w-6 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-indigo-400 dark:text-indigo-500">Year</span>
+              <span className="text-[10px] font-bold text-orange-400 dark:text-orange-500">Year</span>
             </div>
             {sortedYearEntries.map(([year, count]) => {
               const n = parseInt(year);
               const t = yMax > yMin ? (n - yMin) / (yMax - yMin) : 0.5;
-              const alpha = 0.12 + t * 0.28;
               return (
                 <div key={year} className="flex items-center gap-1.5">
-                  <span className="w-14 shrink-0 text-right font-medium" style={{ color: `rgba(99, 102, 241, ${0.4 + t * 0.6})` }}>{year}</span>
+                  <span className="w-14 shrink-0 text-right font-medium" style={{ color: `rgba(234, 88, 12, ${0.65 + t * 0.35})` }}>{year}</span>
                   <div className="flex-1 h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-sm overflow-hidden">
                     <div
                       className="h-full rounded-sm transition-all"
                       style={{
                         width: `${(count / yearMax) * 100}%`,
-                        background: `rgba(99, 102, 241, ${alpha})`,
+                        background: `rgba(234, 88, 12, ${0.25 + t * 0.35})`,
                       }}
                     />
                   </div>

@@ -6,6 +6,7 @@ import Sidebar from './components/layout/Sidebar';
 import Timeline from './components/features/Timeline';
 import PapersTable from './components/features/PapersTable';
 import Toast from './components/ui/Toast';
+import IssueDialog from './components/ui/IssueDialog';
 import { Skeleton } from './components/ui/Skeleton';
 import { useManifest } from './hooks/useManifest';
 import { usePapers } from './hooks/usePapers';
@@ -27,6 +28,7 @@ function AppContent() {
   const [cart, setCart] = useState<Paper[]>([]);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
   const [pinnedPaper, setPinnedPaper] = useState<{ key: string; position: number } | null>(null);
+  const [issueDialogType, setIssueDialogType] = useState<'feature' | 'bug' | null>(null);
   const [visitCount, setVisitCount] = useState<number | null>(null);
   const [searchCount, setSearchCount] = useState<number | null>(null);
   const visitFetched = useRef(false);
@@ -213,10 +215,20 @@ function AppContent() {
           <span>当前访问量: {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
           <span>搜索次数: {searchCount != null ? searchCount.toLocaleString() : '···'}</span>
         </div>
-        <span className="text-center">淘顶网 · 淘点顶会</span>
-        <span className="text-right"><a href="about.html" className="hover:text-indigo-500">给人看的README</a></span>
+        <span className="text-center">
+          <a href="about.html" className="hover:text-indigo-500">淘顶网 · 淘点顶会</a>
+        </span>
+        <span className="text-right space-x-1.5">
+          <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">想要新功能！</button>
+          <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">发现一个 Bug</button>
+        </span>
       </footer>
 
+      <IssueDialog
+        key={issueDialogType}
+        type={issueDialogType}
+        onClose={() => setIssueDialogType(null)}
+      />
       <Toast
         message={toast.message}
         visible={toast.visible}

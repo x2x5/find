@@ -30,7 +30,7 @@ const DICTIONARIES: Record<Language, Translations> = {
 
 export function useLanguage() {
   const [language, setLanguage] = useState<Language>(() => {
-    return getStoredLanguage() || 'en';
+    return getStoredLanguage() || 'zh';
   });
 
   const t = useMemo(() => DICTIONARIES[language], [language]);

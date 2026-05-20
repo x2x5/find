@@ -5,8 +5,6 @@ import { useAppContext } from '@/context/AppContext';
 import type { Paper } from '@/types';
 
 interface RightSidebarProps {
-  showTimeline: boolean;
-  onToggleTimeline: () => void;
   paperCount: number;
   tableReady: boolean;
   cart: Paper[];
@@ -17,8 +15,6 @@ interface RightSidebarProps {
 }
 
 export default function RightSidebar({
-  showTimeline,
-  onToggleTimeline,
   paperCount,
   tableReady,
   cart,
@@ -93,7 +89,7 @@ export default function RightSidebar({
   return (
     <aside className="lg:sticky lg:top-[3.5rem] self-start flex flex-col gap-3">
       <div ref={countdownRef} className="shrink-0">
-        <DeadlineCountdown showTimeline={showTimeline} onToggleTimeline={onToggleTimeline} />
+        <DeadlineCountdown />
       </div>
       <div className="min-h-0 lg:overflow-hidden" style={cartHeight ? { height: `${cartHeight}px` } : undefined}>
         <Cart

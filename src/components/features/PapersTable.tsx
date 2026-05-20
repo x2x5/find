@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Plus, Minus, Copy, Files, Sparkles } from 'lucide-react';
 import type { Paper } from '@/types';
 import { getPaperKey } from '@/lib/utils';
@@ -55,98 +55,6 @@ function highlightText(text: string, query: string, onWordClick?: (word: string)
     }
     return isHighlighted ? <mark key={i} className="bg-yellow-200 dark:bg-yellow-800 rounded-sm px-0.5">{token}</mark> : token;
   });
-}
-
-function handleHorizontalWheel(event: React.WheelEvent<HTMLDivElement>) {
-  const node = event.currentTarget;
-  if (node.scrollWidth <= node.clientWidth) return;
-  if (Math.abs(event.deltaY) < Math.abs(event.deltaX) && event.deltaX === 0) return;
-  event.preventDefault();
-  node.scrollLeft += event.deltaY + event.deltaX;
-}
-
-function ScrollableTitle({
-  children,
-  className,
-  style,
-}: {
-  children: React.ReactNode;
-  className: string;
-  style?: React.CSSProperties;
-}) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const dragStateRef = useRef({ active: false, startX: 0, startScrollLeft: 0, moved: false });
-  const suppressClickRef = useRef(false);
-  const [dragging, setDragging] = useState(false);
-
-  const handlePointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return;
-    if ((event.target as HTMLElement).closest('[data-clickable-word]')) return;
-    const node = containerRef.current;
-    if (!node || node.scrollWidth <= node.clientWidth) return;
-    dragStateRef.current = {
-      active: true,
-      startX: event.clientX,
-      startScrollLeft: node.scrollLeft,
-      moved: false,
-    };
-    suppressClickRef.current = false;
-    node.setPointerCapture(event.pointerId);
-  }, []);
-
-  const handlePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    const node = containerRef.current;
-    const drag = dragStateRef.current;
-    if (!node || !drag.active) return;
-    const deltaX = event.clientX - drag.startX;
-    if (!drag.moved && Math.abs(deltaX) > 6) {
-      drag.moved = true;
-      suppressClickRef.current = true;
-      setDragging(true);
-    }
-    if (!drag.moved) return;
-    event.preventDefault();
-    node.scrollLeft = drag.startScrollLeft - deltaX;
-  }, []);
-
-  const endDrag = useCallback((event?: React.PointerEvent<HTMLDivElement>) => {
-    const node = containerRef.current;
-    const drag = dragStateRef.current;
-    if (event && node?.hasPointerCapture(event.pointerId)) {
-      node.releasePointerCapture(event.pointerId);
-    }
-    drag.active = false;
-    if (drag.moved) {
-      window.setTimeout(() => {
-        suppressClickRef.current = false;
-      }, 0);
-    }
-    drag.moved = false;
-    setDragging(false);
-  }, []);
-
-  const handleClickCapture = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    if (!suppressClickRef.current) return;
-    event.preventDefault();
-    event.stopPropagation();
-  }, []);
-
-  return (
-    <div
-      ref={containerRef}
-      className={`self-stretch flex flex-1 min-w-0 items-center overflow-x-auto overflow-y-hidden whitespace-nowrap py-0.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${dragging ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
-      onWheel={handleHorizontalWheel}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
-      onClickCapture={handleClickCapture}
-    >
-      <span className={`${className} pr-6`} style={style}>
-        {children}
-      </span>
-    </div>
-  );
 }
 
 const FIELD_COLORS: Record<string, { bg: string; text: string; darkBg: string; darkText: string }> = {
@@ -296,12 +204,12 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
                 >
                   <Copy className="w-3.5 h-3.5" />
                 </button>
-                <ScrollableTitle
-                  className={`inline-block min-w-max text-sm ${colors.text} ${colors.darkText}`}
+                <span
+                  className={`text-sm ${colors.text} ${colors.darkText} flex-1 min-w-0 overflow-x-auto overflow-y-hidden whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}
                   style={{ opacity: yearMax > yearMin ? 0.7 + 0.3 * (parseInt(paper.year) - yearMin) / (yearMax - yearMin) : 1 }}
                 >
                   {highlightText(paper.title, searchTrigger, (word) => onWordClick?.(word, paper, globalIdx))}
-                </ScrollableTitle>
+                </span>
               </div>
             );
           })}
@@ -318,7 +226,10 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
               CONF
             </span>
             <span className="shrink-0 w-5 h-5" />
-            <span className="h-4 flex-1 rounded bg-zinc-50 dark:bg-zinc-900/70" />
+            <span className="shrink-0 w-3.5 h-3.5" />
+            <div className="self-stretch flex flex-1 min-w-0 items-center py-0.5">
+              <span className="block h-5 w-full rounded bg-zinc-50 dark:bg-zinc-900/70" />
+            </div>
           </div>
         ))}
       </div>

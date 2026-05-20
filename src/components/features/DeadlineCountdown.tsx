@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Settings2, PanelTopClose, PanelTopOpen } from 'lucide-react';
+import { Settings2 } from 'lucide-react';
 
 const STORAGE_KEY = 'next_deadline_at';
 const LABEL_STORAGE_KEY = 'next_deadline_label';
@@ -25,10 +25,10 @@ function readStoredTarget() {
 function formatForInputs(iso: string) {
   const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
   if (!match) {
-    return { year: '2026', month: '07', day: '28', hour: '19', minute: '59', second: '59' };
+    return { year: '26', month: '07', day: '28', hour: '19', minute: '59', second: '59' };
   }
   return {
-    year: match[1],
+    year: match[1].slice(2),
     month: match[2],
     day: match[3],
     hour: match[4],
@@ -38,7 +38,7 @@ function formatForInputs(iso: string) {
 }
 
 function toIsoString(year: string, month: string, day: string, hour: string, minute: string, second: string) {
-  return `${year}-${month}-${day}T${hour}:${minute}:${second}+08:00`;
+  return `20${year}-${month}-${day}T${hour}:${minute}:${second}+08:00`;
 }
 
 function getCountdownParts(target: string, nowMs: number): CountdownParts {
@@ -55,15 +55,13 @@ function getCountdownParts(target: string, nowMs: number): CountdownParts {
   return { days, hours, minutes, seconds, expired: false };
 }
 
-interface DeadlineCountdownProps {
-  showTimeline?: boolean;
-  onToggleTimeline?: () => void;
-}
+interface DeadlineCountdownProps {}
 
-export default function DeadlineCountdown({ showTimeline = false, onToggleTimeline }: DeadlineCountdownProps) {
+export default function DeadlineCountdown({}: DeadlineCountdownProps) {
   const [target, setTarget] = useState(DEFAULT_TARGET);
   const [label, setLabel] = useState(DEFAULT_LABEL);
   const [editing, setEditing] = useState(false);
+  const [labelEditing, setLabelEditing] = useState(false);
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [draft, setDraft] = useState(() => formatForInputs(DEFAULT_TARGET));
   const [labelDraft, setLabelDraft] = useState(DEFAULT_LABEL);
@@ -107,17 +105,41 @@ export default function DeadlineCountdown({ showTimeline = false, onToggleTimeli
     <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-orange-50/70 dark:from-zinc-900 dark:to-orange-950/20 p-3 shadow-sm">
       <div className="flex items-center justify-between gap-2">
         <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
-          距 <span className="text-pink-500 text-sm font-semibold">{label}</span> 投稿还有
+          距
+          {labelEditing ? (
+            <input
+              value={labelDraft}
+              onChange={(e) => setLabelDraft(e.target.value)}
+              onBlur={() => {
+                setLabel(labelDraft.trim() || DEFAULT_LABEL);
+                setLabelEditing(false);
+                try { localStorage.setItem(LABEL_STORAGE_KEY, labelDraft.trim() || DEFAULT_LABEL); } catch {}
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setLabel(labelDraft.trim() || DEFAULT_LABEL);
+                  setLabelEditing(false);
+                  try { localStorage.setItem(LABEL_STORAGE_KEY, labelDraft.trim() || DEFAULT_LABEL); } catch {}
+                }
+                if (e.key === 'Escape') {
+                  setLabelDraft(label);
+                  setLabelEditing(false);
+                }
+              }}
+              className="inline w-14 rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-1 py-0 text-sm font-semibold text-pink-500 tabular-nums"
+              autoFocus
+            />
+          ) : (
+            <span
+              onClick={() => { setLabelDraft(label); setLabelEditing(true); }}
+              className="text-pink-500 text-sm font-semibold cursor-pointer hover:bg-pink-50 dark:hover:bg-pink-950/30 rounded px-0.5"
+            >
+              {label}
+            </span>
+          )}
+          投稿还有
         </span>
         <div className="flex items-center gap-1">
-          <button
-            onClick={onToggleTimeline}
-            className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/80 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-100 disabled:opacity-30"
-            title="时间轴"
-            disabled={!onToggleTimeline}
-          >
-            {showTimeline ? <PanelTopClose className="w-3.5 h-3.5" /> : <PanelTopOpen className="w-3.5 h-3.5" />}
-          </button>
           <button
             onClick={() => setEditing((prev) => !prev)}
             className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/80 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-100"
@@ -148,78 +170,73 @@ export default function DeadlineCountdown({ showTimeline = false, onToggleTimeli
       </div>
 
       {countdown.expired && (
-        <div className="mt-2 text-[10px] text-zinc-400 tabular-nums">
-          已截止
-        </div>
+        <div className="mt-2 text-[10px] text-zinc-400 tabular-nums">已截止</div>
       )}
 
       {editing && (
         <div className="mt-2 space-y-2">
-          <label className="block space-y-1">
-            <span className="text-[10px] text-zinc-500 dark:text-zinc-400">会议名称</span>
-            <input
-              value={labelDraft}
-              onChange={(e) => setLabelDraft(e.target.value)}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-[10px]"
-              placeholder="例如 AAAI"
-            />
-          </label>
-          <div className="grid grid-cols-3 gap-1.5">
-            <label className="block space-y-1">
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400">年</span>
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-1">
               <input
                 value={draft.year}
-                onChange={(e) => setDraft((prev) => ({ ...prev, year: e.target.value }))}
-                className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-[10px] tabular-nums"
-                placeholder="2026"
+                onChange={(e) => setDraft((prev) => ({ ...prev, year: e.target.value.replace(/\D/g, '').slice(0, 2) }))}
+                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
+                placeholder="26"
+                inputMode="numeric"
               />
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">年</span>
             </label>
-            <label className="block space-y-1">
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400">月</span>
+            <label className="flex items-center gap-1">
               <input
                 value={draft.month}
-                onChange={(e) => setDraft((prev) => ({ ...prev, month: e.target.value }))}
-                className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-[10px] tabular-nums"
+                onChange={(e) => setDraft((prev) => ({ ...prev, month: e.target.value.replace(/\D/g, '').slice(0, 2) }))}
+                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
                 placeholder="07"
+                inputMode="numeric"
               />
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">月</span>
             </label>
-            <label className="block space-y-1">
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400">日</span>
+            <label className="flex items-center gap-1">
               <input
                 value={draft.day}
-                onChange={(e) => setDraft((prev) => ({ ...prev, day: e.target.value }))}
-                className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-[10px] tabular-nums"
+                onChange={(e) => setDraft((prev) => ({ ...prev, day: e.target.value.replace(/\D/g, '').slice(0, 2) }))}
+                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
                 placeholder="28"
+                inputMode="numeric"
               />
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">日</span>
             </label>
           </div>
-          <div className="grid grid-cols-3 gap-1.5">
-            <label className="block space-y-1">
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400">时</span>
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-1">
               <input
                 value={draft.hour}
-                onChange={(e) => setDraft((prev) => ({ ...prev, hour: e.target.value }))}
-                className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-[10px] tabular-nums"
+                onChange={(e) => setDraft((prev) => ({ ...prev, hour: e.target.value.replace(/\D/g, '').slice(0, 2) }))}
+                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
                 placeholder="19"
+                inputMode="numeric"
               />
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">时</span>
             </label>
-            <label className="block space-y-1">
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400">分</span>
+            <label className="flex items-center gap-1">
               <input
                 value={draft.minute}
-                onChange={(e) => setDraft((prev) => ({ ...prev, minute: e.target.value }))}
-                className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-[10px] tabular-nums"
+                onChange={(e) => setDraft((prev) => ({ ...prev, minute: e.target.value.replace(/\D/g, '').slice(0, 2) }))}
+                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
                 placeholder="59"
+                inputMode="numeric"
               />
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">分</span>
             </label>
-            <label className="block space-y-1">
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400">秒</span>
+            <label className="flex items-center gap-1">
               <input
                 value={draft.second}
-                onChange={(e) => setDraft((prev) => ({ ...prev, second: e.target.value }))}
-                className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-[10px] tabular-nums"
+                onChange={(e) => setDraft((prev) => ({ ...prev, second: e.target.value.replace(/\D/g, '').slice(0, 2) }))}
+                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
                 placeholder="59"
+                inputMode="numeric"
               />
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">秒</span>
             </label>
           </div>
           <button

@@ -107,7 +107,7 @@ export default function DeadlineCountdown({ showTimeline = false, onToggleTimeli
     <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-orange-50/70 dark:from-zinc-900 dark:to-orange-950/20 p-3 shadow-sm">
       <div className="flex items-center justify-between gap-2">
         <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
-          距 {label} 投稿还有
+          距 <span className="text-pink-500 text-sm font-semibold">{label}</span> 投稿还有
         </span>
         <div className="flex items-center gap-1">
           <button

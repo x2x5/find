@@ -221,10 +221,7 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
                 <Sparkles className="h-3 w-3" />
               </span>
               <div className="leading-none">
-                <div className="text-[10px] font-medium tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
-                  THIS PAGE
-                </div>
-                <div className="mt-1 text-sm font-semibold text-zinc-700 dark:text-zinc-200 tabular-nums">
+                <div className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 tabular-nums">
                   {papers.length > 0 ? `${startIdx + 1} – ${Math.min(startIdx + pageSize, papers.length)}` : '0'}
                 </div>
               </div>

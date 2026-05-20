@@ -66,18 +66,42 @@
   .bar-count { width:36px; text-align:right; flex-shrink:0; font-size:0.8em; color:var(--muted); }
 
   .highlight { color:var(--accent); font-weight:600; }
-  hr { border:none; border-top:1px solid var(--border); margin:2rem 0; }
   .demo-btn {
     font-size:0.78em; padding:0.3em 0.8em; border-radius:5px;
     border:1px solid var(--border); background:var(--card);
     cursor:pointer; color:var(--muted); margin:0.3em;
   }
   .demo-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .bottom-back {
+    text-align:center;
+    margin-top:2rem;
+  }
+  .bottom-back a {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 14px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--fg);
+    text-decoration:none;
+    font-size:0.88rem;
+    font-weight:600;
+  }
+  .bottom-back a:hover {
+    border-color:var(--accent);
+    color:var(--accent);
+  }
 </style>
 </head>
 <body>
 
-<h1 style="text-align:center">给人看的README</h1>
+<h1 style="text-align:center">
+  给人看的README
+  <span style="color:var(--muted);font-weight:400"> | </span>
+  <a href="https://github.com/x2x5/find" target="_blank" rel="noopener noreferrer" style="font-size:0.72em;font-weight:600;text-decoration:none">给 AI 看的 README</a>
+</h1>
 
 <h2>淘顶网是什么？</h2>
 <div class="card">
@@ -206,10 +230,9 @@ npx tsx gen-data.ts</code></pre>
   <p style="margin-top:0.75rem;font-size:0.82em;color:var(--muted)">需要 GitHub 账号。没有的话也可以发邮件：<a href="mailto:x2x5.blog@outlook.com">x2x5.blog@outlook.com</a></p>
 </div>
 
-<hr>
-<p style="text-align:center;font-size:0.85em;color:var(--muted)">
-  淘顶网 — <a href="/find/">去淘点顶会吧</a>
-</p>
+<div class="bottom-back">
+  <a href="/find/">← 返回主页</a>
+</div>
 
 </body>
 </html>

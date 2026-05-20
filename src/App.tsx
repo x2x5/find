@@ -159,8 +159,6 @@ function AppContent() {
         }}
         totalCount={filteredPapers.length}
         luckyPaper={luckyPaper}
-        showTimeline={showTimeline}
-        onToggleTimeline={() => setShowTimeline((v) => !v)}
         manifest={manifest}
         yearRange={yearRange}
         onYearChange={handleYearChange}
@@ -206,6 +204,8 @@ function AppContent() {
         </section>
 
         <RightSidebar
+          showTimeline={showTimeline}
+          onToggleTimeline={() => setShowTimeline((v) => !v)}
           paperCount={filteredPapers.length}
           tableReady={!combinedLoading && !combinedError}
           cart={cart}

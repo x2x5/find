@@ -7,20 +7,17 @@ interface PaginationProps {
 }
 
 export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
-  if (totalPages <= 1) return null;
-
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-zinc-200 dark:border-zinc-800">
+    <div className="flex items-center justify-center px-4 py-3 border-t border-zinc-200 dark:border-zinc-800">
       <div className="flex items-center gap-1">
-        {currentPage > 1 && (
-          <button
-            onClick={() => onPageChange(1)}
-            className="p-1.5 rounded-md hover:bg-indigo-50 dark:hover:bg-indigo-900/40 text-indigo-400 hover:text-indigo-600 dark:text-indigo-300"
-            title="首页"
-          >
-            <ChevronsLeft className="w-4 h-4" />
-          </button>
-        )}
+        <button
+          onClick={() => onPageChange(1)}
+          disabled={currentPage <= 1}
+          className="p-1.5 rounded-md hover:bg-indigo-50 dark:hover:bg-indigo-900/40 text-indigo-400 hover:text-indigo-600 dark:text-indigo-300 disabled:opacity-20"
+          title="首页"
+        >
+          <ChevronsLeft className="w-4 h-4" />
+        </button>
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}

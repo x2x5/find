@@ -1,5 +1,5 @@
-import { useMemo, useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Undo2, PanelTopClose, PanelTopOpen, Settings, Sun, Moon } from 'lucide-react';
+import { useMemo, useState, useRef, useEffect, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, Undo2, Settings, Sun, Moon } from 'lucide-react';
 import SearchBar from '@/components/features/SearchBar';
 import { useAppContext } from '@/context/AppContext';
 import type { Manifest, Paper } from '@/types';
@@ -9,15 +9,80 @@ interface HeaderProps {
   onSearchChange: (value: string) => void;
   totalCount: number;
   luckyPaper: Paper | null;
-  showTimeline: boolean;
-  onToggleTimeline: () => void;
   manifest: Manifest | null;
   yearRange: [number, number];
   onYearChange: (range: [number, number]) => void;
 }
 
+function DraggableInlineTitle({ title }: { title: string }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const dragStateRef = useRef({ active: false, startX: 0, startScrollLeft: 0, moved: false });
+  const [dragging, setDragging] = useState(false);
+
+  const handleWheel = useCallback((event: React.WheelEvent<HTMLDivElement>) => {
+    const node = containerRef.current;
+    if (!node || node.scrollWidth <= node.clientWidth) return;
+    event.preventDefault();
+    node.scrollLeft += event.deltaY + event.deltaX;
+  }, []);
+
+  const handlePointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    const node = containerRef.current;
+    if (!node || node.scrollWidth <= node.clientWidth) return;
+    dragStateRef.current = {
+      active: true,
+      startX: event.clientX,
+      startScrollLeft: node.scrollLeft,
+      moved: false,
+    };
+    node.setPointerCapture(event.pointerId);
+  }, []);
+
+  const handlePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    const node = containerRef.current;
+    const drag = dragStateRef.current;
+    if (!node || !drag.active) return;
+    const deltaX = event.clientX - drag.startX;
+    if (!drag.moved && Math.abs(deltaX) > 6) {
+      drag.moved = true;
+      setDragging(true);
+    }
+    if (!drag.moved) return;
+    event.preventDefault();
+    node.scrollLeft = drag.startScrollLeft - deltaX;
+  }, []);
+
+  const endDrag = useCallback((event?: React.PointerEvent<HTMLDivElement>) => {
+    const node = containerRef.current;
+    if (event && node?.hasPointerCapture(event.pointerId)) {
+      node.releasePointerCapture(event.pointerId);
+    }
+    dragStateRef.current.active = false;
+    dragStateRef.current.moved = false;
+    setDragging(false);
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className={`flex min-w-0 max-w-[15rem] overflow-x-auto overflow-y-hidden whitespace-nowrap py-0.5 pr-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:max-w-[35rem] ${dragging ? 'cursor-grabbing select-none' : 'cursor-grab'}`}
+      onWheel={handleWheel}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      title={title}
+    >
+      <span className="inline-block min-w-max text-base font-semibold text-amber-600 dark:text-amber-300">
+        {title}
+      </span>
+    </div>
+  );
+}
+
 export default function Header(props: HeaderProps) {
-  const { searchValue, onSearchChange, totalCount, luckyPaper, showTimeline, onToggleTimeline, manifest, yearRange, onYearChange } = props;
+  const { searchValue, onSearchChange, totalCount, luckyPaper, manifest, yearRange, onYearChange } = props;
   const { theme, toggleTheme, language, toggleLanguage, t } = useAppContext();
   const [startYear, endYear] = yearRange;
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -85,13 +150,7 @@ export default function Header(props: HeaderProps) {
                   {(() => {
                     return (
                       <>
-                        <span
-                          onClick={async () => { try { await navigator.clipboard.writeText(luckyPaper.title); } catch {} }}
-                          className="text-base font-semibold text-amber-600 dark:text-amber-300 truncate cursor-pointer hover:text-amber-700 dark:hover:text-amber-200 leading-none max-w-[15rem] md:max-w-[35rem]"
-                          title={luckyPaper.title}
-                        >
-                          {luckyPaper.title}
-                        </span>
+                        <DraggableInlineTitle title={luckyPaper.title} />
                       </>
                     );
                   })()}
@@ -120,9 +179,6 @@ export default function Header(props: HeaderProps) {
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-          <button onClick={onToggleTimeline} className="p-1.5 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200" title="时间轴">
-            {showTimeline ? <PanelTopClose className="w-4 h-4" /> : <PanelTopOpen className="w-4 h-4" />}
-          </button>
           <div className="relative" ref={settingsRef}>
             <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-1.5 rounded-md bg-zinc-50 dark:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700">
               <Settings className="w-4 h-4" />

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Settings2 } from 'lucide-react';
+import { Settings2, PanelTopClose, PanelTopOpen } from 'lucide-react';
 
 const STORAGE_KEY = 'next_deadline_at';
 const LABEL_STORAGE_KEY = 'next_deadline_label';
@@ -55,7 +55,12 @@ function getCountdownParts(target: string, nowMs: number): CountdownParts {
   return { days, hours, minutes, seconds, expired: false };
 }
 
-export default function DeadlineCountdown() {
+interface DeadlineCountdownProps {
+  showTimeline?: boolean;
+  onToggleTimeline?: () => void;
+}
+
+export default function DeadlineCountdown({ showTimeline = false, onToggleTimeline }: DeadlineCountdownProps) {
   const [target, setTarget] = useState(DEFAULT_TARGET);
   const [label, setLabel] = useState(DEFAULT_LABEL);
   const [editing, setEditing] = useState(false);
@@ -104,13 +109,23 @@ export default function DeadlineCountdown() {
         <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
           距 {label} 投稿还有
         </span>
-        <button
-          onClick={() => setEditing((prev) => !prev)}
-          className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/80 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-100"
-          title={editing ? '收起' : '设置'}
-        >
-          <Settings2 className="w-3.5 h-3.5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={onToggleTimeline}
+            className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/80 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-100 disabled:opacity-30"
+            title="时间轴"
+            disabled={!onToggleTimeline}
+          >
+            {showTimeline ? <PanelTopClose className="w-3.5 h-3.5" /> : <PanelTopOpen className="w-3.5 h-3.5" />}
+          </button>
+          <button
+            onClick={() => setEditing((prev) => !prev)}
+            className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/80 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-100"
+            title={editing ? '收起' : '设置'}
+          >
+            <Settings2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
       <div className="mt-2 grid grid-cols-4 gap-1.5">

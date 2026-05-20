@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Settings2 } from 'lucide-react';
+import { useAppContext } from '@/context/AppContext';
 
 const STORAGE_KEY = 'next_deadline_at';
 const LABEL_STORAGE_KEY = 'next_deadline_label';
@@ -58,6 +59,7 @@ function getCountdownParts(target: string, nowMs: number): CountdownParts {
 interface DeadlineCountdownProps {}
 
 export default function DeadlineCountdown({}: DeadlineCountdownProps) {
+  const { t } = useAppContext();
   const [target, setTarget] = useState(DEFAULT_TARGET);
   const [label, setLabel] = useState(DEFAULT_LABEL);
   const [editing, setEditing] = useState(false);
@@ -105,7 +107,7 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
     <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-orange-50/70 dark:from-zinc-900 dark:to-orange-950/20 p-3 shadow-sm">
       <div className="flex items-center justify-between gap-2">
         <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
-          距
+          {t.countdown.untilPrefix}
           {labelEditing ? (
             <input
               value={labelDraft}
@@ -137,13 +139,13 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
               {label}
             </span>
           )}
-          投稿还有
+          {t.countdown.untilSuffix}
         </span>
         <div className="flex items-center gap-1">
           <button
             onClick={() => setEditing((prev) => !prev)}
             className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/80 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-100"
-            title={editing ? '收起' : '设置'}
+            title={editing ? t.common.collapse : t.common.settings}
           >
             <Settings2 className="w-3.5 h-3.5" />
           </button>
@@ -153,24 +155,24 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
       <div className="mt-2 grid grid-cols-4 gap-1.5">
         <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
           <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">{countdown.days}</div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-400">DAY</div>
+          <div className="text-[10px] tracking-[0.18em] text-zinc-400">{t.countdown.day}</div>
         </div>
         <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
           <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">{String(countdown.hours).padStart(2, '0')}</div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-400">HRS</div>
+          <div className="text-[10px] tracking-[0.18em] text-zinc-400">{t.countdown.hour}</div>
         </div>
         <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
           <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">{String(countdown.minutes).padStart(2, '0')}</div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-400">MIN</div>
+          <div className="text-[10px] tracking-[0.18em] text-zinc-400">{t.countdown.minute}</div>
         </div>
         <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
           <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">{String(countdown.seconds).padStart(2, '0')}</div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-400">SEC</div>
+          <div className="text-[10px] tracking-[0.18em] text-zinc-400">{t.countdown.second}</div>
         </div>
       </div>
 
       {countdown.expired && (
-        <div className="mt-2 text-[10px] text-zinc-400 tabular-nums">已截止</div>
+        <div className="mt-2 text-[10px] text-zinc-400 tabular-nums">{t.countdown.expired}</div>
       )}
 
       {editing && (
@@ -184,7 +186,7 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
                 placeholder="26"
                 inputMode="numeric"
               />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">年</span>
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">{t.countdown.year}</span>
             </label>
             <label className="flex items-center gap-1">
               <input
@@ -194,7 +196,7 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
                 placeholder="07"
                 inputMode="numeric"
               />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">月</span>
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">{t.countdown.month}</span>
             </label>
             <label className="flex items-center gap-1">
               <input
@@ -204,7 +206,7 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
                 placeholder="28"
                 inputMode="numeric"
               />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">日</span>
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">{t.countdown.dayLabel}</span>
             </label>
           </div>
           <div className="flex items-center gap-3">
@@ -216,7 +218,7 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
                 placeholder="19"
                 inputMode="numeric"
               />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">时</span>
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">{t.countdown.hourLabel}</span>
             </label>
             <label className="flex items-center gap-1">
               <input
@@ -226,7 +228,7 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
                 placeholder="59"
                 inputMode="numeric"
               />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">分</span>
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">{t.countdown.minuteLabel}</span>
             </label>
             <label className="flex items-center gap-1">
               <input
@@ -236,14 +238,14 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
                 placeholder="59"
                 inputMode="numeric"
               />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">秒</span>
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">{t.countdown.secondLabel}</span>
             </label>
           </div>
           <button
             onClick={handleSave}
             className="w-full rounded-md bg-indigo-100 dark:bg-indigo-950 px-2 py-1 text-[10px] text-indigo-700 dark:text-indigo-300"
           >
-            保存到本地
+            {t.common.saveLocal}
           </button>
         </div>
       )}

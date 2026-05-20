@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>词云</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --card: #ffffff;
+      --fg: #18181b;
+      --muted: #71717a;
+      --border: #e4e4e7;
+      --accent: #d97706;
+    }
+    html.dark {
+      --bg: #09090b;
+      --card: #18181b;
+      --fg: #f4f4f5;
+      --muted: #a1a1aa;
+      --border: #27272a;
+      --accent: #f59e0b;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body {
+      margin: 0;
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(circle at top, rgba(245, 158, 11, 0.10), transparent 36%), var(--bg);
+      color: var(--fg);
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 20px 24px;
+    }
+    .panel {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,247,237,0.74));
+      border-radius: 24px;
+      min-height: 680px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    html.dark .panel {
+      background: linear-gradient(180deg, rgba(24,24,27,0.96), rgba(66,32,6,0.32));
+    }
+    .empty {
+      min-height: 632px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .cloud {
+      position: relative;
+      width: 100%;
+      height: 632px;
+      overflow: hidden;
+    }
+    .word {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-origin: center;
+      white-space: nowrap;
+      user-select: none;
+      cursor: pointer;
+      line-height: 1;
+      transition: transform 120ms ease, opacity 120ms ease;
+    }
+    .word:hover {
+      transform: translate(-50%, -50%) scale(1.04);
+      opacity: 0.9;
+    }
+    .meta-stack {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      max-width: 360px;
+      pointer-events: none;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+    .tip {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      text-align: right;
+    }
+  </style>
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem('theme');
+        var dark = theme ? theme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dark) document.documentElement.classList.add('dark');
+      } catch (_) {}
+    })();
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <div class="meta-stack">
+        <div id="meta" class="meta"></div>
+        <div class="tip">点击词语可从当前词云中移除。<br>搜索词本身会自动排除。</div>
+      </div>
+      <div id="cloud-root" class="cloud"></div>
+      <div id="empty" class="empty" hidden>没有可生成的词云数据。请回到主页重新点击“生成词云”。</div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'word_cloud_payload';
+    const STOP_WORDS = new Set([
+      'a','an','and','are','as','at','be','by','for','from','how','in','into','is','it','of','on','or','our','that','the','their','this','to','toward','towards','using','use','via','with','without','within','over','under','new','based','learning','model','models','network','networks','data','training','efficient','general','paper','papers','study','analysis','method','methods','approach','approaches','benchmark','benchmarks','foundation','foundations','through','your','you','all','one','two','three','can','large','language','vision','image','images','video','videos','text','llm','llms','diffusion','transformer','transformers'
+    ]);
+
+    const root = document.getElementById('cloud-root');
+    const empty = document.getElementById('empty');
+    const meta = document.getElementById('meta');
+    let hiddenWords = new Set();
+
+    function splitSearchTerms(query) {
+      return new Set((query || '').toLowerCase().split(/[^a-z0-9\u4e00-\u9fff]+/i).filter(Boolean));
+    }
+
+    function buildWords(papers, searchValue) {
+      const excluded = splitSearchTerms(searchValue);
+      const counts = new Map();
+      for (const paper of papers) {
+        const words = (paper.title.match(/[A-Za-z0-9]+|[\u4e00-\u9fff]+/g) || []);
+        for (const raw of words) {
+          const word = raw.toLowerCase();
+          if (excluded.has(word)) continue;
+          if (hiddenWords.has(word)) continue;
+          if (STOP_WORDS.has(word)) continue;
+          if (/^\d+$/.test(word)) continue;
+          if (/^[a-z]$/.test(word)) continue;
+          if (/^[a-z]{2}$/.test(word)) continue;
+          counts.set(word, (counts.get(word) || 0) + 1);
+        }
+      }
+      return Array.from(counts.entries())
+        .map(([word, count]) => ({ word, count }))
+        .sort((a, b) => b.count - a.count || a.word.localeCompare(b.word))
+        .slice(0, 72);
+    }
+
+    function styleFor(index, count, maxCount) {
+      const ratio = maxCount > 1 ? (count - 1) / (maxCount - 1) : 0.5;
+      const size = 14 + ratio * 26;
+      const hue = 18 + (index % 7) * 8;
+      return {
+        fontSize: size,
+        weight: Math.round(560 + ratio * 220),
+        color: `hsla(${hue}, 84%, 48%, ${0.62 + ratio * 0.32})`,
+      };
+    }
+
+    function intersects(a, b) {
+      return !(
+        a.right < b.left ||
+        a.left > b.right ||
+        a.bottom < b.top ||
+        a.top > b.bottom
+      );
+    }
+
+    function placeWords(words) {
+      root.innerHTML = '';
+      const width = root.clientWidth;
+      const height = root.clientHeight;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const placed = [];
+      const maxCount = words[0] ? words[0].count : 1;
+
+      words.forEach((item, index) => {
+        const el = document.createElement('button');
+        const style = styleFor(index, item.count, maxCount);
+        el.className = 'word';
+        el.textContent = item.word;
+        el.style.fontSize = style.fontSize + 'px';
+        el.style.fontWeight = style.weight;
+        el.style.color = style.color;
+        el.style.background = 'transparent';
+        el.style.border = '0';
+        el.style.padding = '0';
+        el.style.fontFamily = 'inherit';
+        el.title = '删除 ' + item.word;
+        root.appendChild(el);
+
+        const rect = el.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+
+        let angle = index === 0 ? 0 : Math.random() * Math.PI * 2;
+        let radius = index === 0 ? 0 : 18;
+        let x = centerX;
+        let y = centerY;
+        let box = null;
+
+        for (let step = 0; step < 2400; step++) {
+          if (index !== 0) {
+            x = centerX + Math.cos(angle) * radius;
+            y = centerY + Math.sin(angle) * radius;
+            angle += 0.32;
+            radius += 0.42;
+          }
+          box = {
+            left: x - w / 2,
+            top: y - h / 2,
+            right: x + w / 2,
+            bottom: y + h / 2
+          };
+
+          if (box.left < 8 || box.top < 8 || box.right > width - 8 || box.bottom > height - 8) {
+            continue;
+          }
+
+          let collided = false;
+          for (const prev of placed) {
+            if (intersects(box, prev)) {
+              collided = true;
+              break;
+            }
+          }
+          if (!collided) break;
+        }
+
+        if (!box) {
+          el.remove();
+          return;
+        }
+
+        placed.push(box);
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.transform = 'translate(-50%, -50%)';
+        el.addEventListener('click', () => {
+          hiddenWords.add(item.word);
+          render();
+        });
+      });
+    }
+
+    function render() {
+      let payload = null;
+      try {
+        payload = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+      } catch (_) {}
+
+      if (!payload || !Array.isArray(payload.papers) || payload.papers.length === 0) {
+        root.hidden = true;
+        empty.hidden = false;
+        meta.textContent = '';
+        return;
+      }
+
+      root.hidden = false;
+      empty.hidden = true;
+      meta.textContent = `基于 ${payload.papers.length} 篇当前筛选论文生成`;
+      const words = buildWords(payload.papers, payload.searchValue || '');
+
+      if (words.length === 0) {
+        root.hidden = true;
+        root.innerHTML = '';
+        empty.hidden = false;
+        empty.textContent = '没有可生成的词云数据。可以回主页换个筛选条件再试。';
+        return;
+      }
+
+      root.hidden = false;
+      placeWords(words);
+    }
+
+    window.addEventListener('resize', render);
+    render();
+  </script>
+</body>
+</html>

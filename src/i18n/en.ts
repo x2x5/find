@@ -44,12 +44,34 @@ export interface Translations {
     zh: string;
     en: string;
     about: string;
+    label: string;
   };
   error: string;
+  common: {
+    settings: string;
+    collapse: string;
+    saveLocal: string;
+    copiedTitle: string;
+  };
   timeline: {
     today: string;
     deadline: string;
     result: string;
+  };
+  countdown: {
+    untilPrefix: string;
+    untilSuffix: string;
+    day: string;
+    hour: string;
+    minute: string;
+    second: string;
+    expired: string;
+    year: string;
+    month: string;
+    dayLabel: string;
+    hourLabel: string;
+    minuteLabel: string;
+    secondLabel: string;
   };
   cart: {
     cart: string;
@@ -57,11 +79,16 @@ export interface Translations {
     clear: string;
     empty: string;
   };
+  wordCloud: {
+    generate: string;
+    popupBlocked: string;
+    writeFailed: string;
+  };
 }
 
 export const en: Translations = {
   appTitle: '淘顶网',
-  subtitle: 'Lucky Pick',
+  subtitle: 'Target:',
   search: {
     placeholder: 'Search papers...',
     button: 'Search',
@@ -105,17 +132,44 @@ export const en: Translations = {
     zh: '中',
     en: 'EN',
     about: 'About',
+    label: 'Language',
   },
   error: 'Error',
+  common: {
+    settings: 'Settings',
+    collapse: 'Collapse',
+    saveLocal: 'Save locally',
+    copiedTitle: 'Title copied',
+  },
   timeline: {
     today: 'Today',
     deadline: 'Submission',
     result: 'Acceptance',
+  },
+  countdown: {
+    untilPrefix: 'Until ',
+    untilSuffix: ' submission',
+    day: 'DAY',
+    hour: 'HRS',
+    minute: 'MIN',
+    second: 'SEC',
+    expired: 'Expired',
+    year: 'YY',
+    month: 'MM',
+    dayLabel: 'D',
+    hourLabel: 'H',
+    minuteLabel: 'M',
+    secondLabel: 'S',
   },
   cart: {
     cart: 'Cart',
     copy: 'Copy',
     clear: 'Clear',
     empty: 'Click a paper title to add',
+  },
+  wordCloud: {
+    generate: 'Word Cloud',
+    popupBlocked: 'Popup was blocked',
+    writeFailed: 'Failed to prepare word cloud',
   },
 };

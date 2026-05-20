@@ -8,6 +8,7 @@ import Timeline from './components/features/Timeline';
 import PapersTable from './components/features/PapersTable';
 import Toast from './components/ui/Toast';
 import IssueDialog from './components/ui/IssueDialog';
+import WordCloudDialog from './components/ui/WordCloudDialog';
 import { Skeleton } from './components/ui/Skeleton';
 import { useManifest } from './hooks/useManifest';
 import { usePapers } from './hooks/usePapers';
@@ -22,14 +23,16 @@ function AppContent() {
   const [selectedConfs, setSelectedConfs] = useState<Set<string>>(
     () => new Set(['nips', 'icml', 'iclr', 'cvpr', 'eccv', 'iccv'])
   );
-  const [yearRange, setYearRange] = useState<[number, number]>([defaultYear - 1, defaultYear]);
+  const [yearRange, setYearRange] = useState<[number, number]>([defaultYear - 2, defaultYear]);
   const [searchValue, setSearchValue] = useState('');
   const pageSize = 10;
   const [showTimeline, setShowTimeline] = useState(false);
   const [cart, setCart] = useState<Paper[]>([]);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
   const [pinnedPaper, setPinnedPaper] = useState<{ key: string; position: number } | null>(null);
+  const [previewPaper, setPreviewPaper] = useState<Paper | null>(null);
   const [issueDialogType, setIssueDialogType] = useState<'feature' | 'bug' | 'chitchat' | null>(null);
+  const [showWordCloud, setShowWordCloud] = useState(false);
   const [visitCount, setVisitCount] = useState<number | null>(null);
   const [searchCount, setSearchCount] = useState<number | null>(null);
   const visitFetched = useRef(false);
@@ -83,14 +86,14 @@ function AppContent() {
     return result;
   }, [filteredPapers, pinnedPaper]);
 
-  const luckyPaper = useMemo(() => {
-    if (filteredPapers.length === 0) return null;
-    const idx = Math.floor(Math.random() * filteredPapers.length);
-    return filteredPapers[idx];
-  }, [filteredPapers]);
-
   const combinedLoading = manifestLoading || papersLoading;
   const combinedError = manifestError || papersError;
+
+  useEffect(() => {
+    if (!previewPaper) return;
+    const exists = filteredPapers.some((paper) => getPaperKey(paper) === getPaperKey(previewPaper));
+    if (!exists) setPreviewPaper(null);
+  }, [filteredPapers, previewPaper]);
 
   const handleToggleConf = useCallback((conf: string) => {
     setSelectedConfs((prev) => {
@@ -145,6 +148,20 @@ function AppContent() {
     incrementSearchCount();
   }, [incrementSearchCount]);
 
+  const handleHeaderWordClick = useCallback((word: string) => {
+    setSearchValue((prev) => {
+      const words = prev ? prev.trim().split(/\s+/) : [];
+      const lower = word.toLowerCase();
+      const idx = words.findIndex((w) => w.toLowerCase() === lower);
+      if (idx !== -1) {
+        words.splice(idx, 1);
+        return words.join(' ');
+      }
+      return prev ? `${prev} ${word}` : word;
+    });
+    incrementSearchCount();
+  }, [incrementSearchCount]);
+
   const hideToast = useCallback(() => {
     setToast((prev) => ({ ...prev, visible: false }));
   }, []);
@@ -157,8 +174,8 @@ function AppContent() {
           setSearchValue(value);
           setPinnedPaper(null);
         }}
-        totalCount={filteredPapers.length}
-        luckyPaper={luckyPaper}
+        displayPaper={previewPaper}
+        onTitleWordClick={handleHeaderWordClick}
         showTimeline={showTimeline}
         onToggleTimeline={() => setShowTimeline((v) => !v)}
       />
@@ -200,7 +217,7 @@ function AppContent() {
           )}
 
           {!combinedLoading && !combinedError && (
-            <PapersTable papers={shuffledPapers} pageSize={pageSize} searchTrigger={searchValue} onShowToast={showToast} cart={cart} onToggleCart={handleToggleCart} onWordClick={handleWordClick} />
+            <PapersTable papers={shuffledPapers} pageSize={pageSize} searchTrigger={searchValue} onShowToast={showToast} cart={cart} onToggleCart={handleToggleCart} onWordClick={handleWordClick} onOpenWordCloud={() => setShowWordCloud(true)} onPreviewPaper={setPreviewPaper} previewPaperKey={previewPaper ? getPaperKey(previewPaper) : null} />
           )}
         </section>
 
@@ -218,16 +235,16 @@ function AppContent() {
       <footer className="max-w-[1560px] mx-auto mt-4 px-4 py-2 text-xs text-zinc-400 dark:text-zinc-500">
         <div className="pt-2 grid grid-cols-3 items-center">
           <div className="flex flex-col gap-0.5">
-            <span>当前访问量: {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
-            <span>搜索次数: {searchCount != null ? searchCount.toLocaleString() : '···'}</span>
+            <span>总访问量: {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
+            <span>总搜索次数: {searchCount != null ? searchCount.toLocaleString() : '···'}</span>
           </div>
           <span className="text-center">
             <a href="about.html" className="hover:text-indigo-500">淘顶网 · 淘点顶会</a>
           </span>
           <span className="text-right space-x-1.5">
-            <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">加个新功能</button>
-            <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">发现 Bug！</button>
-            <button onClick={() => setIssueDialogType('chitchat')} className="hover:text-indigo-500 text-indigo-400">说点没用的</button>
+            <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">想加个新功能！</button>
+            <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">发现一个 Bug！</button>
+            <button onClick={() => setIssueDialogType('chitchat')} className="hover:text-indigo-500 text-indigo-400">说点没用的？</button>
           </span>
         </div>
       </footer>
@@ -236,6 +253,11 @@ function AppContent() {
         key={issueDialogType}
         type={issueDialogType}
         onClose={() => setIssueDialogType(null)}
+      />
+      <WordCloudDialog
+        open={showWordCloud}
+        papers={shuffledPapers}
+        onClose={() => setShowWordCloud(false)}
       />
       <Toast
         message={toast.message}

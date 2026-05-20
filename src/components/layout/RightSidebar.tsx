@@ -24,7 +24,7 @@ export default function RightSidebar({
   onShowToast,
 }: RightSidebarProps) {
   const { t } = useAppContext();
-  const countdownRef = useRef<HTMLDivElement | null>(null);
+  const topPanelRef = useRef<HTMLDivElement | null>(null);
   const [cartHeight, setCartHeight] = useState<number | null>(null);
 
   useEffect(() => {
@@ -37,8 +37,8 @@ export default function RightSidebar({
       }
 
       const table = document.querySelector('[data-papers-table]') as HTMLElement | null;
-      const countdown = countdownRef.current;
-      if (!table || !countdown) {
+      const topPanel = topPanelRef.current;
+      if (!table || !topPanel) {
         if (force) {
           setCartHeight(null);
         }
@@ -47,7 +47,7 @@ export default function RightSidebar({
 
       const gap = 12;
       const nextHeight = Math.max(
-        Math.round(table.getBoundingClientRect().height - countdown.getBoundingClientRect().height - gap),
+        Math.round(table.getBoundingClientRect().height - topPanel.getBoundingClientRect().height - gap),
         160
       );
       setCartHeight((prev) => {
@@ -59,7 +59,7 @@ export default function RightSidebar({
     const tryMeasureUntilReady = (attempt = 0) => {
       if (cancelled) return;
       const table = document.querySelector('[data-papers-table]') as HTMLElement | null;
-      if (table && countdownRef.current) {
+      if (table && topPanelRef.current) {
         measure(attempt === 0);
         return;
       }
@@ -73,10 +73,10 @@ export default function RightSidebar({
     window.addEventListener('resize', handleResize);
 
     const table = document.querySelector('[data-papers-table]') as HTMLElement | null;
-    const countdown = countdownRef.current;
+    const topPanel = topPanelRef.current;
     const observer = new ResizeObserver(() => measure());
     if (table) observer.observe(table);
-    if (countdown) observer.observe(countdown);
+    if (topPanel) observer.observe(topPanel);
 
     return () => {
       cancelled = true;
@@ -88,7 +88,7 @@ export default function RightSidebar({
 
   return (
     <aside className="lg:sticky lg:top-[3.5rem] self-start flex flex-col gap-3">
-      <div ref={countdownRef} className="shrink-0">
+      <div ref={topPanelRef} className="shrink-0">
         <DeadlineCountdown />
       </div>
       <div className="min-h-0 lg:overflow-hidden" style={cartHeight ? { height: `${cartHeight}px` } : undefined}>

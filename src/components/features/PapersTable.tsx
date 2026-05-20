@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { Plus, Minus, Copy, Files, Sparkles } from 'lucide-react';
+import { Plus, Minus, Copy, Files, Sparkles, Eye } from 'lucide-react';
 import type { Paper } from '@/types';
 import { getPaperKey } from '@/lib/utils';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
@@ -14,6 +14,9 @@ interface PapersTableProps {
   cart?: Paper[];
   onToggleCart?: (paper: Paper) => void;
   onWordClick?: (word: string, paper: Paper, globalIdx: number) => void;
+  onOpenWordCloud?: () => void;
+  onPreviewPaper?: (paper: Paper) => void;
+  previewPaperKey?: string | null;
 }
 
 function highlightText(text: string, query: string, onWordClick?: (word: string) => void): React.ReactNode {
@@ -63,7 +66,7 @@ const FIELD_COLORS: Record<string, { bg: string; text: string; darkBg: string; d
   AI: { bg: 'bg-emerald-100', text: 'text-emerald-700', darkBg: 'dark:bg-emerald-950', darkText: 'dark:text-emerald-300' },
 };
 
-export default function PapersTable({ papers = [], pageSize = 50, searchTrigger = '', onShowToast, cart = [], onToggleCart, onWordClick }: PapersTableProps) {
+export default function PapersTable({ papers = [], pageSize = 50, searchTrigger = '', onShowToast, cart = [], onToggleCart, onWordClick, onOpenWordCloud, onPreviewPaper, previewPaperKey = null }: PapersTableProps) {
   const { t } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -124,14 +127,9 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
       <div className="border-b border-zinc-200 dark:border-zinc-800 bg-gradient-to-r from-zinc-50 via-white to-amber-50/70 dark:from-zinc-900 dark:via-zinc-900 dark:to-amber-950/20">
         <div className="px-4 py-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/80 dark:border-amber-900/70 bg-white/90 dark:bg-zinc-950/80 px-2.5 py-1 shadow-sm">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-300">
-                <Sparkles className="h-3 w-3" />
-              </span>
-              <div className="leading-none">
-                <div className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 tabular-nums">
-                  {papers.length > 0 ? `${startIdx + 1} – ${Math.min(startIdx + pageSize, papers.length)}` : '0'}
-                </div>
+            <div className="inline-flex items-center rounded-full border border-amber-200/80 dark:border-amber-900/70 bg-white/90 dark:bg-zinc-950/80 px-3 py-1 shadow-sm">
+              <div className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 tabular-nums">
+                {papers.length > 0 ? `显示 ${startIdx + 1}-${Math.min(startIdx + pageSize, papers.length)}` : '显示 0'}
               </div>
             </div>
             <span className="hidden sm:inline text-xs text-zinc-400 dark:text-zinc-500 truncate">
@@ -142,22 +140,30 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
             <span className="sm:hidden text-[11px] text-zinc-400 dark:text-zinc-500">
               {papers.length > 0 ? '点词继续搜' : t.table.noResults}
             </span>
-          <button
-            onClick={handleCopyPage}
-            disabled={pagePapers.length === 0}
-            className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white/90 dark:bg-zinc-950 px-3 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 transition-colors"
-          >
-            <Copy className="h-3.5 w-3.5" />
-            {t.table.copyPage}
-          </button>
-          <button
-            onClick={handleCopyAll}
-            disabled={papers.length === 0}
-            className="inline-flex items-center gap-1.5 rounded-full bg-amber-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-600 disabled:opacity-30 transition-colors shadow-sm shadow-amber-500/20"
-          >
-            <Files className="h-3.5 w-3.5" />
-            {t.table.copyAll}
-          </button>
+            <button
+              onClick={onOpenWordCloud}
+              disabled={papers.length === 0}
+              className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50/90 px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 disabled:opacity-30 transition-colors dark:border-amber-900/70 dark:bg-amber-950/60 dark:text-amber-300 dark:hover:bg-amber-900/80"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              {t.wordCloud.generate}
+            </button>
+            <button
+              onClick={handleCopyPage}
+              disabled={pagePapers.length === 0}
+              className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white/90 dark:bg-zinc-950 px-3 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 transition-colors"
+            >
+              <Copy className="h-3.5 w-3.5" />
+              {t.table.copyPage}
+            </button>
+            <button
+              onClick={handleCopyAll}
+              disabled={papers.length === 0}
+              className="inline-flex items-center gap-1.5 rounded-full bg-amber-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-600 disabled:opacity-30 transition-colors shadow-sm shadow-amber-500/20"
+            >
+              <Files className="h-3.5 w-3.5" />
+              {t.table.copyAll}
+            </button>
           </div>
         </div>
       </div>
@@ -172,6 +178,7 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
             const globalIdx = startIdx + i;
             const field = CONFERENCE_FIELDS[paper.conference] || 'ML';
             const colors = FIELD_COLORS[field] || FIELD_COLORS.ML;
+            const isPreviewing = previewPaperKey === getPaperKey(paper);
 
             return (
               <div
@@ -196,20 +203,32 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
                 </button>
                 <button
                   onClick={async () => {
-                    try { await navigator.clipboard.writeText(paper.title); onShowToast?.('已复制标题'); }
+                    try { await navigator.clipboard.writeText(paper.title); onShowToast?.(t.common.copiedTitle); }
                     catch {}
                   }}
                   className="shrink-0 text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-300"
-                  title="复制标题"
+                  title={t.common.copiedTitle}
                 >
                   <Copy className="w-3.5 h-3.5" />
                 </button>
                 <span
                   className={`text-sm ${colors.text} ${colors.darkText} flex-1 min-w-0 overflow-x-auto overflow-y-hidden whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}
                   style={{ opacity: yearMax > yearMin ? 0.7 + 0.3 * (parseInt(paper.year) - yearMin) / (yearMax - yearMin) : 1 }}
+                  title={paper.title}
                 >
                   {highlightText(paper.title, searchTrigger, (word) => onWordClick?.(word, paper, globalIdx))}
                 </span>
+                <button
+                  onClick={() => onPreviewPaper?.(paper)}
+                  className={`shrink-0 transition-colors ${
+                    isPreviewing
+                      ? 'text-amber-500 dark:text-amber-300'
+                      : 'text-zinc-300 hover:text-amber-500 dark:hover:text-amber-300'
+                  }`}
+                  title={paper.title}
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                </button>
               </div>
             );
           })}
@@ -230,6 +249,7 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
             <div className="self-stretch flex flex-1 min-w-0 items-center py-0.5">
               <span className="block h-5 w-full rounded bg-zinc-50 dark:bg-zinc-900/70" />
             </div>
+            <span className="shrink-0 w-3.5 h-3.5" />
           </div>
         ))}
       </div>

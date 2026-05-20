@@ -2,7 +2,7 @@ import type { Translations } from './en';
 
 export const zh: Translations = {
   appTitle: '淘顶网',
-  subtitle: 'GET',
+  subtitle: '目标：',
   search: {
     placeholder: '搜索论文...',
     button: '搜索',
@@ -46,17 +46,44 @@ export const zh: Translations = {
     zh: '中',
     en: 'EN',
     about: '关于',
+    label: '语言',
   },
   error: '错误',
+  common: {
+    settings: '设置',
+    collapse: '收起',
+    saveLocal: '保存到本地',
+    copiedTitle: '已复制标题',
+  },
   timeline: {
     today: '今天',
     deadline: '投稿截止',
     result: '结果公布',
+  },
+  countdown: {
+    untilPrefix: '距 ',
+    untilSuffix: ' 投稿还有',
+    day: '天',
+    hour: '时',
+    minute: '分',
+    second: '秒',
+    expired: '已截止',
+    year: '年',
+    month: '月',
+    dayLabel: '日',
+    hourLabel: '时',
+    minuteLabel: '分',
+    secondLabel: '秒',
   },
   cart: {
     cart: '购物车',
     copy: '复制',
     clear: '清空',
     empty: '点击论文标题加入',
+  },
+  wordCloud: {
+    generate: '生成词云',
+    popupBlocked: '浏览器拦截了新窗口',
+    writeFailed: '词云数据写入失败',
   },
 };

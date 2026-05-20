@@ -24,6 +24,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const { t } = useAppContext();
   const [startYear, endYear] = yearRange;
+  const currentYear = new Date().getFullYear();
 
   const { minYear, maxYear } = useMemo(() => {
     if (!manifest) return { minYear: 2000, maxYear: 2030 };
@@ -50,13 +51,22 @@ export default function Sidebar({
   };
 
   const setRecent = () => {
-    const recentStart = Math.max(minYear, maxYear - 1);
-    onYearChange([recentStart, maxYear]);
+    const recentEnd = Math.min(maxYear, currentYear);
+    const recentStart = Math.max(minYear, recentEnd - 2);
+    onYearChange([recentStart, recentEnd]);
   };
 
   return (
     <aside className="lg:sticky lg:top-[3.5rem] self-start flex flex-col gap-3">
       <div className="shrink-0 p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <div className="mb-3 flex items-end justify-between">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-400 dark:text-zinc-500">
+            Total
+          </span>
+          <span className="text-base font-semibold tabular-nums text-amber-600 dark:text-amber-300 leading-none">
+            {papers.length}
+          </span>
+        </div>
         <Distributions
           papers={papers}
           selectedConfs={selectedConfs}
@@ -66,7 +76,7 @@ export default function Sidebar({
       <div className="shrink-0 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-2">
         <div className="grid grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-2">
           <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
-            from
+            {t.sidebar.from}
           </span>
           <div className="min-w-0 flex flex-col items-center gap-1">
             <button onClick={() => adjustStart(1)} disabled={startYear >= endYear} className="shrink-0 p-1 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">
@@ -78,7 +88,7 @@ export default function Sidebar({
             </button>
           </div>
           <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
-            to
+            {t.sidebar.to}
           </span>
           <div className="min-w-0 flex flex-col items-center gap-1">
             <button onClick={() => adjustEnd(1)} disabled={endYear >= maxYear} className="shrink-0 p-1 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200 disabled:opacity-20">

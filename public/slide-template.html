@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GitHub Token 说明</title>
+<title>页面标题</title>
 <style>
   :root {
     --bg: #f1f5f9; --card-bg: #ffffff; --fg: #0f172a; --muted: #64748b;
@@ -151,114 +151,61 @@
     <button class="nav-btn" id="next" style="position:absolute;top:50%;transform:translateY(-50%);z-index:50;width:44px;height:44px;border-radius:50%;border:none;background:var(--card-bg);color:var(--fg);box-shadow:0 4px 20px -4px rgba(0,0,0,0.10);cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;border:1px solid var(--border);right:4px">›</button>
     <button class="nav-btn" id="goLast" style="position:absolute;top:50%;transform:translateY(-50%);z-index:49;width:44px;height:44px;border-radius:50%;border:none;background:var(--card-bg);color:var(--fg);box-shadow:0 4px 20px -4px rgba(0,0,0,0.10);cursor:pointer;font-size:16px;transition:all 0.2s;border:1px solid var(--border)">»</button>
     <div class="track-wrap" style="overflow:hidden;border-radius:24px">
-    <div class="page-num" id="pageNum"><span id="pageNumText">1 / 4</span></div>
+    <div class="page-num" id="pageNum"><span id="pageNumText">1 / 9</span></div>
     <div class="track" id="track">
 
-      <!-- 1: Why -->
+      <!-- ===== 在这里添加你的幻灯片 ===== -->
+      <!-- 每张幻灯片结构： -->
+      <!--
+      <div class="slide" style="--t:#主题色">
+        <div class="slide-left">
+          <div class="s-q what/why/how">🏷️ 标签</div>
+          <div class="slide-title">标题文字<span class="hl">高亮</span></div>
+          <div class="slide-body">
+            <p>正文内容...</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <!-- 右侧可视化区域 -->
+        </div>
+      </div>
+      -->
+
+      <!-- 示例幻灯片 1（默认激活） -->
       <div class="slide active" style="--t:#6366f1">
         <div class="slide-left">
-          <div class="s-q why">🔑 为什么要填</div>
-          <div class="slide-title">不填也能用，但会<span class="hl">限流</span></div>
+          <div class="s-q what">📌 示例页面</div>
+          <div class="slide-title">欢迎使用<span class="hl">幻灯片模板</span></div>
           <div class="slide-body">
-            <p>购物车的 <strong>结算</strong> 按钮会搜每篇论文的 GitHub 仓库 Star 数。这个查询走 GitHub Search API，<strong>不带 Token 每小时只能搜 10 次</strong>，填了之后额度大幅提升。</p>
-            <p>简单说：不带 Token 也能用，但搜几篇就停了。带 Token 基本够你一次查完。</p>
+            <p>这是一个可复用的幻灯片模板。每页分为<strong>左侧文字</strong>和<strong>右侧可视化</strong>两个区域。</p>
+            <p>上下页通过键盘 <code>← →</code>、滚轮、触摸滑动、或点击左右箭头导航。</p>
           </div>
         </div>
         <div class="slide-right">
-          <div class="v-card" style="text-align:center;padding:32px 24px;background:linear-gradient(135deg,color-mix(in srgb,var(--t,#6366f1) 15%,transparent),color-mix(in srgb,var(--t,#6366f1) 5%,transparent))">
-            <div style="font-size:64px;margin-bottom:8px">🔑</div>
-            <div style="font-size:16px;font-weight:600">不填 = 限流</div>
-            <div style="font-size:13px;color:var(--muted);margin-top:4px">填了 = 畅搜</div>
+          <div class="v-card" style="text-align:center;padding:30px 20px;background:linear-gradient(135deg,color-mix(in srgb,var(--t,#6366f1) 15%,transparent),color-mix(in srgb,var(--t,#6366f1) 5%,transparent))">
+            <div style="font-size:72px;margin-bottom:8px">🎠</div>
+            <div style="font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">幻 灯 片</div>
+            <div style="font-size:14px;color:var(--muted);margin-top:6px">每页有自己的主题色</div>
           </div>
         </div>
       </div>
 
-      <!-- 2: How to create -->
+      <!-- 示例幻灯片 2 -->
       <div class="slide" style="--t:#8b5cf6">
         <div class="slide-left">
-          <div class="s-q how">📝 怎么创建</div>
-          <div class="slide-title">几分钟就搞定<span class="hl"></span></div>
+          <div class="s-q why">💡 使用说明</div>
+          <div class="slide-title">复制这个文件<span class="hl">开始编辑</span></div>
           <div class="slide-body">
-            <ol>
-              <li>打开 <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener noreferrer">GitHub Token 设置页</a></li>
-              <li>点 <code>Generate new token</code></li>
-              <li>起个名字，比如 <code>find-local</code></li>
-              <li>过期时间随意，权限不用额外勾</li>
-              <li>生成后复制那一串 Token</li>
-              <li>回淘顶网购物车底部，点钥匙按钮 🔑 粘贴</li>
-            </ol>
-          </div>
-        </div>
-        <div class="slide-right">
-          <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px">
-            <div style="background:var(--bg);border-radius:14px;padding:16px 20px;text-align:center;border:1px solid var(--border)">
-              <div style="font-size:36px;margin-bottom:4px">⚙️</div>
-              <div style="font-size:14px;font-weight:600">GitHub Settings</div>
-              <div style="font-size:12px;color:var(--muted)">Developer settings → Tokens</div>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <div style="flex:1;background:var(--bg);border-radius:12px;padding:14px;text-align:center;border:1px solid var(--border)">
-                <div style="font-size:28px;margin-bottom:2px">✏️</div>
-                <div style="font-size:12px;font-weight:600">起名</div>
-              </div>
-              <div style="font-size:20px;color:var(--muted)">→</div>
-              <div style="flex:1;background:var(--bg);border-radius:12px;padding:14px;text-align:center;border:1px solid var(--border)">
-                <div style="font-size:28px;margin-bottom:2px">📋</div>
-                <div style="font-size:12px;font-weight:600">复制</div>
-              </div>
-              <div style="font-size:20px;color:var(--muted)">→</div>
-              <div style="flex:1;background:var(--bg);border-radius:12px;padding:14px;text-align:center;border:1px solid var(--border)">
-                <div style="font-size:28px;margin-bottom:2px">🔑</div>
-                <div style="font-size:12px;font-weight:600">粘贴</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3: Storage -->
-      <div class="slide" style="--t:#10b981">
-        <div class="slide-left">
-          <div class="s-q what">💾 存哪了</div>
-          <div class="slide-title">只在你的<span class="hl">本地浏览器</span></div>
-          <div class="slide-body">
-            <p>Token 保存在浏览器 <code>localStorage</code> 里。<strong>不会上传到任何服务器</strong>，也不会写进仓库代码。</p>
-            <p>换电脑、换浏览器、清缓存后需要重新设置一次。</p>
-          </div>
-        </div>
-        <div class="slide-right">
-          <div class="v-card" style="text-align:center;padding:32px 24px;background:linear-gradient(135deg,color-mix(in srgb,var(--t,#10b981) 15%,transparent),color-mix(in srgb,var(--t,#10b981) 5%,transparent))">
-            <div style="font-size:64px;margin-bottom:8px">🔒</div>
-            <div style="font-size:16px;font-weight:600;color:var(--t,#10b981)">本地存储 · 不上传</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:4px">换浏览器需要重新设置</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4: Failures -->
-      <div class="slide" style="--t:#f59e0b">
-        <div class="slide-left">
-          <div class="s-q why">⚠️ 为啥还失败</div>
-          <div class="slide-title">填了也不一定<span class="hl">100% 成功</span></div>
-          <div class="slide-body">
-            <p><strong>Token 过期了</strong> — 去 GitHub 重新生成一个</p>
-            <p><strong>API 限流</strong> — 每个 Token 也有频率限制，等一会再试</p>
-            <p><strong>搜不到仓库</strong> — 很正常，很多论文没有开源</p>
+            <p>把 <code>.slide</code> 里面的内容替换成你自己的即可。</p>
+            <p><strong>主题色</strong> — 在 <code>style="--t:#色值"</code> 里设置，幻灯片背景会自动适配。</p>
+            <p><strong>标签</strong> — 用 <code>.s-q.what</code> / <code>.s-q.why</code> / <code>.s-q.how</code> 区分内容类型。</p>
           </div>
         </div>
         <div class="slide-right">
           <div style="width:100%;display:flex;flex-direction:column;gap:10px">
-            <div style="background:var(--bg);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
-              <span style="font-size:24px">🕐</span>
-              <span style="font-size:14px;color:var(--muted)">Token 过期 → 重新生成</span>
-            </div>
-            <div style="background:var(--bg);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
-              <span style="font-size:24px">🚦</span>
-              <span style="font-size:14px;color:var(--muted)">API 限流 → 等一会</span>
-            </div>
-            <div style="background:var(--bg);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
-              <span style="font-size:24px">🔍</span>
-              <span style="font-size:14px;color:var(--muted)">搜不到 → 论文没开源</span>
+            <div style="background:var(--bg);border-radius:12px;padding:16px;text-align:center;border:1px solid var(--border)">
+              <div style="font-size:28px;margin-bottom:4px">🎨</div>
+              <div style="font-size:14px;font-weight:600">设置 --t 即可换色</div>
             </div>
           </div>
         </div>
@@ -267,7 +214,7 @@
     </div>
   </div>
   <div class="bottom-bar">
-    <a href="/find/" class="back-home">← 返回主页</a>
+    <a href="/" class="back-home">← 返回主页</a>
     <div style="flex:1;display:flex;justify-content:center"><div class="dots-wrap"><div class="dots" id="dots"></div></div></div>
   </div>
 </div>

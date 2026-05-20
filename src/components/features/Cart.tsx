@@ -205,7 +205,7 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
         )}
         <div className="flex items-center justify-end gap-1.5">
           <a
-            href="github-token.html"
+            href="/find/token"
             target="_blank"
             rel="noopener noreferrer"
             title="怎么获取 Token"

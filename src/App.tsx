@@ -1,6 +1,9 @@
 import { useMemo, useState, useCallback, useEffect, useRef } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import type { Paper } from '@/types';
 import { AppProvider } from './context/AppContext';
+import About from './pages/About';
+import GitHubToken from './pages/GitHubToken';
 import Header from './components/layout/Header';
 import Sidebar from './components/layout/Sidebar';
 import RightSidebar from './components/layout/RightSidebar';
@@ -222,7 +225,7 @@ function AppContent() {
             <span>搜索次数: {searchCount != null ? searchCount.toLocaleString() : '···'}</span>
           </div>
           <span className="text-center">
-            <a href="about.html" className="hover:text-indigo-500">淘顶网 · 淘点顶会</a>
+            <a href="/find/about" className="hover:text-indigo-500">淘顶网 · 淘点顶会</a>
           </span>
           <span className="text-right space-x-1.5">
             <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">加个新功能</button>
@@ -249,7 +252,11 @@ function AppContent() {
 export default function App() {
   return (
     <AppProvider>
-      <AppContent />
+      <Routes>
+        <Route path="/" element={<AppContent />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/token" element={<GitHubToken />} />
+      </Routes>
     </AppProvider>
   );
 }

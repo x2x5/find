@@ -6,231 +6,556 @@
 <title>关于 淘顶网</title>
 <style>
   :root {
-    --bg: #fafafa; --card: #fff; --fg: #1e1e1e; --muted: #666;
-    --border: #e5e5e5; --accent: #6366f1;
-    --ml: #059669; --cv: #2563eb; --ai: #d97706;
+    --bg: #f1f5f9; --card-bg: #ffffff; --fg: #0f172a; --muted: #64748b;
+    --accent: #6366f1; --accent2: #ec4899; --accent3: #f59e0b;
+    --shadow: 0 20px 60px -12px rgba(0,0,0,0.08), 0 4px 18px -6px rgba(0,0,0,0.03);
+    --grad: linear-gradient(135deg, #6366f1, #a78bfa, #ec4899);
+    --border: rgba(148,163,184,0.10);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #09090b; --card: #18181b; --fg: #e4e4e7;
-      --muted: #a1a1aa; --border: #27272a;
+      --bg: #0f0f1a; --card-bg: #1a1a2e; --fg: #e8e8f0;
+      --muted: #94a3b8; --shadow: 0 20px 60px -12px rgba(0,0,0,0.5);
+      --border: rgba(148,163,184,0.06);
     }
+    .slide { background: linear-gradient(135deg, color-mix(in srgb, var(--t,#6366f1) 14%, var(--card-bg)) 0%, var(--card-bg) 50%); }
   }
   * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; overflow:hidden; }
   body {
-    font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    background: var(--bg); color: var(--fg); line-height:1.8;
-    max-width: 760px; margin:0 auto; padding:2rem 1.5rem 4rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Helvetica Neue', sans-serif;
+    background: var(--bg); color: var(--fg); user-select:none;
   }
-  h1 { font-size:2rem; margin-bottom:0.25rem; }
-  h2 { font-size:1.3rem; margin:2.5rem 0 0.75rem; color:var(--accent); }
-  h3 { font-size:1.05rem; margin:1.5rem 0 0.5rem; }
-  p, li { font-size:0.95rem; color:var(--muted); }
-  a { color:var(--accent); }
-  .card {
-    background:var(--card); border:1px solid var(--border);
-    border-radius:10px; padding:1.25rem 1.5rem; margin:1rem 0;
-  }
-  code {
-    background:var(--border); padding:0.12em 0.4em;
-    border-radius:3px; font-size:0.88em; font-family: 'SF Mono', 'Fira Code', monospace;
-  }
-  pre {
-    background:var(--card); border:1px solid var(--border);
-    border-radius:8px; padding:1rem 1.25rem; overflow-x:auto;
-    font-size:0.85em; margin:0.75rem 0; line-height:1.6;
-  }
-  .step {
-    display:flex; gap:0.75rem; align-items:flex-start; margin:1rem 0;
-  }
-  .step-num {
-    width:1.6rem; height:1.6rem; border-radius:50%;
-    background:var(--accent); color:#fff; font-size:0.8rem;
-    font-weight:700; display:flex; align-items:center; justify-content:center;
-    flex-shrink:0; margin-top:0.15rem;
-  }
-  .tag {
-    display:inline-block; padding:0.15em 0.6em; border-radius:4px;
-    font-size:0.8em; font-weight:600; margin:0.15em 0.3em 0.15em 0;
-  }
-  .ml { background:#d1fae5; color:#065f46; }
-  .cv { background:#dbeafe; color:#1e40af; }
-  .ai { background:#fef3c7; color:#92400e; }
-  .pink { background:#fce7f3; color:#9d174d; }
 
-  .bar-demo { height:10px; border-radius:3px; margin:2px 0; transition:width 0.6s; }
-  .bar-row { display:flex; align-items:center; gap:8px; margin:3px 0; font-size:0.82em; }
-  .bar-label { width:52px; text-align:right; flex-shrink:0; }
-  .bar-fill { flex:1; height:10px; background:#e5e5e5; border-radius:3px; overflow:hidden; }
-  .bar-inner { height:100%; border-radius:3px; display:block; }
-  .bar-count { width:36px; text-align:right; flex-shrink:0; font-size:0.8em; color:var(--muted); }
+  #progress { position:fixed; top:0; left:0; height:3px; background:var(--grad); z-index:100; transition:width 0.5s cubic-bezier(0.4,0,0.2,1); box-shadow:0 1px 4px rgba(99,102,241,0.15); }
 
-  .highlight { color:var(--accent); font-weight:600; }
-  .demo-btn {
-    font-size:0.78em; padding:0.3em 0.8em; border-radius:5px;
-    border:1px solid var(--border); background:var(--card);
-    cursor:pointer; color:var(--muted); margin:0.3em;
+
+  .main-area {
+    display:flex; flex-direction:column; align-items:center;
+    height:100vh; padding:1vh 32px 0;
   }
-  .demo-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
-  .bottom-back {
-    text-align:center;
-    margin-top:2rem;
-  }
-  .bottom-back a {
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    padding:9px 14px;
-    border-radius:999px;
+
+  .track-wrap { width:100%; position:relative; overflow:hidden; border-radius:24px; flex:1; display:flex; flex-direction:column; }
+  .track { display:flex; transition:transform 0.55s cubic-bezier(0.4,0,0.2,1); will-change:transform; flex:1; }
+  .slide {
+    flex:0 0 100%; display:flex; gap:48px; align-items:center;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--t,#6366f1) 7%, var(--card-bg)) 0%, var(--card-bg) 50%);
     border:1px solid var(--border);
-    background:var(--card);
-    color:var(--fg);
-    text-decoration:none;
-    font-size:0.88rem;
-    font-weight:600;
+    border-radius:24px; padding:60px 64px; box-shadow:var(--shadow);
+    min-height:480px; transition:box-shadow 0.4s;
   }
-  .bottom-back a:hover {
-    border-color:var(--accent);
-    color:var(--accent);
+  .slide-left { flex:1.2; min-width:0; }
+  .slide-right { flex:0.8; min-width:0; display:flex; align-items:center; justify-content:center; }
+
+  .s-q {
+    display:inline-block;     font-size:12px; font-weight:700; letter-spacing:0.5px;
+    padding:3px 12px; border-radius:999px; margin-bottom:12px;
+  }
+  .s-q.what { background:#eef2ff; color:#4f46e5; border:1px solid rgba(99,102,241,0.10); }
+  .s-q.why { background:#fdf2f8; color:#be185d; border:1px solid rgba(236,72,153,0.10); }
+  .s-q.how { background:#fffbeb; color:#b45309; border:1px solid rgba(245,158,11,0.10); }
+
+  .slide-title { font-size:28px; font-weight:700; line-height:1.35; margin-bottom:16px; }
+  .slide-title .hl { background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+  .slide-body { font-size:16px; line-height:1.8; color:var(--muted); }
+  .slide-body p { margin-bottom:8px; }
+  .slide-body p:last-child { margin-bottom:0; }
+  .slide-body strong { color:var(--fg); font-weight:600; }
+  .slide-body code {
+    background:var(--bg); padding:2px 8px; border-radius:5px; font-size:14px;
+    font-family: 'SF Mono', 'Fira Code', monospace; color:var(--fg);
+  }
+  .slide-body .tag {
+    display:inline-block; padding:1px 10px; border-radius:5px;
+    font-size:12px; font-weight:600; margin:1px 2px;
+  }
+  .tag-g { background:#d1fae5; color:#065f46; }
+  .tag-b { background:#dbeafe; color:#1e40af; }
+  .tag-y { background:#fef3c7; color:#92400e; }
+
+  .v-card {
+    background:var(--bg); border-radius:16px; padding:20px 24px;
+    width:100%; border:1px solid var(--border);
+  }
+  .v-card .v-row { display:flex; align-items:center; gap:10px; margin:6px 0; font-size:14px; }
+  .v-card .v-lb { width:52px; text-align:right; font-weight:600; font-size:13px; flex-shrink:0; }
+  .v-card .v-bar { flex:1; height:10px; background:rgba(128,128,128,0.08); border-radius:5px; overflow:hidden; }
+  .v-card .v-fl { height:100%; border-radius:5px; display:block; background:var(--t,#6366f1); }
+
+  .v-cols { display:flex; gap:10px; width:100%; }
+  .v-cl {
+    flex:1; border-radius:14px; padding:20px 12px; text-align:center;
+    font-size:14px; font-weight:600; line-height:1.5;
+  }
+  .v-cl .e { font-size:30px; display:block; margin-bottom:8px; }
+  .v-cl-l { background:linear-gradient(180deg,color-mix(in srgb,var(--t,#6366f1) 20%,transparent),color-mix(in srgb,var(--t,#6366f1) 8%,transparent)); color:var(--t,#6366f1); }
+  .v-cl-m { background:linear-gradient(180deg,color-mix(in srgb,var(--t,#6366f1) 15%,transparent),color-mix(in srgb,var(--t,#6366f1) 5%,transparent)); color:var(--t,#6366f1); }
+  .v-cl-r { background:linear-gradient(180deg,color-mix(in srgb,var(--t,#6366f1) 18%,transparent),color-mix(in srgb,var(--t,#6366f1) 6%,transparent)); color:var(--t,#6366f1); opacity:0.85; }
+
+  .v-badge { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+  .v-badge.year { background:#fef3c7; color:#b45309; }
+  .v-badge.ml { background:#d1fae5; color:#065f46; }
+  .v-badge.cv { background:#dbeafe; color:#1e40af; }
+
+  .v-pre {
+    background:#1e1e2e; color:#e4e4e7; border-radius:14px; padding:18px 20px;
+    font-size:13px; line-height:1.7; width:100%; font-family:'SF Mono','Fira Code',monospace;
+    border:1px solid rgba(255,255,255,0.05);
+  }
+  .v-pre .c { color:#6b7280; }
+  .v-pre .s { color:#34d399; }
+
+  .v-get {
+    background:linear-gradient(135deg,#eef2ff 0%,#fce7f3 50%,#fef3c7 100%);
+    border-radius:16px; padding:24px 26px; width:100%; text-align:center;
+    border:1px solid rgba(255,255,255,0.3);
+  }
+  .v-get .lb {
+    display:inline-block; background:#ec4899; color:#fff;
+    padding:2px 14px; border-radius:999px; font-size:11px; font-weight:700; margin-bottom:8px;
+  }
+  .v-get .t { font-size:15px; font-weight:600; color:var(--fg); line-height:1.5; }
+
+  .v-ct {
+    width:100%; display:flex; flex-direction:column; gap:10px;
+  }
+  .v-ct .box {
+    background:var(--bg); border-radius:14px; padding:16px 20px;
+    border:1px solid var(--border);
+  }
+
+  .bottom-bar {
+    display:flex; align-items:center;
+    width:100%; max-width:1120px; padding:4px 48px 6px; gap:8px;
+  }
+  .bottom-btn, .back-home {
+    font-size:13px; color:var(--muted); text-decoration:none; font-weight:500;
+    padding:5px 14px; border-radius:999px; border:1px solid rgba(128,128,128,0.15);
+    background:var(--card-bg); cursor:pointer; transition:all 0.2s; white-space:nowrap; flex-shrink:0; line-height:1.4;
+  }
+  .bottom-btn:hover, .back-home:hover { border-color:var(--accent); color:var(--accent); }
+  .slide-page { font-size:13px; color:var(--muted); font-weight:500; letter-spacing:0.3px; }
+  .page-num {
+    position:absolute; top:12px; right:14px; z-index:10;
+    display:flex; align-items:center; gap:2px;
+    font-size:12px; font-weight:600; letter-spacing:0.5px;
+    color:#fff; background:rgba(0,0,0,0.5);
+    padding:3px 6px; border-radius:999px;
+    opacity:0; transition:opacity 0.25s; pointer-events:none;
+    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  }
+  .page-num.show { opacity:1; pointer-events:auto; }
+
+  .nav-btn {
+    position:absolute; top:50%; transform:translateY(-50%); z-index:50;
+    width:44px; height:44px; border-radius:50%; border:none;
+    background:var(--card-bg); color:var(--fg);
+    box-shadow:0 4px 20px -4px rgba(0,0,0,0.10); cursor:pointer; font-size:22px;
+    display:flex; align-items:center; justify-content:center;
+    transition:all 0.2s; border:1px solid var(--border); backdrop-filter:blur(8px);
+  }
+  .nav-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); transform:translateY(-50%) scale(1.08); box-shadow:0 6px 24px -4px rgba(99,102,241,0.25); }
+  #goFirst { left:-46px; }
+  #prev { left:4px; }
+  #next { right:4px; }
+  #goLast { right:-46px; }
+  .nav-btn.faded { opacity:0.25; pointer-events:none; cursor:default; }
+  #goFirst, #goLast { display:none; }
+  #goFirst.show, #goLast.show { display:flex; }
+
+  #stage { padding:0 48px; }
+  .dots-wrap { display:flex; align-items:center; justify-content:center; }
+  .dots { display:flex; gap:5px; }
+  .dot {
+    width:7px; height:7px; border-radius:50%; border:none; cursor:pointer;
+    background:rgba(128,128,128,0.20); transition:all 0.3s; padding:0;
+  }
+  .dot:hover { background:rgba(128,128,128,0.35); }
+  .dot.active { background:var(--accent); width:22px; border-radius:4px; }
+
+  .slide { opacity:0; transform:translateY(10px); transition:opacity 0.4s 0.05s, transform 0.4s 0.05s; }
+  .slide.active { opacity:1; transform:translateY(0); }
+
+  @media (max-width:720px) {
+    .main-area { height:100vh; padding:0 8px; }
+    .slide { flex-direction:column; gap:14px; padding:24px 18px; min-height:auto; }
+    .slide-left, .slide-right { width:100%; }
+    .slide-title { font-size:22px; }
+    .nav-btn { width:34px; height:34px; font-size:14px; }
+    #goFirst { left:-34px; }
+    #prev { left:4px; }
+    #next { right:4px; }
+    #goLast { right:-34px; }
+    #stage { padding:0 4px; }
   }
 </style>
 </head>
 <body>
 
-<h1 style="text-align:center">
-  给人看的README
-</h1>
+<div id="progress"></div>
 
-<h2>淘顶网是什么？</h2>
-<div class="card">
-  <p><strong>淘顶网</strong> 是一个 AI 顶会论文浏览器。覆盖 <span class="tag ml">ML</span><span class="tag cv">CV</span><span class="tag ai">AI</span> 三大领域共 9 个顶会。</p>
-  <p>所有论文随机打乱展示——你每次搜索，看到的结果顺序都不一样。就像在淘宝上逛，你不知道下一页会出现什么。</p>
-</div>
+<div class="main-area">
 
-<h2>为什么叫淘顶网？</h2>
-<div class="card">
-  <p><strong>淘</strong> = 淘宝的淘。我们希望找论文像逛淘宝一样轻松有趣。</p>
-  <p><strong>顶</strong> = 顶会。只收录顶级会议，不收录水会。</p>
-  <p>你可以把喜欢的论文<strong>加入购物车</strong>，最后一次性复制导出。还能看到<strong class="pink tag">最有缘分</strong>的论文——搜索时随机推荐一篇。</p>
-</div>
+  <div id="stage" style="position:relative;width:100%;max-width:1120px;flex:1;display:flex;flex-direction:column">
+    <button class="nav-btn" id="goFirst" style="position:absolute;top:50%;transform:translateY(-50%);z-index:49;width:44px;height:44px;border-radius:50%;border:none;background:var(--card-bg);color:var(--fg);box-shadow:0 4px 20px -4px rgba(0,0,0,0.10);cursor:pointer;font-size:16px;transition:all 0.2s;border:1px solid var(--border)">«</button>
+    <button class="nav-btn" id="prev" style="position:absolute;top:50%;transform:translateY(-50%);z-index:50;width:44px;height:44px;border-radius:50%;border:none;background:var(--card-bg);color:var(--fg);box-shadow:0 4px 20px -4px rgba(0,0,0,0.10);cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;border:1px solid var(--border);left:4px">‹</button>
+    <button class="nav-btn" id="next" style="position:absolute;top:50%;transform:translateY(-50%);z-index:50;width:44px;height:44px;border-radius:50%;border:none;background:var(--card-bg);color:var(--fg);box-shadow:0 4px 20px -4px rgba(0,0,0,0.10);cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;border:1px solid var(--border);right:4px">›</button>
+    <button class="nav-btn" id="goLast" style="position:absolute;top:50%;transform:translateY(-50%);z-index:49;width:44px;height:44px;border-radius:50%;border:none;background:var(--card-bg);color:var(--fg);box-shadow:0 4px 20px -4px rgba(0,0,0,0.10);cursor:pointer;font-size:16px;transition:all 0.2s;border:1px solid var(--border)">»</button>
+    <div class="track-wrap" style="overflow:hidden;border-radius:24px">
+    <div class="page-num" id="pageNum"><span id="pageNumText">1 / 9</span></div>
+    <div class="track" id="track">
 
-<h2>数据从哪来？</h2>
-<div class="card">
-  <p>论文标题数据来自两个渠道：</p>
-  <p>🔹 <strong>DBLP</strong> — 计算机科学文献数据库，手搓提取整理</p>
-  <p>🔹 <strong>Paper Copilot</strong> — 部分数据从该网站获取</p>
-  <p>数据存放在 <code>papers/&lt;conference&gt;/&lt;year&gt;.txt</code>，每行一个标题。运行脚本生成 JSON 供前端读取。</p>
-</div>
+      <!-- 1: What is it -->
+      <div class="slide active" style="--t:#6366f1">
+        <div class="slide-left">
+          <div class="s-q what">📌 给人看的 README</div>
+          <div class="slide-title" style="font-size:32px"><span class="hl">淘顶网</span> · 淘点顶会</div>
+          <div class="slide-body">
+            <p><strong>淘顶网</strong>是一个 AI 顶会论文浏览器。你可以在上面浏览 <span class="tag tag-g">ML</span><span class="tag tag-b">CV</span><span class="tag tag-y">AI</span> 三大领域 9 个顶级会议的所有论文。</p>
+            <p>论文<strong>随机打乱</strong>展示——就像逛淘宝一样，每次刷新结果都不一样，总有惊喜等着你。</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div class="v-card" style="text-align:center;padding:30px 20px;background:linear-gradient(135deg,color-mix(in srgb,var(--t,#6366f1) 15%,transparent),color-mix(in srgb,var(--t,#6366f1) 5%,transparent))">
+            <div style="font-size:72px;margin-bottom:8px">🛒</div>
+            <div style="font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">淘 顶 网</div>
+            <div style="font-size:14px;color:var(--muted);margin-top:6px">淘点顶会 · 逛着找论文</div>
+          </div>
+        </div>
+      </div>
 
-<h2>领域分布是怎么工作的？</h2>
-<div class="card" id="dist-demo">
-  <p style="margin-bottom:0.75rem">当你筛选条件变化时，柱状图<strong>实时</strong>反映各会议论文数量：</p>
-  <div class="bar-row"><span class="bar-label" style="color:#059669;font-weight:600">ML</span></div>
-  <div class="bar-row"><span class="bar-label">NeurIPS</span><span class="bar-fill"><span class="bar-inner" style="width:85%;background:#059669"></span></span><span class="bar-count">17,280</span></div>
-  <div class="bar-row"><span class="bar-label">ICML</span><span class="bar-fill"><span class="bar-inner" style="width:78%;background:#059669"></span></span><span class="bar-count">15,900</span></div>
-  <div class="bar-row"><span class="bar-label">ICLR</span><span class="bar-fill"><span class="bar-inner" style="width:62%;background:#059669"></span></span><span class="bar-count">12,640</span></div>
-  <div class="bar-row" style="margin-top:4px"><span class="bar-label" style="color:#2563eb;font-weight:600">CV</span></div>
-  <div class="bar-row"><span class="bar-label">CVPR</span><span class="bar-fill"><span class="bar-inner" style="width:90%;background:#2563eb"></span></span><span class="bar-count">18,420</span></div>
-  <div class="bar-row"><span class="bar-label">ECCV</span><span class="bar-fill"><span class="bar-inner" style="width:45%;background:#2563eb"></span></span><span class="bar-count">9,200</span></div>
-  <div class="bar-row"><span class="bar-label">ICCV</span><span class="bar-fill"><span class="bar-inner" style="width:41%;background:#2563eb"></span></span><span class="bar-count">8,400</span></div>
-  <div class="bar-row" style="margin-top:4px"><span class="bar-label" style="color:#d97706;font-weight:600">AI</span></div>
-  <div class="bar-row"><span class="bar-label">AAAI</span><span class="bar-fill"><span class="bar-inner" style="width:100%;background:#d97706"></span></span><span class="bar-count">20,500</span></div>
-  <div class="bar-row"><span class="bar-label">MM</span><span class="bar-fill"><span class="bar-inner" style="width:30%;background:#d97706"></span></span><span class="bar-count">6,100</span></div>
-  <div class="bar-row"><span class="bar-label">IJCAI</span><span class="bar-fill"><span class="bar-inner" style="width:55%;background:#d97706"></span></span><span class="bar-count">11,300</span></div>
-  <p style="margin-top:0.75rem;font-size:0.82em;color:var(--muted)">颜色深浅表示 <strong>是否被选中</strong>。点击色块可以一键全选 / 取消该领域全部会议。</p>
-</div>
+      <!-- 2: Why three columns -->
+      <div class="slide" style="--t:#8b5cf6">
+        <div class="slide-left">
+          <div class="s-q why">💡 为什么这样设计</div>
+          <div class="slide-title">一条流畅的<span class="hl">工作流</span></div>
+          <div class="slide-body">
+            <p><strong>筛选 → 浏览 → 收集</strong>，三步一气呵成：</p>
+            <p>◀️ <strong>筛选</strong>（左侧栏）— 按领域、年份精准过滤，数据分布一目了然</p>
+            <p>⏺️ <strong>浏览</strong>（中间栏）— 论文列表随手翻，点任意词继续搜索</p>
+            <p>▶️ <strong>收集</strong>（右侧栏）— 倒计时催投稿，购物车集中管论文</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div class="v-cols">
+            <div class="v-cl v-cl-l"><span class="e">◀️</span><div style="font-size:16px;font-weight:700;margin-top:2px">筛选</div><div style="font-size:12px;color:inherit;opacity:0.7;margin-top:2px">领域 · 年份</div></div>
+            <div class="v-cl v-cl-m"><span class="e">⏺️</span><div style="font-size:16px;font-weight:700;margin-top:2px">浏览</div><div style="font-size:12px;color:inherit;opacity:0.7;margin-top:2px">论文列表</div></div>
+            <div class="v-cl v-cl-r"><span class="e">▶️</span><div style="font-size:16px;font-weight:700;margin-top:2px">收集</div><div style="font-size:12px;color:inherit;opacity:0.7;margin-top:2px">倒计时 · 购物车</div></div>
+          </div>
+        </div>
+      </div>
 
-<h2>年份分布是怎么看的？</h2>
-<div class="card">
-  <p style="margin-bottom:0.75rem">年份越<span style="font-weight:600;color:#6366f1">新</span>，颜色越<span style="font-weight:600;color:#4338ca">深</span>。一眼看出论文量的变化趋势：</p>
-  <div class="bar-row"><span class="bar-label" style="color:#4338ca;font-weight:600">2026</span><span class="bar-fill"><span class="bar-inner" style="width:82%;background:#4338ca"></span></span><span class="bar-count">16,800</span></div>
-  <div class="bar-row"><span class="bar-label" style="color:#4f46e5">2025</span><span class="bar-fill"><span class="bar-inner" style="width:100%;background:#6366f1"></span></span><span class="bar-count">20,500</span></div>
-  <div class="bar-row"><span class="bar-label" style="color:#818cf8">2024</span><span class="bar-fill"><span class="bar-inner" style="width:91%;background:#818cf8"></span></span><span class="bar-count">18,700</span></div>
-  <div class="bar-row"><span class="bar-label" style="color:#a5b4fc">2023</span><span class="bar-fill"><span class="bar-inner" style="width:73%;background:#a5b4fc"></span></span><span class="bar-count">15,000</span></div>
-  <div class="bar-row"><span class="bar-label" style="color:#c7d2fe">2022</span><span class="bar-fill"><span class="bar-inner" style="width:58%;background:#c7d2fe"></span></span><span class="bar-count">12,000</span></div>
-</div>
+      <!-- 3: Filter -->
+      <div class="slide" style="--t:#3b82f6">
+        <div class="slide-left">
+          <div class="s-q how">🎯 怎么用</div>
+          <div class="slide-title">快速找到<span class="hl">你想要的</span></div>
+          <div class="slide-body">
+            <p>左侧栏是你筛选论文的控制台：</p>
+            <p>🎯 <strong>领域分布</strong> — ML / CV / AI 三大类，点击色块切换会议</p>
+            <p>📅 <strong>年份范围</strong> — 滑动起止年，一键回到最近两年</p>
+            <p>📊 <strong>年份分布</strong> — 颜色越深年份越新，论文量趋势一目了然</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div class="v-card">
+            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.5px;text-transform:uppercase">论文分布</div>
+            <div class="v-row"><span class="v-lb" style="color:#059669">ML</span></div>
+            <div class="v-row"><span class="v-lb" style="color:#059669;font-weight:400">NeurIPS</span><span class="v-bar"><span class="v-fl" style="width:85%;background:#059669"></span></span></div>
+            <div class="v-row"><span class="v-lb" style="color:#059669;font-weight:400">ICML</span><span class="v-bar"><span class="v-fl" style="width:78%;background:#059669"></span></span></div>
+            <div class="v-row"><span class="v-lb" style="color:#059669;font-weight:400">ICLR</span><span class="v-bar"><span class="v-fl" style="width:72%;background:#059669"></span></span></div>
+            <div class="v-row" style="margin-top:6px"><span class="v-lb" style="color:#2563eb">CV</span></div>
+            <div class="v-row"><span class="v-lb" style="color:#2563eb;font-weight:400">CVPR</span><span class="v-bar"><span class="v-fl" style="width:92%;background:#2563eb"></span></span></div>
+            <div class="v-row"><span class="v-lb" style="color:#2563eb;font-weight:400">ECCV</span><span class="v-bar"><span class="v-fl" style="width:68%;background:#2563eb"></span></span></div>
+            <div class="v-row" style="margin-top:6px"><span class="v-lb" style="color:#d97706">AI</span></div>
+            <div class="v-row"><span class="v-lb" style="color:#d97706;font-weight:400">AAAI</span><span class="v-bar"><span class="v-fl" style="width:100%;background:#d97706"></span></span></div>
+            <div class="v-row"><span class="v-lb" style="color:#d97706;font-weight:400">IJCAI</span><span class="v-bar"><span class="v-fl" style="width:65%;background:#d97706"></span></span></div>
+          </div>
+        </div>
+      </div>
 
-<h2>"最有缘分"是什么？</h2>
-<div class="card">
-  <p>每次输入关键词搜索后，系统会<span class="highlight">随机</span>从结果中挑一篇论文展示在顶部——</p>
-  <p>就像茫茫论文海中，<span class="tag pink">最有缘分</span>的那一篇主动出现在你面前。</p>
-  <p>点击标题直接加入购物车。</p>
-  <p>不输入关键词时，不显示——缘分要自己去寻找。</p>
-</div>
+      <!-- 4: Paper table -->
+      <div class="slide" style="--t:#06b6d4">
+        <div class="slide-left">
+          <div class="s-q how">👆 怎么用</div>
+          <div class="slide-title">点一点就能<span class="hl">继续探索</span></div>
+          <div class="slide-body">
+            <p>每行包含 <strong>年份</strong> · <strong>会议标签</strong> · <strong>标题</strong> 三要素。</p>
+            <p>点击标题中<strong>任意单词</strong> → 自动加入搜索框，精准过滤。比如点 <code>Diffusion</code>，列表只剩相关论文。</p>
+            <p>左边 <strong>±</strong> 收藏到购物车，右边 <strong>📋</strong> 一键复制标题。每页 10 条。</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div class="v-card" style="padding:14px 18px;background:linear-gradient(180deg,var(--bg),var(--card-bg))">
+            <div style="display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(128,128,128,0.06);font-size:13px">
+              <span class="v-badge year">2025</span>
+              <span class="v-badge ml">ICML</span>
+              <span style="color:var(--accent);font-weight:700;font-size:16px">+</span>
+              <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">On the Impact of Hard Adversarial...</span>
+              <span style="color:var(--muted);font-size:15px">📋</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(128,128,128,0.06);font-size:13px">
+              <span class="v-badge year">2025</span>
+              <span class="v-badge cv">CVPR</span>
+              <span style="color:var(--accent);font-weight:700;font-size:16px">+</span>
+              <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">Tracking The Best Expert Privately...</span>
+              <span style="color:var(--muted);font-size:15px">📋</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(128,128,128,0.06);font-size:13px">
+              <span class="v-badge year">2026</span>
+              <span class="v-badge" style="background:#fce7f3;color:#9d174d">ICLR</span>
+              <span style="color:var(--accent);font-weight:700;font-size:16px">+</span>
+              <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">Detecting and Mitigating Memorization...</span>
+              <span style="color:var(--muted);font-size:15px">📋</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;padding:8px 0;font-size:13px">
+              <span class="v-badge year">2024</span>
+              <span class="v-badge ml">NeurIPS</span>
+              <span style="color:var(--accent);font-weight:700;font-size:16px">+</span>
+              <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">Scaling Laws for Neural Language...</span>
+              <span style="color:var(--muted);font-size:15px">📋</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<h2>怎么部署到自己的电脑？</h2>
+      <!-- 5: Right sidebar -->
+      <div class="slide" style="--t:#f43f5e">
+        <div class="slide-left">
+          <div class="s-q why">⏰ 为什么需要</div>
+          <div class="slide-title">不要错过<span class="hl">截止时间</span></div>
+          <div class="slide-body">
+            <p>右侧栏帮你做两件重要的事：</p>
+            <p>⏱️ <strong>会议倒计时</strong> — 设置关心的会议和截止日，每天看还剩多少天。点击会议名改名字，⚙️ 调时间。</p>
+            <p>🛒 <strong>购物车</strong> — 好论文先 <strong>±</strong> 收藏，最后一次性复制导出。结算还能查 GitHub Star 数。</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div class="v-ct" style="gap:12px">
+            <div class="box" style="padding:18px 20px">
+              <div style="font-size:12px;color:var(--muted);margin-bottom:10px">距 <span style="color:#ec4899;font-weight:700;font-size:15px">AAAI</span> 投稿截止</div>
+              <div style="display:flex;gap:8px">
+                <div style="flex:1;text-align:center;background:var(--card-bg);border-radius:10px;padding:8px 4px"><div style="font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,color-mix(in srgb,var(--t,#f43f5e) 70%,white),color-mix(in srgb,var(--t,#f43f5e) 40%,white));-webkit-background-clip:text;-webkit-text-fill-color:transparent">42</div><div style="font-size:10px;color:var(--muted);margin-top:2px">天</div></div>
+                <div style="flex:1;text-align:center;background:var(--card-bg);border-radius:10px;padding:8px 4px"><div style="font-size:22px;font-weight:700;font-variant-numeric:tabular-nums">07</div><div style="font-size:10px;color:var(--muted);margin-top:2px">时</div></div>
+                <div style="flex:1;text-align:center;background:var(--card-bg);border-radius:10px;padding:8px 4px"><div style="font-size:22px;font-weight:700;font-variant-numeric:tabular-nums">32</div><div style="font-size:10px;color:var(--muted);margin-top:2px">分</div></div>
+                <div style="flex:1;text-align:center;background:var(--card-bg);border-radius:10px;padding:8px 4px"><div style="font-size:22px;font-weight:700;font-variant-numeric:tabular-nums">18</div><div style="font-size:10px;color:var(--muted);margin-top:2px">秒</div></div>
+              </div>
+            </div>
+            <div class="box" style="padding:18px 20px">
+              <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600"><span>🛒 购物车 (3)</span><span style="color:var(--muted);font-weight:400;font-size:12px">复制 · 清空 · 结算</span></div>
+              <div style="font-size:12px;color:var(--muted);margin-top:8px;border-top:1px solid rgba(128,128,128,0.06);padding-top:8px;display:flex;justify-content:space-between"><span>总 ★</span><span style="color:#f59e0b;font-weight:700;font-size:15px">1,284</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<h3>第一步：安装 Node.js</h3>
-<div class="card">
-  <p>打开终端，用包管理器安装：</p>
-  <pre><code># macOS
-brew install node
+      <!-- 6: GET + Data -->
+      <div class="slide" style="--t:#f59e0b">
+        <div class="slide-left">
+          <div class="s-q what">🎲 这是什么</div>
+          <div class="slide-title">每一次搜索都有<span class="hl">意外收获</span></div>
+          <div class="slide-body">
+            <p><strong>GET</strong> —— 每次搜索关键词后，顶部会随机展示一篇当前结果中的论文。它不是什么算法推荐，就是纯粹的随机 —— 像开盲盒一样好玩。</p>
+            <p><strong>数据来源</strong> —— 论文标题来自 <span class="tag tag-b">DBLP</span> 学术数据库和 <span class="tag tag-y">Paper Copilot</span>。存放在 <code>papers/会议/年份.txt</code>，每行一个标题。</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div class="v-get">
+            <div class="lb">GET</div>
+            <div class="t">One-Step is Enough: Sparse Autoencoders<br>for Text-to-Image Diffusion Models</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:8px">← 左右拖动查看完整标题 →</div>
+          </div>
+        </div>
+      </div>
 
-# 或从官网下载: https://nodejs.org</code></pre>
-  <p>验证安装：<code>node -v && npm -v</code></p>
-</div>
+      <!-- 7: Deploy -->
+      <div class="slide" style="--t:#10b981">
+        <div class="slide-left">
+          <div class="s-q how">🛠️ 怎么部署</div>
+          <div class="slide-title">三步跑起来<span class="hl"></span></div>
+          <div class="slide-body">
+            <p>想自己在本地跑？只需要三步：</p>
+            <p>1️⃣ 确保装了 <strong>Node.js</strong></p>
+            <p>2️⃣ <strong>克隆项目</strong>到本地</p>
+            <p>3️⃣ <strong>安装依赖</strong>并启动</p>
+            <p>想更新论文数据？编辑 <code>papers/会议/年份.txt</code>，运行 <code>cd scripts && npx tsx gen-data.ts</code> 即可。</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div class="v-pre">
+            <span class="c"># 1. 安装 Node.js</span><br>
+            brew install node<br>
+            <br>
+            <span class="c"># 2. 克隆项目</span><br>
+            git clone https://github.com/x2x5/find.git<br>
+            cd find<br>
+            <br>
+            <span class="c"># 3. 安装并启动</span><br>
+            npm install<br>
+            npm run dev<br>
+            <span class="s">→ http://localhost:5173/find/</span>
+          </div>
+        </div>
+      </div>
 
-<h3>第二步：克隆项目</h3>
-<div class="card">
-  <pre><code>git clone https://github.com/x2x5/find.git
-cd find</code></pre>
-</div>
+      <!-- 8: Tech -->
+      <div class="slide" style="--t:#db2777">
+        <div class="slide-left">
+          <div class="s-q what">⚡ 用了什么</div>
+          <div class="slide-title">技术栈<span class="hl"></span></div>
+          <div class="slide-body">
+            <p>一个现代的前端项目该有的都有：</p>
+            <p><strong>React 18</strong> + <strong>TypeScript</strong> 保证类型安全<br>
+            <strong>Tailwind CSS</strong> 快速构建 UI<br>
+            <strong>Vite</strong> 极速开发和构建<br>
+            <strong>Lucide</strong> 统一的开源图标风格</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;width:100%">
+            <div style="flex:1;text-align:center;padding:16px 6px;min-width:60px;background:linear-gradient(180deg,#eef2ff,#dbeafe);border-radius:14px">
+              <div style="font-size:28px;margin-bottom:4px">⚛️</div>
+              <div style="font-size:13px;font-weight:700;color:#4f46e5">React</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:16px 6px;min-width:60px;background:linear-gradient(180deg,#fce7f3,#fbcfe8);border-radius:14px">
+              <div style="font-size:28px;margin-bottom:4px">🔷</div>
+              <div style="font-size:13px;font-weight:700;color:#be185d">TypeScript</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:16px 6px;min-width:60px;background:linear-gradient(180deg,#fef3c7,#fde68a);border-radius:14px">
+              <div style="font-size:28px;margin-bottom:4px">🎨</div>
+              <div style="font-size:13px;font-weight:700;color:#b45309">Tailwind</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:16px 6px;min-width:60px;background:linear-gradient(180deg,#e8f5e9,#c8e6c9);border-radius:14px">
+              <div style="font-size:28px;margin-bottom:4px">⚡</div>
+              <div style="font-size:13px;font-weight:700;color:#2e7d32">Vite</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:16px 6px;min-width:60px;background:linear-gradient(180deg,#f3e5f5,#e1bee7);border-radius:14px">
+              <div style="font-size:28px;margin-bottom:4px">🖼️</div>
+              <div style="font-size:13px;font-weight:700;color:#7b1fa2">Lucide</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<h3>第三步：安装依赖并启动</h3>
-<div class="card">
-  <pre><code>npm install
-npm run dev</code></pre>
-  <p>浏览器打开 <code>http://localhost:5173</code> 即可。</p>
-</div>
+      <!-- 9: Feedback -->
+      <div class="slide" style="--t:#14b8a6">
+        <div class="slide-left">
+          <div class="s-q why">💬 有话说？</div>
+          <div class="slide-title">你的意见<span class="hl">很重要</span></div>
+          <div class="slide-body">
+            <p>用得不爽？有想法？欢迎来 GitHub 提 Issue，或者直接发邮件：</p>
+            <p style="margin-top:12px"><a href="https://github.com/x2x5/find/issues/new" style="display:inline-block;padding:10px 28px;background:var(--grad);color:#fff;border-radius:999px;text-decoration:none;font-size:14px;font-weight:600">→ 去 GitHub 提 Issue</a></p>
+            <p style="margin-top:12px;display:flex;align-items:center;gap:6px">📧 <a href="mailto:x2x5.blog@outlook.com" style="color:var(--accent);text-decoration:none;font-weight:500">x2x5.blog@outlook.com</a> <button onclick="navigator.clipboard.writeText('x2x5.blog@outlook.com')" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;border-radius:4px;color:var(--muted);transition:all 0.15s" onmouseover="this.style.background='rgba(128,128,128,0.1)'" onmouseout="this.style.background='none'" title="复制邮箱">📋</button></p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div class="v-card" style="text-align:center;padding:32px 20px;background:linear-gradient(135deg,color-mix(in srgb,var(--t,#14b8a6) 15%,transparent),color-mix(in srgb,var(--t,#14b8a6) 5%,transparent))">
+            <div style="font-size:64px;margin-bottom:8px">💬</div>
+            <div style="font-size:16px;font-weight:600">说出来，我们才能改</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px">每一个反馈都让淘顶网变得更好</div>
+          </div>
+        </div>
+      </div>
 
-<h2>怎么更新论文数据？</h2>
-<div class="card">
-  <p>在 <code>papers/</code> 目录下找到对应会议和年份的 <code>.txt</code> 文件，添加新标题（一行一个）。</p>
-  <p>然后运行：</p>
-  <pre><code>cd scripts
-npx tsx gen-data.ts</code></pre>
-  <p>刷新网页即可看到新数据。</p>
-</div>
-
-<h2>技术栈</h2>
-<div style="display:flex;gap:0.75rem;flex-wrap:nowrap">
-  <div class="card" style="text-align:center;padding:1.25rem 0.75rem;flex:1">
-    <div style="font-size:1.8rem;margin-bottom:0.4rem">⚛️</div>
-    <div style="font-weight:700;font-size:0.95em">React 18</div>
-    <div style="color:var(--muted);font-size:0.78em;margin-top:0.3em">组件化 UI 框架</div>
+    </div>
   </div>
-  <div class="card" style="text-align:center;padding:1.25rem 0.75rem;flex:1">
-    <div style="font-size:1.8rem;margin-bottom:0.4rem">🔷</div>
-    <div style="font-weight:700;font-size:0.95em">TypeScript</div>
-    <div style="color:var(--muted);font-size:0.78em;margin-top:0.3em">类型安全，少出错</div>
-  </div>
-  <div class="card" style="text-align:center;padding:1.25rem 0.75rem;flex:1">
-    <div style="font-size:1.8rem;margin-bottom:0.4rem">🎨</div>
-    <div style="font-weight:700;font-size:0.95em">Tailwind CSS</div>
-    <div style="color:var(--muted);font-size:0.78em;margin-top:0.3em">原子化快速构建</div>
-  </div>
-  <div class="card" style="text-align:center;padding:1.25rem 0.75rem;flex:1">
-    <div style="font-size:1.8rem;margin-bottom:0.4rem">⚡</div>
-    <div style="font-weight:700;font-size:0.95em">Vite</div>
-    <div style="color:var(--muted);font-size:0.78em;margin-top:0.3em">极速构建 & HMR</div>
-  </div>
-  <div class="card" style="text-align:center;padding:1.25rem 0.75rem;flex:1">
-    <div style="font-size:1.8rem;margin-bottom:0.4rem">🖼️</div>
-    <div style="font-weight:700;font-size:0.95em">Lucide</div>
-    <div style="color:var(--muted);font-size:0.78em;margin-top:0.3em">开源图标统一风格</div>
+  <div class="bottom-bar">
+    <a href="/find/" class="back-home">← 返回主页</a>
+    <div style="flex:1;display:flex;justify-content:center"><div class="dots-wrap"><div class="dots" id="dots"></div></div></div>
   </div>
 </div>
 
-<h2>有意见或建议？</h2>
-<div class="card">
-  <p style="margin-bottom:0.75rem">欢迎提 Issue 或直接留言：</p>
-  <a href="https://github.com/x2x5/find/issues/new" style="display:inline-block;padding:0.6em 1.2em;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:0.9em;font-weight:600">→ 去 GitHub 提意见</a>
-  <p style="margin-top:0.75rem;font-size:0.82em;color:var(--muted)">需要 GitHub 账号。没有的话也可以发邮件：<a href="mailto:x2x5.blog@outlook.com">x2x5.blog@outlook.com</a></p>
-</div>
 
-<div class="bottom-back">
-  <a href="/find/">← 返回主页</a>
-</div>
+
+<script>
+const track = document.getElementById('track');
+const slides = track.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+let animating = false;
+
+const progress = document.getElementById('progress');
+const pageNum = document.getElementById('pageNum');
+const pageNumText = document.getElementById('pageNumText');
+const dots = document.getElementById('dots');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+const goFirst = document.getElementById('goFirst');
+const goLast = document.getElementById('goLast');
+
+function updateNavState() {
+  goFirst.classList.toggle('show', current > 0);
+  goLast.classList.toggle('show', current < total - 1);
+  prevBtn.classList.toggle('faded', current === 0);
+  nextBtn.classList.toggle('faded', current === total - 1);
+}
+
+for (let i = 0; i < total; i++) {
+  const dot = document.createElement('button');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => go(i));
+  dots.appendChild(dot);
+}
+
+let pageNumTimer;
+
+function showPageNum() {
+  pageNum.classList.add('show');
+  clearTimeout(pageNumTimer);
+  pageNumTimer = setTimeout(() => pageNum.classList.remove('show'), 1600);
+}
+
+function go(i) {
+  if (animating || i === current || i < 0 || i >= total) return;
+  animating = true;
+  slides[current].classList.remove('active');
+  dots.children[current].classList.remove('active');
+  current = i;
+  slides[current].classList.add('active');
+  dots.children[current].classList.add('active');
+  track.style.transform = `translateX(-${current * 100}%)`;
+  progress.style.width = `${((current + 1) / total) * 100}%`;
+  pageNumText.textContent = `${current + 1} / ${total}`;
+  showPageNum();
+  updateNavState();
+  setTimeout(() => { animating = false; }, 560);
+}
+
+prevBtn.addEventListener('click', () => go(current - 1));
+nextBtn.addEventListener('click', () => go(current + 1));
+goFirst.addEventListener('click', () => go(0));
+goLast.addEventListener('click', () => go(total - 1));
+
+updateNavState();
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { go(current - 1); showPageNum(); }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { go(current + 1); showPageNum(); }
+});
+
+let wheelTimeout;
+document.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  clearTimeout(wheelTimeout);
+  const d = Math.sign(e.deltaY);
+  if (d > 0) { go(current + 1); showPageNum(); }
+  else if (d < 0) { go(current - 1); showPageNum(); }
+  wheelTimeout = setTimeout(() => {}, 600);
+}, { passive: false });
+
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+document.addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  if (Math.abs(dx) > 40) {
+    if (dx < 0) { go(current + 1); showPageNum(); }
+    else { go(current - 1); showPageNum(); }
+  }
+}, { passive: true });
+</script>
 
 </body>
 </html>

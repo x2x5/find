@@ -26,7 +26,154 @@ function getReset(headers: Headers): number {
   return v ? parseInt(v, 10) : 0;
 }
 
+function normalizeTitle(title: string) {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\u4e00-\u9fff\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function titleScore(target: string, candidate: string) {
+  if (!target || !candidate) return 0;
+  if (target === candidate) return 1;
+
+  const targetTokens = target.split(' ').filter(Boolean);
+  const candidateTokens = candidate.split(' ').filter(Boolean);
+  const targetSet = new Set(targetTokens);
+  const candidateSet = new Set(candidateTokens);
+
+  let shared = 0;
+  for (const token of targetSet) {
+    if (candidateSet.has(token)) shared += 1;
+  }
+  const union = new Set([...targetSet, ...candidateSet]).size || 1;
+  const jaccard = shared / union;
+
+  if (target.includes(candidate) || candidate.includes(target)) {
+    return Math.max(jaccard, 0.88);
+  }
+  return jaccard;
+}
+
+function findPaperIdFromHfSearch(html: string, title: string): string | null {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const target = normalizeTitle(title);
+  const links = Array.from(doc.querySelectorAll<HTMLAnchorElement>('a[href^="/papers/"]'));
+  const seen = new Set<string>();
+  let bestId: string | null = null;
+  let bestScore = 0;
+
+  for (const link of links) {
+    const match = link.getAttribute('href')?.match(/^\/papers\/([^/?#]+)$/);
+    if (!match) continue;
+    const id = match[1];
+    if (seen.has(id)) continue;
+    seen.add(id);
+
+    const candidateTitle = normalizeTitle(link.textContent || '');
+    if (!candidateTitle) continue;
+    const score = titleScore(target, candidateTitle);
+    if (score > bestScore) {
+      bestScore = score;
+      bestId = id;
+    }
+  }
+
+  return bestScore >= 0.72 ? bestId : null;
+}
+
+function extractGithubUrl(value: unknown): string | null {
+  if (!value) return null;
+  if (typeof value === 'string') {
+    return value.includes('github.com/') ? value : null;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const nested = extractGithubUrl(item);
+      if (nested) return nested;
+    }
+    return null;
+  }
+  if (typeof value === 'object') {
+    for (const nested of Object.values(value as Record<string, unknown>)) {
+      const found = extractGithubUrl(nested);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function normalizeGithubRepoUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    if (!parsed.hostname.includes('github.com')) return null;
+    const parts = parsed.pathname.split('/').filter(Boolean);
+    if (parts.length < 2) return null;
+    return `https://github.com/${parts[0]}/${parts[1].replace(/\.git$/, '')}`;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchRepoStars(repoUrl: string, token: string): Promise<SearchResult> {
+  const normalized = normalizeGithubRepoUrl(repoUrl);
+  if (!normalized) return { kind: 'error' };
+
+  const headers: Record<string, string> = { ...HEADERS };
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  try {
+    const parsed = new URL(normalized);
+    const [, owner, repo] = parsed.pathname.split('/');
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`, { headers });
+    const remaining = getRemaining(res.headers);
+    const reset = getReset(res.headers);
+    if (res.status === 401) return { kind: 'bad_token', remaining: -2 };
+    if (remaining === 0 || res.status === 403 || res.status === 429) {
+      return { kind: 'rate_limited', reset, remaining };
+    }
+    if (!res.ok) return { kind: 'error' };
+    const data = await res.json();
+    return {
+      kind: 'found',
+      stars: data?.stargazers_count ?? 0,
+      url: data?.html_url || normalized,
+      remaining,
+    };
+  } catch {
+    return { kind: 'error' };
+  }
+}
+
+async function searchViaHuggingFace(title: string, token: string): Promise<SearchResult | null> {
+  try {
+    const query = title.split(/\s+/).slice(0, 12).join(' ');
+    const res = await fetch(`https://huggingface.co/papers?q=${encodeURIComponent(query)}`);
+    if (!res.ok) return null;
+    const html = await res.text();
+    const paperId = findPaperIdFromHfSearch(html, title);
+    if (!paperId) return null;
+
+    const metaRes = await fetch(`https://huggingface.co/api/papers/${paperId}`);
+    if (!metaRes.ok) return null;
+    const metadata = await metaRes.json();
+    const githubUrl = extractGithubUrl(metadata);
+    if (!githubUrl) return null;
+
+    return fetchRepoStars(githubUrl, token);
+  } catch {
+    return null;
+  }
+}
+
 async function searchGitHub(title: string, token: string): Promise<SearchResult> {
+  const hfResult = await searchViaHuggingFace(title, token);
+  if (hfResult && hfResult.kind !== 'error' && hfResult.kind !== 'not_found') {
+    return hfResult;
+  }
+
   const headers: Record<string, string> = { ...HEADERS };
   if (token) headers.Authorization = `Bearer ${token}`;
 

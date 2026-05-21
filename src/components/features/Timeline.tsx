@@ -28,7 +28,11 @@ function parseDate(mmdd: string): { m: number; d: number } {
   return { m: parseInt(mmdd.slice(0, 2), 10), d: parseInt(mmdd.slice(3, 5), 10) };
 }
 
-export default function Timeline() {
+interface TimelineProps {
+  className?: string;
+}
+
+export default function Timeline({ className }: TimelineProps) {
   const today = useMemo(() => new Date(), []);
   const { t } = useAppContext();
 
@@ -94,7 +98,7 @@ export default function Timeline() {
   }, [today, t.timeline]);
 
   return (
-    <div className="max-w-[1560px] mx-auto px-4 pt-4 pb-2">
+    <div className={className ?? "max-w-[1560px] mx-auto px-4 pt-4 pb-2"}>
       <div className="relative h-[178px] rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 pt-3 overflow-visible">
         {/* 图示 */}
         <div className="absolute top-2 left-4 flex flex-col items-start gap-1 text-[10px] text-zinc-500 dark:text-zinc-400">

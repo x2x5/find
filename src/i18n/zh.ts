@@ -11,8 +11,8 @@ export const zh: Translations = {
     timeline: '时间轴',
     filters: '领域',
     yearRange: '年份范围',
-    from: '起始',
-    to: '结束',
+    from: '从',
+    to: '到',
     recent2y: '最近两年',
     selectAll: '全选',
     deselectAll: '取消全选',
@@ -63,6 +63,12 @@ export const zh: Translations = {
     copiedTitle: '已复制标题',
     backToHome: '返回主页',
     perPage: '每页',
+  },
+  mobileTab: {
+    filter: '筛选',
+    papers: '论文',
+    cart: '购物车',
+    settings: '设置',
   },
   footer: {
     slogan: '淘顶网 · 就是淘点顶会的意思',

@@ -10,12 +10,11 @@ interface HeaderProps {
   canGenerateWordCloud: boolean;
   showTimeline: boolean;
   onToggleTimeline: () => void;
-  pageSize?: number;
-  onPageSizeChange?: (size: number) => void;
+  compact?: boolean;
 }
 
 export default function Header(props: HeaderProps) {
-  const { searchValue, onSearchChange, onGenerateWordCloud, canGenerateWordCloud, showTimeline, onToggleTimeline, pageSize, onPageSizeChange } = props;
+  const { searchValue, onSearchChange, onGenerateWordCloud, canGenerateWordCloud, showTimeline, onToggleTimeline, compact } = props;
   const { theme, toggleTheme, language, toggleLanguage, t } = useAppContext();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
@@ -31,12 +30,12 @@ export default function Header(props: HeaderProps) {
   }, [settingsOpen]);
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-50 pt-2 sm:pt-0">
       <div className="max-w-[1560px] mx-auto px-4">
         <div className="flex items-center gap-3 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-1 py-1 md:gap-4 md:py-1 lg:grid lg:grid-cols-[216px_minmax(0,1fr)_264px] lg:gap-4 lg:py-1">
           <a
             href="/"
-            className="shrink-0 flex items-center"
+            className="shrink-0 hidden lg:flex items-center"
             aria-label="淘顶网"
           >
             <img
@@ -45,7 +44,7 @@ export default function Header(props: HeaderProps) {
               className="h-12 w-auto object-contain md:h-14"
             />
           </a>
-          <div className="flex min-w-0 flex-1 items-center gap-2 lg:flex">
+          <div className={`flex min-w-0 flex-1 items-center gap-2 ${compact ? 'hidden lg:flex' : ''}`}>
             <SearchBar
               value={searchValue}
               onChange={onSearchChange}
@@ -54,13 +53,13 @@ export default function Header(props: HeaderProps) {
             />
             <button
               onClick={onToggleTimeline}
-              className="shrink-0 p-2 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200"
+              className="hidden lg:inline-flex shrink-0 p-2 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200"
               title={t.sidebar.timeline}
             >
               {showTimeline ? <PanelTopClose className="w-5 h-5" /> : <PanelTopOpen className="w-5 h-5" />}
             </button>
           </div>
-          <div className="flex items-center gap-2 shrink-0 lg:justify-end">
+          <div className="hidden lg:flex items-center gap-2 shrink-0 lg:justify-end">
             <div className="relative" ref={settingsRef}>
               <button onClick={() => setSettingsOpen(!settingsOpen)} className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 dark:bg-indigo-950 dark:text-indigo-400 dark:hover:bg-indigo-900 dark:hover:text-indigo-300 active:scale-90 transition-all">
                 <Settings className="w-5 h-5" />
@@ -79,26 +78,6 @@ export default function Header(props: HeaderProps) {
                       {language === 'zh' ? 'EN' : '中'}
                     </button>
                   </div>
-                  {onPageSizeChange && (
-                    <div className="border-t border-zinc-100 dark:border-zinc-800 pt-3 flex items-center justify-between">
-                      <span className="text-sm font-medium text-zinc-700 dark:text-zinc-200">{t.common.perPage}</span>
-                      <div className="flex items-center gap-1">
-                        {[10, 50, 100].map((size) => (
-                          <button
-                            key={size}
-                            onClick={() => onPageSizeChange(size)}
-                            className={`text-xs px-2 py-1 rounded-md font-medium transition-colors ${
-                              pageSize === size
-                                ? 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300'
-                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
-                            }`}
-                          >
-                            {size}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </div>

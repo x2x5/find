@@ -159,19 +159,19 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
       <div className="mt-2 grid grid-cols-4 gap-1.5">
         <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
           <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">{countdown.days}</div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-400">{t.countdown.day}</div>
+          <div className="text-[10px] tracking-[0.18em] text-zinc-700 dark:text-zinc-200">{t.countdown.day}</div>
         </div>
         <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
           <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">{String(countdown.hours).padStart(2, '0')}</div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-400">{t.countdown.hour}</div>
+          <div className="text-[10px] tracking-[0.18em] text-zinc-700 dark:text-zinc-200">{t.countdown.hour}</div>
         </div>
         <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
           <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">{String(countdown.minutes).padStart(2, '0')}</div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-400">{t.countdown.minute}</div>
+          <div className="text-[10px] tracking-[0.18em] text-zinc-700 dark:text-zinc-200">{t.countdown.minute}</div>
         </div>
         <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
           <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">{String(countdown.seconds).padStart(2, '0')}</div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-400">{t.countdown.second}</div>
+          <div className="text-[10px] tracking-[0.18em] text-zinc-700 dark:text-zinc-200">{t.countdown.second}</div>
         </div>
       </div>
 

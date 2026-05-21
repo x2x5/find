@@ -89,7 +89,7 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
                       style={{ width: `${confMax > 0 ? (count / confMax) * 100 : 0}%` }}
                     />
                   </div>
-                  <span className={`w-8 shrink-0 text-right tabular-nums ${sel ? 'text-zinc-500' : 'text-zinc-300 dark:text-zinc-600'}`}>{count}</span>
+                  <span className={`w-8 shrink-0 text-right tabular-nums ${sel ? 'text-zinc-800 dark:text-zinc-200' : 'text-zinc-400 dark:text-zinc-500'}`}>{count}</span>
                 </button>
               );
             })}

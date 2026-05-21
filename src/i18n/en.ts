@@ -62,6 +62,12 @@ export interface Translations {
     backToHome: string;
     perPage: string;
   };
+  mobileTab: {
+    filter: string;
+    papers: string;
+    cart: string;
+    settings: string;
+  };
   footer: {
     slogan: string;
     totalVisits: string;
@@ -203,6 +209,12 @@ export const en: Translations = {
     copiedTitle: 'Title copied',
     backToHome: 'Back to home',
     perPage: 'Per page',
+  },
+  mobileTab: {
+    filter: 'Filter',
+    papers: 'Papers',
+    cart: 'Cart',
+    settings: 'Settings',
   },
   footer: {
     slogan: 'TaoDing · Find top conference papers',

@@ -3,9 +3,10 @@ import type { Paper } from '@/types';
 
 interface YearDistributionProps {
   papers: Paper[];
+  className?: string;
 }
 
-export default function YearDistribution({ papers }: YearDistributionProps) {
+export default function YearDistribution({ papers, className }: YearDistributionProps) {
   const yearCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const paper of papers) {
@@ -26,7 +27,7 @@ export default function YearDistribution({ papers }: YearDistributionProps) {
   const countMax = Math.max(1, ...Object.values(yearCounts));
 
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3">
+    <div className={className ?? "rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3"}>
       <div className="space-y-1 text-xs">
         {sortedYearEntries.map(([year, count]) => {
           const n = parseInt(year, 10);
@@ -48,7 +49,7 @@ export default function YearDistribution({ papers }: YearDistributionProps) {
                   }}
                 />
               </div>
-              <span className="text-left text-zinc-500 tabular-nums">{count}</span>
+              <span className="text-left tabular-nums text-zinc-800 dark:text-zinc-200">{count}</span>
             </div>
           );
         })}

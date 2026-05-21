@@ -120,10 +120,10 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
   return (
     <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 h-full flex flex-col overflow-hidden">
       <div className="flex items-center justify-between mb-2 shrink-0">
-        <div className="flex items-center gap-1.5">
-          <ShoppingCart className="w-4 h-4 text-zinc-400" />
-          <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-            {t.cart} <span className="text-zinc-400 tabular-nums">({items.length})</span>
+        <div className="flex items-center gap-2">
+          <ShoppingCart className="w-5 h-5 text-amber-500" />
+          <span className="text-sm text-zinc-800 dark:text-zinc-100">
+            {t.cart} <span className="text-zinc-600 dark:text-zinc-400 tabular-nums">({items.length})</span>
           </span>
         </div>
         <div className="flex items-center gap-1">
@@ -153,7 +153,7 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
       </div>
       <div className="space-y-1 overflow-y-auto flex-1 min-h-0">
         {items.length === 0 ? (
-          <div className="text-[11px] text-zinc-400 text-center py-3">{t.empty}</div>
+          <div className="text-[11px] text-zinc-400 text-center flex-1 flex items-center justify-center">{t.empty}</div>
         ) : items.map((item, i) => {
           const field = CONFERENCE_FIELDS[item.conference] || 'ML';
           const fc = FIELD_COLORS[field] || FIELD_COLORS.ML;
@@ -176,7 +176,7 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
               <div className="flex flex-col items-end gap-0.5 shrink-0 w-10">
                 {repo?.kind === 'found' ? (
                   <a href={repo.url} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 tabular-nums" onClick={(e) => e.stopPropagation()}>
-                    {repo.stars >= 1000 ? (repo.stars / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : repo.stars}🌟
+                    {repo.stars >= 1000 ? (repo.stars / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : repo.stars}
                   </a>
                 ) : repo?.kind === 'not_found' ? (
                   <span className="text-sm text-zinc-400">❌</span>
@@ -189,7 +189,7 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
         })}
       </div>
       <div className="mt-2 pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between shrink-0">
-        <span className="text-sm text-zinc-400">{tx.cart.total}</span>
+        <span className="text-sm text-zinc-800 dark:text-zinc-200">{tx.cart.total}</span>
         <span className="text-base font-bold text-amber-500 tabular-nums">
           {totalStars > 0 ? `${totalStars.toLocaleString()}🌟` : '0🌟'}
         </span>
@@ -217,8 +217,6 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
         <div className="flex items-center justify-end gap-1.5">
           <a
             href="github-token.html"
-            target="_blank"
-            rel="noopener noreferrer"
             title={tx.cart.tooltipGetToken}
             aria-label={tx.cart.tooltipGetToken}
             className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"

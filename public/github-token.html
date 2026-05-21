@@ -34,13 +34,13 @@
   }
 
   .track-wrap { width:100%; position:relative; overflow:hidden; border-radius:24px; flex:1; display:flex; flex-direction:column; }
-  .track { display:flex; transition:transform 0.55s cubic-bezier(0.4,0,0.2,1); will-change:transform; flex:1; }
+  .track { display:flex; transition:transform 0.55s cubic-bezier(0.4,0,0.2,1); will-change:transform; flex:1; overflow:hidden; }
   .slide {
-    flex:0 0 100%; display:flex; gap:48px; align-items:center;
+    width:100%; flex-shrink:0; display:flex; gap:48px; align-items:center;
     background: linear-gradient(135deg, color-mix(in srgb, var(--t,#6366f1) 7%, var(--card-bg)) 0%, var(--card-bg) 50%);
     border:1px solid var(--border);
     border-radius:24px; padding:60px 64px; box-shadow:var(--shadow);
-    min-height:480px; transition:box-shadow 0.4s;
+    min-height:480px; transition:box-shadow 0.4s; overflow:hidden;
   }
   .slide-left { flex:1.2; min-width:0; }
   .slide-right { flex:0.8; min-width:0; display:flex; align-items:center; justify-content:center; }
@@ -125,16 +125,26 @@
   .slide.active { opacity:1; transform:translateY(0); }
 
   @media (max-width:720px) {
-    .main-area { height:100vh; padding:0 8px; }
-    .slide { flex-direction:column; gap:14px; padding:24px 18px; min-height:auto; }
+    html, body { height:auto; overflow:auto; }
+    body { overflow-x:hidden; }
+    .main-area { height:auto; min-height:100vh; padding:0 4px 12px; }
+    .track-wrap { overflow:visible; border-radius:0; }
+    .track { display:block; transform:none !important; overflow:visible; }
+    .slide { flex-direction:column; gap:14px; padding:24px 18px; min-height:auto; width:100%; flex-shrink:0; margin-bottom:14px; opacity:1; transform:none; }
     .slide-left, .slide-right { width:100%; }
     .slide-title { font-size:22px; }
-    .nav-btn { width:34px; height:34px; font-size:14px; }
-    #goFirst { left:-34px; }
-    #prev { left:4px; }
-    #next { right:4px; }
-    #goLast { right:-34px; }
-    #stage { padding:0 4px; }
+    .nav-btn { width:32px; height:32px; font-size:14px; display:none !important; }
+    #prev { left:2px; }
+    #next { right:2px; }
+    #goFirst, #goLast { display:none !important; }
+    #stage { padding:0; }
+    #progress, .page-num { display:none !important; }
+    .bottom-bar {
+      display:flex !important;
+      justify-content:center;
+      padding:10px 0 16px;
+    }
+    .bottom-bar > div { display:none !important; }
   }
 </style>
 </head>
@@ -310,6 +320,7 @@ function showPageNum() {
 }
 
 function go(i) {
+  if (window.matchMedia('(max-width: 720px)').matches) return;
   if (animating || i === current || i < 0 || i >= total) return;
   animating = true;
   slides[current].classList.remove('active');
@@ -333,12 +344,14 @@ goLast.addEventListener('click', () => go(total - 1));
 updateNavState();
 
 document.addEventListener('keydown', (e) => {
+  if (window.matchMedia('(max-width: 720px)').matches) return;
   if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { go(current - 1); showPageNum(); }
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { go(current + 1); showPageNum(); }
 });
 
 let wheelTimeout;
 document.addEventListener('wheel', (e) => {
+  if (window.matchMedia('(max-width: 720px)').matches) return;
   e.preventDefault();
   clearTimeout(wheelTimeout);
   const d = Math.sign(e.deltaY);
@@ -350,6 +363,7 @@ document.addEventListener('wheel', (e) => {
 let touchStartX = 0;
 document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
 document.addEventListener('touchend', (e) => {
+  if (window.matchMedia('(max-width: 720px)').matches) return;
   const dx = e.changedTouches[0].screenX - touchStartX;
   if (Math.abs(dx) > 40) {
     if (dx < 0) { go(current + 1); showPageNum(); }

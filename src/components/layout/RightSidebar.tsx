@@ -11,6 +11,7 @@ interface RightSidebarProps {
   onCopyCart: () => void;
   onClearCart: () => void;
   onShowToast: (msg: string) => void;
+  hideCountdown?: boolean;
 }
 
 export default function RightSidebar({
@@ -19,14 +20,17 @@ export default function RightSidebar({
   onCopyCart,
   onClearCart,
   onShowToast,
+  hideCountdown,
 }: RightSidebarProps) {
   const { t } = useAppContext();
 
   return (
     <aside className="lg:sticky lg:top-[3.5rem] self-start flex flex-col gap-3">
-      <div className="shrink-0">
-        <DeadlineCountdown />
-      </div>
+      {!hideCountdown && (
+        <div className="shrink-0">
+          <DeadlineCountdown />
+        </div>
+      )}
       <div>
         <Cart
           items={cart}

@@ -108,7 +108,7 @@ export default function SlideShow({ slides, backHref, backText }: SlideShowProps
         }}
       />
 
-      <div className="flex-1 flex items-center justify-center px-8 py-4">
+      <div className="flex-1 flex items-center justify-center px-2 sm:px-8 py-4">
         <div className="relative w-full max-w-[1120px] h-full flex flex-col">
           <button
             onClick={() => { go(current - 1); showPageNum(); }}
@@ -152,7 +152,7 @@ export default function SlideShow({ slides, backHref, backText }: SlideShowProps
             &raquo;
           </button>
 
-          <div className="flex-1 mx-12 overflow-hidden rounded-2xl">
+          <div className="flex-1 mx-4 sm:mx-8 md:mx-12 overflow-hidden rounded-2xl">
             <div className="relative h-full">
               <div
                 className={`absolute top-3 right-4 z-10 text-xs font-semibold tracking-wide text-white bg-black/50 backdrop-blur px-3 py-1 rounded-full transition-opacity duration-250 ${pageNumVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
@@ -169,25 +169,25 @@ export default function SlideShow({ slides, backHref, backText }: SlideShowProps
                   animate="center"
                   exit="exit"
                   transition={{ type: 'spring', stiffness: 300, damping: 30, mass: 0.8 }}
-                  className="absolute inset-0 rounded-2xl border p-10 md:p-14 shadow-xl flex gap-10 md:gap-12"
+                  className="absolute inset-0 rounded-2xl border p-6 sm:p-10 md:p-14 shadow-xl flex flex-col md:flex-row gap-6 md:gap-10"
                   style={{
                     borderColor: 'var(--border, rgba(148,163,184,0.10))',
                     background: `linear-gradient(135deg, color-mix(in srgb, ${slide.theme} 7%, white) 0%, white 50%)`,
                   }}
                 >
-                  <div className="flex-[1.2] min-w-0 flex flex-col justify-center">
+                  <div className="md:flex-[1.2] min-w-0 flex flex-col justify-center">
                     <span className={`inline-block text-xs font-bold tracking-wide px-3 py-1 rounded-full mb-3 ${tagStyles[slide.tag.variant]}`}>
                       {slide.tag.text}
                     </span>
-                    <div className="text-2xl md:text-[28px] font-bold leading-tight mb-4">
+                    <div className="text-xl sm:text-2xl md:text-[28px] font-bold leading-tight mb-3 md:mb-4">
                       {slide.title}
                     </div>
-                    <div className="text-base leading-relaxed text-zinc-500 dark:text-zinc-400 [&_strong]:text-zinc-800 dark:[&_strong]:text-zinc-200 [&_strong]:font-semibold [&_code]:bg-zinc-100 dark:[&_code]:bg-zinc-800 [&_code]:px-2 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ol]:ml-4 [&_ol]:mt-1 [&_li]:mb-1.5">
+                    <div className="text-sm sm:text-base leading-relaxed text-zinc-500 dark:text-zinc-400 [&_strong]:text-zinc-800 dark:[&_strong]:text-zinc-200 [&_strong]:font-semibold [&_code]:bg-zinc-100 dark:[&_code]:bg-zinc-800 [&_code]:px-2 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ol]:ml-4 [&_ol]:mt-1 [&_li]:mb-1.5">
                       {slide.body}
                     </div>
                   </div>
 
-                  <div className="flex-[0.8] min-w-0 flex items-center justify-center">
+                  <div className="md:flex-[0.8] min-w-0 flex items-center justify-center">
                     {slide.right}
                   </div>
                 </motion.div>

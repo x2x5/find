@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
 import Cart from '@/components/features/Cart';
 import DeadlineCountdown from '@/components/features/DeadlineCountdown';
 import { useAppContext } from '@/context/AppContext';
@@ -15,8 +14,6 @@ interface RightSidebarProps {
 }
 
 export default function RightSidebar({
-  paperCount,
-  tableReady,
   cart,
   onRemoveFromCart,
   onCopyCart,
@@ -24,74 +21,13 @@ export default function RightSidebar({
   onShowToast,
 }: RightSidebarProps) {
   const { t } = useAppContext();
-  const topPanelRef = useRef<HTMLDivElement | null>(null);
-  const [cartHeight, setCartHeight] = useState<number | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const measure = (force = false) => {
-      if (window.innerWidth < 1024) {
-        setCartHeight(null);
-        return;
-      }
-
-      const table = document.querySelector('[data-papers-table]') as HTMLElement | null;
-      const topPanel = topPanelRef.current;
-      if (!table || !topPanel) {
-        if (force) {
-          setCartHeight(null);
-        }
-        return;
-      }
-
-      const gap = 12;
-      const nextHeight = Math.max(
-        Math.round(table.getBoundingClientRect().height - topPanel.getBoundingClientRect().height - gap),
-        160
-      );
-      setCartHeight((prev) => {
-        if (force || prev == null) return nextHeight;
-        return Math.max(prev, nextHeight);
-      });
-    };
-
-    const tryMeasureUntilReady = (attempt = 0) => {
-      if (cancelled) return;
-      const table = document.querySelector('[data-papers-table]') as HTMLElement | null;
-      if (table && topPanelRef.current) {
-        measure(attempt === 0);
-        return;
-      }
-      if (attempt < 10) {
-        window.requestAnimationFrame(() => tryMeasureUntilReady(attempt + 1));
-      }
-    };
-
-    const frame = window.requestAnimationFrame(() => tryMeasureUntilReady());
-    const handleResize = () => measure(true);
-    window.addEventListener('resize', handleResize);
-
-    const table = document.querySelector('[data-papers-table]') as HTMLElement | null;
-    const topPanel = topPanelRef.current;
-    const observer = new ResizeObserver(() => measure());
-    if (table) observer.observe(table);
-    if (topPanel) observer.observe(topPanel);
-
-    return () => {
-      cancelled = true;
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener('resize', handleResize);
-      observer.disconnect();
-    };
-  }, [cart.length, paperCount, tableReady]);
 
   return (
     <aside className="lg:sticky lg:top-[3.5rem] self-start flex flex-col gap-3">
-      <div ref={topPanelRef} className="shrink-0">
+      <div className="shrink-0">
         <DeadlineCountdown />
       </div>
-      <div className="min-h-0 lg:overflow-hidden" style={cartHeight ? { height: `${cartHeight}px` } : undefined}>
+      <div>
         <Cart
           items={cart}
           onRemove={onRemoveFromCart}

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);})();</script>
 <title>GitHub Token 说明</title>
 <style>
   :root {
@@ -12,14 +13,12 @@
     --grad: linear-gradient(135deg, #6366f1, #a78bfa, #ec4899);
     --border: rgba(148,163,184,0.10);
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0f0f1a; --card-bg: #1a1a2e; --fg: #e8e8f0;
-      --muted: #94a3b8; --shadow: 0 20px 60px -12px rgba(0,0,0,0.5);
-      --border: rgba(148,163,184,0.06);
-    }
-    .slide { background: linear-gradient(135deg, color-mix(in srgb, var(--t,#6366f1) 14%, var(--card-bg)) 0%, var(--card-bg) 50%); }
+  html[data-theme="dark"] {
+    --bg: #0f0f1a; --card-bg: #1a1a2e; --fg: #e8e8f0;
+    --muted: #94a3b8; --shadow: 0 20px 60px -12px rgba(0,0,0,0.5);
+    --border: rgba(148,163,184,0.06);
   }
+  html[data-theme="dark"] .slide { background: linear-gradient(135deg, color-mix(in srgb, var(--t,#6366f1) 14%, var(--card-bg)) 0%, var(--card-bg) 50%); }
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body { height:100%; overflow:hidden; }
   body {

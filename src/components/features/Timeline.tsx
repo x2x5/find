@@ -13,8 +13,6 @@ const RAW_DATA = [
   { deadline: '11-15', result: '02-26', conference: 'CVPR' },
 ];
 
-const MONTH_LABELS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '次年1月', '次年2月'];
-
 const HEIGHTS = [24, 36, 48];
 const AXIS_TOP = 86;
 
@@ -49,7 +47,7 @@ export default function Timeline() {
 
     // Today marker (above line, like result)
     const tm = today.getMonth();
-    all.push({ monthIdx: tm, label: '今天', date: `${tm + 1}/${today.getDate()}`, type: 'today' });
+    all.push({ monthIdx: tm, label: t.timeline.today, date: `${tm + 1}/${today.getDate()}`, type: 'today' });
 
     // Group by month
     const byMonth = new Map<number, typeof all>();
@@ -58,10 +56,11 @@ export default function Timeline() {
       byMonth.get(ev.monthIdx)!.push(ev);
     }
 
-    const monthWidth = 100 / MONTH_LABELS.length;
+    const monthLabels = t.timeline.monthLabels;
+    const monthWidth = 100 / monthLabels.length;
     const result: PlacedEvent[] = [];
 
-    for (let m = 0; m < MONTH_LABELS.length; m++) {
+    for (let m = 0; m < monthLabels.length; m++) {
       const events = byMonth.get(m) || [];
       const count = events.length;
       if (count === 0) continue;
@@ -92,13 +91,13 @@ export default function Timeline() {
     }
 
     return result;
-  }, [today]);
+  }, [today, t.timeline]);
 
   return (
     <div className="max-w-[1560px] mx-auto px-4 pt-4 pb-2">
       <div className="relative h-[178px] rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 pt-3 overflow-visible">
         {/* 图示 */}
-        <div className="absolute top-2 left-4 flex items-center gap-3 text-[10px] text-zinc-500 dark:text-zinc-400">
+        <div className="absolute top-2 left-4 flex flex-col items-start gap-1 text-[10px] text-zinc-500 dark:text-zinc-400">
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
             {t.timeline.deadline}
@@ -109,7 +108,7 @@ export default function Timeline() {
           </span>
         </div>
         {/* 月份标签 — 每个在月份的左端点 */}
-        {MONTH_LABELS.map((label, i) => (
+        {t.timeline.monthLabels.map((label, i) => (
           <div
             key={i}
             className={`absolute text-[10px] font-medium leading-none ${
@@ -137,7 +136,7 @@ export default function Timeline() {
 
         {/* 事件 */}
         {placedEvents.map((ev, i) => {
-          const isAbove = ev.type === 'result' || ev.type === 'today';
+          const isAbove = ev.type === 'result';
 
           const dotColor = ev.type === 'deadline' ? 'bg-rose-500' : ev.type === 'result' ? 'bg-emerald-500' : 'bg-indigo-500';
           const lineColor = ev.type === 'deadline' ? 'bg-rose-300 dark:bg-rose-700/60' : ev.type === 'result' ? 'bg-emerald-300 dark:bg-emerald-700/60' : 'bg-indigo-300 dark:bg-indigo-700/60';

@@ -105,10 +105,17 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
 
   return (
     <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-orange-50/70 dark:from-zinc-900 dark:to-orange-950/20 p-3 shadow-sm">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
-          {t.countdown.untilPrefix}
-          {labelEditing ? (
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
+        <a
+          href="https://ccfddl.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300"
+        >
+          {t.countdown.selfCheck}
+        </a>
+        <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 text-center">
+          {t.countdown.untilPrefix}{labelEditing ? (
             <input
               value={labelDraft}
               onChange={(e) => setLabelDraft(e.target.value)}
@@ -138,18 +145,15 @@ export default function DeadlineCountdown({}: DeadlineCountdownProps) {
             >
               {label}
             </span>
-          )}
-          {t.countdown.untilSuffix}
+          )}<a href="https://ccfddl.com" target="_blank" rel="noopener noreferrer" className="hover:underline">{t.countdown.submit}</a>{t.countdown.untilSuffix}
         </span>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => setEditing((prev) => !prev)}
-            className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/80 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-100"
-            title={editing ? t.common.collapse : t.common.settings}
-          >
-            <Settings2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        <button
+          onClick={() => setEditing((prev) => !prev)}
+          className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 hover:bg-amber-200 hover:text-amber-700 dark:hover:bg-amber-900 dark:hover:text-amber-300 active:scale-90 transition-all"
+          title={editing ? t.common.collapse : t.common.settings}
+        >
+          <Settings2 className="w-5 h-5" />
+        </button>
       </div>
 
       <div className="mt-2 grid grid-cols-4 gap-1.5">

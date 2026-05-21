@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { Plus, Minus, Copy, Files, Sparkles, Eye } from 'lucide-react';
+import { Plus, Minus, Copy, Check, Files, ExternalLink } from 'lucide-react';
 import type { Paper } from '@/types';
 import { getPaperKey } from '@/lib/utils';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
@@ -14,9 +14,6 @@ interface PapersTableProps {
   cart?: Paper[];
   onToggleCart?: (paper: Paper) => void;
   onWordClick?: (word: string, paper: Paper, globalIdx: number) => void;
-  onOpenWordCloud?: () => void;
-  onPreviewPaper?: (paper: Paper) => void;
-  previewPaperKey?: string | null;
 }
 
 function highlightText(text: string, query: string, onWordClick?: (word: string) => void): React.ReactNode {
@@ -66,16 +63,32 @@ const FIELD_COLORS: Record<string, { bg: string; text: string; darkBg: string; d
   AI: { bg: 'bg-emerald-100', text: 'text-emerald-700', darkBg: 'dark:bg-emerald-950', darkText: 'dark:text-emerald-300' },
 };
 
-export default function PapersTable({ papers = [], pageSize = 50, searchTrigger = '', onShowToast, cart = [], onToggleCart, onWordClick, onOpenWordCloud, onPreviewPaper, previewPaperKey = null }: PapersTableProps) {
+function getTitleWordCount(title: string) {
+  const words = title.match(/[A-Za-z0-9]+|[\u4e00-\u9fff]+/g) || [];
+  return words.length;
+}
+
+export default function PapersTable({ papers = [], pageSize = 50, searchTrigger = '', onShowToast, cart = [], onToggleCart, onWordClick }: PapersTableProps) {
   const { t } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
+  const [justCopied, setJustCopied] = useState<Set<string>>(new Set());
 
   const cartKeys = useMemo(() => new Set(cart.map(getPaperKey)), [cart]);
 
   const totalPages = Math.max(1, Math.ceil(papers.length / pageSize));
   const safePage = Math.min(currentPage, totalPages);
   const startIdx = (safePage - 1) * pageSize;
-  const pagePapers = papers.slice(startIdx, startIdx + pageSize);
+  const pagePapers = useMemo(() => {
+    return papers
+      .slice(startIdx, startIdx + pageSize)
+      .map((paper, index) => ({ paper, index }))
+      .sort((a, b) => {
+        const countDiff = getTitleWordCount(a.paper.title) - getTitleWordCount(b.paper.title);
+        if (countDiff !== 0) return countDiff;
+        return a.index - b.index;
+      })
+      .map(({ paper }) => paper);
+  }, [papers, startIdx, pageSize]);
   const placeholderCount = Math.max(0, pageSize - pagePapers.length);
 
   const yearNums = papers.map((p) => parseInt(p.year));
@@ -129,25 +142,17 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
           <div className="flex items-center gap-3 min-w-0">
             <div className="inline-flex items-center rounded-full border border-amber-200/80 dark:border-amber-900/70 bg-white/90 dark:bg-zinc-950/80 px-3 py-1 shadow-sm">
               <div className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 tabular-nums">
-                {papers.length > 0 ? `显示 ${startIdx + 1}-${Math.min(startIdx + pageSize, papers.length)}` : '显示 0'}
+                {papers.length > 0 ? `${t.table.showing} ${startIdx + 1}-${Math.min(startIdx + pageSize, papers.length)}` : `${t.table.showing} 0`}
               </div>
             </div>
             <span className="hidden sm:inline text-xs text-zinc-400 dark:text-zinc-500 truncate">
-              {papers.length > 0 ? '点论文标题里的单词，可以继续缩小范围' : t.table.noResults}
+              {papers.length > 0 ? t.table.clickWordHint : t.table.noResults}
             </span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <span className="sm:hidden text-[11px] text-zinc-400 dark:text-zinc-500">
-              {papers.length > 0 ? '点词继续搜' : t.table.noResults}
+              {papers.length > 0 ? t.table.clickWordHintShort : t.table.noResults}
             </span>
-            <button
-              onClick={onOpenWordCloud}
-              disabled={papers.length === 0}
-              className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50/90 px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 disabled:opacity-30 transition-colors dark:border-amber-900/70 dark:bg-amber-950/60 dark:text-amber-300 dark:hover:bg-amber-900/80"
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              {t.wordCloud.generate}
-            </button>
             <button
               onClick={handleCopyPage}
               disabled={pagePapers.length === 0}
@@ -178,7 +183,6 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
             const globalIdx = startIdx + i;
             const field = CONFERENCE_FIELDS[paper.conference] || 'ML';
             const colors = FIELD_COLORS[field] || FIELD_COLORS.ML;
-            const isPreviewing = previewPaperKey === getPaperKey(paper);
 
             return (
               <div
@@ -194,40 +198,40 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
                 <span className={`inline-flex items-center justify-center w-[4.5rem] shrink-0 px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}>
                   {paper.conference.toUpperCase()}
                 </span>
-                <button
-                  onClick={() => onToggleCart?.(paper)}
-                  className={`shrink-0 w-5 h-5 flex items-center justify-center rounded transition-colors ${cartKeys.has(getPaperKey(paper)) ? "text-red-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20" : "text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"}`}
-                  title={cartKeys.has(getPaperKey(paper)) ? "Remove from cart" : "Add to cart"}
-                >
-                  {cartKeys.has(getPaperKey(paper)) ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-                </button>
-                <button
-                  onClick={async () => {
-                    try { await navigator.clipboard.writeText(paper.title); onShowToast?.(t.common.copiedTitle); }
-                    catch {}
-                  }}
-                  className="shrink-0 text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-300"
-                  title={t.common.copiedTitle}
-                >
-                  <Copy className="w-3.5 h-3.5" />
-                </button>
                 <span
-                  className={`text-sm ${colors.text} ${colors.darkText} flex-1 min-w-0 overflow-x-auto overflow-y-hidden whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}
+                  className={`text-sm ${colors.text} ${colors.darkText} flex-1 min-w-0 break-words leading-5`}
                   style={{ opacity: yearMax > yearMin ? 0.7 + 0.3 * (parseInt(paper.year) - yearMin) / (yearMax - yearMin) : 1 }}
-                  title={paper.title}
                 >
                   {highlightText(paper.title, searchTrigger, (word) => onWordClick?.(word, paper, globalIdx))}
                 </span>
-                <button
-                  onClick={() => onPreviewPaper?.(paper)}
-                  className={`shrink-0 transition-colors ${
-                    isPreviewing
-                      ? 'text-amber-500 dark:text-amber-300'
-                      : 'text-zinc-300 hover:text-amber-500 dark:hover:text-amber-300'
-                  }`}
-                  title={paper.title}
+                <a
+                  href={`https://papers.cool/arxiv/search?highlight=1&query=${encodeURIComponent(paper.title)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 w-7 h-7 flex items-center justify-center rounded-md bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 dark:bg-indigo-950 dark:text-indigo-400 dark:hover:bg-indigo-900 dark:hover:text-indigo-300 active:scale-90 transition-all"
+                  title={t.table.searchExternal}
                 >
-                  <Eye className="w-3.5 h-3.5" />
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={async () => {
+                    const key = getPaperKey(paper);
+                    try { await navigator.clipboard.writeText(paper.title); onShowToast?.(t.common.copiedTitle); }
+                    catch {}
+                    setJustCopied((prev) => new Set([...prev, key]));
+                    setTimeout(() => setJustCopied((prev) => { const n = new Set(prev); n.delete(key); return n; }), 1500);
+                  }}
+                  className="shrink-0 w-7 h-7 flex items-center justify-center rounded-md bg-amber-100 text-amber-600 hover:bg-amber-200 hover:text-amber-700 dark:bg-amber-950 dark:text-amber-400 dark:hover:bg-amber-900 dark:hover:text-amber-300 active:scale-90 transition-all"
+                  title={t.common.copiedTitle}
+                >
+                  {justCopied.has(getPaperKey(paper)) ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </button>
+                <button
+                  onClick={() => onToggleCart?.(paper)}
+                  className={`shrink-0 w-7 h-7 flex items-center justify-center rounded-md active:scale-90 transition-all ${cartKeys.has(getPaperKey(paper)) ? "bg-red-100 text-red-500 hover:bg-red-200 hover:text-red-600 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900 dark:hover:text-red-300" : "bg-emerald-100 text-emerald-600 hover:bg-emerald-200 hover:text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 dark:hover:bg-emerald-900 dark:hover:text-emerald-300"}`}
+                  title={cartKeys.has(getPaperKey(paper)) ? "Remove from cart" : "Add to cart"}
+                >
+                  {cartKeys.has(getPaperKey(paper)) ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                 </button>
               </div>
             );
@@ -244,12 +248,12 @@ export default function PapersTable({ papers = [], pageSize = 50, searchTrigger 
             <span className="inline-flex items-center justify-center w-[4.5rem] shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-zinc-100 dark:bg-zinc-800 text-transparent select-none">
               CONF
             </span>
-            <span className="shrink-0 w-5 h-5" />
-            <span className="shrink-0 w-3.5 h-3.5" />
             <div className="self-stretch flex flex-1 min-w-0 items-center py-0.5">
               <span className="block h-5 w-full rounded bg-zinc-50 dark:bg-zinc-900/70" />
             </div>
-            <span className="shrink-0 w-3.5 h-3.5" />
+            <span className="shrink-0 w-7 h-7" />
+            <span className="shrink-0 w-7 h-7" />
+            <span className="shrink-0 w-7 h-7" />
           </div>
         ))}
       </div>

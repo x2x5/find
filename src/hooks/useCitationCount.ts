@@ -1,6 +1,12 @@
 import { useState, useRef, useCallback } from 'react';
 
-const repoCache = new Map<string, { stars: number; url: string } | null>();
+export type RepoEntry =
+  | { kind: 'found'; stars: number; url: string }
+  | { kind: 'not_found' }
+  | { kind: 'rate_limited' }
+  | { kind: 'error' };
+
+const repoCache = new Map<string, RepoEntry>();
 
 const HEADERS = { Accept: 'application/vnd.github.v3+json' };
 type SearchResult =
@@ -57,7 +63,7 @@ async function searchGitHub(title: string, token: string): Promise<SearchResult>
 }
 
 export function useCitationCount(token: string) {
-  const [repos, setRepos] = useState<Record<string, { stars: number; url: string } | null>>({});
+  const [repos, setRepos] = useState<Record<string, RepoEntry>>({});
   const [fetching, setFetching] = useState(false);
   const fetchingRef = useRef(false);
   const prevToken = useRef(token);
@@ -84,36 +90,54 @@ export function useCitationCount(token: string) {
     setFetching(true);
 
     try {
-      const uncached = papers.filter((p) => !repoCache.has(p.key));
+      const uncached = papers.filter((p) => {
+        const cached = repoCache.get(p.key);
+        return !cached || cached.kind === 'rate_limited' || cached.kind === 'error';
+      });
 
       if (uncached.length === 0) {
-        const update: Record<string, { stars: number; url: string } | null> = {};
+        const update: Record<string, RepoEntry> = {};
         let found = 0;
         let unmatched = 0;
         for (const p of papers) {
           const c = repoCache.get(p.key);
-          if (c !== undefined) {
+          if (c) {
             update[p.key] = c;
-            if (c) found += 1;
-            else unmatched += 1;
+            if (c.kind === 'found') found += 1;
+            if (c.kind === 'not_found') unmatched += 1;
           }
         }
         if (Object.keys(update).length) setRepos((prev) => ({ ...prev, ...update }));
         return { found, total: papers.length, searched: papers.length, unmatched, blocked: 0, failed: 0, limited: false };
       }
 
-      const results = await Promise.allSettled(
-        uncached.map(async (p) => {
-          const repo = await searchGitHub(p.title, token);
-          return { key: p.key, repo };
-        })
-      );
+      const results: { status: 'fulfilled'; value: { key: string; repo: SearchResult } }[] = [];
+      let breakIndex = -1;
+      for (let i = 0; i < uncached.length; i++) {
+        const p = uncached[i];
+        const repo = await searchGitHub(p.title, token);
+        results.push({ status: 'fulfilled', value: { key: p.key, repo } });
+        if (repo.kind === 'rate_limited' || repo.kind === 'bad_token') {
+          breakIndex = i;
+          break;
+        }
+        if (i < uncached.length - 1) {
+          await new Promise((r) => setTimeout(r, 300));
+        }
+      }
+
+      // Mark remaining unprocessed papers as rate_limited so UI shows ❓
+      if (breakIndex !== -1) {
+        for (let i = breakIndex + 1; i < uncached.length; i++) {
+          results.push({ status: 'fulfilled', value: { key: uncached[i].key, repo: { kind: 'rate_limited' } as SearchResult } });
+        }
+      }
 
       let limited = false;
       let badToken = false;
       let reset = 0;
       let remaining = -1;
-      const update: Record<string, { stars: number; url: string } | null> = {};
+      const update: Record<string, RepoEntry> = {};
       let found = 0;
       let unmatched = 0;
       let blocked = 0;
@@ -133,18 +157,22 @@ export function useCitationCount(token: string) {
             continue;
           }
           if (r.value.repo.kind === 'error') {
+            const entry: RepoEntry = { kind: 'error' };
+            repoCache.set(r.value.key, entry);
+            update[r.value.key] = entry;
             failed += 1;
             continue;
           }
           if (r.value.repo.kind === 'found') {
-            const repo = { stars: r.value.repo.stars, url: r.value.repo.url };
-            repoCache.set(r.value.key, repo);
-            update[r.value.key] = repo;
+            const entry: RepoEntry = { kind: 'found', stars: r.value.repo.stars, url: r.value.repo.url };
+            repoCache.set(r.value.key, entry);
+            update[r.value.key] = entry;
             found += 1;
             continue;
           }
-          repoCache.set(r.value.key, null);
-          update[r.value.key] = null;
+          const entry: RepoEntry = { kind: 'not_found' };
+          repoCache.set(r.value.key, entry);
+          update[r.value.key] = entry;
           unmatched += 1;
         }
       }

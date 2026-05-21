@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);})();</script>
 <title>关于 淘顶网</title>
 <style>
   :root {
@@ -12,19 +13,17 @@
     --grad: linear-gradient(135deg, #6366f1, #a78bfa, #ec4899);
     --border: rgba(148,163,184,0.10);
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0f0f1a; --card-bg: #1a1a2e; --fg: #e8e8f0;
-      --muted: #94a3b8; --shadow: 0 20px 60px -12px rgba(0,0,0,0.5);
-      --border: rgba(148,163,184,0.06);
-    }
-    .slide { background: linear-gradient(135deg, color-mix(in srgb, var(--t,#6366f1) 14%, var(--card-bg)) 0%, var(--card-bg) 50%); }
+  html[data-theme="dark"] {
+    --bg: #0f0f1a; --card-bg: #1a1a2e; --fg: #e8e8f0;
+    --muted: #94a3b8; --shadow: 0 20px 60px -12px rgba(0,0,0,0.5);
+    --border: rgba(148,163,184,0.06);
   }
+  html[data-theme="dark"] .slide { background: linear-gradient(135deg, color-mix(in srgb, var(--t,#6366f1) 14%, var(--card-bg)) 0%, var(--card-bg) 50%); }
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body { height:100%; overflow:hidden; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Helvetica Neue', sans-serif;
-    background: var(--bg); color: var(--fg); user-select:none;
+    background: var(--bg); color: var(--fg);
   }
 
   #progress { position:fixed; top:0; left:0; height:3px; background:var(--grad); z-index:100; transition:width 0.5s cubic-bezier(0.4,0,0.2,1); box-shadow:0 1px 4px rgba(99,102,241,0.15); }
@@ -156,6 +155,8 @@
     transition:all 0.2s; border:1px solid var(--border); backdrop-filter:blur(8px);
   }
   .nav-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); transform:translateY(-50%) scale(1.08); box-shadow:0 6px 24px -4px rgba(99,102,241,0.25); }
+  .toast { position:fixed; top:16px; left:50%; transform:translateX(-50%) translateY(-20px); z-index:200; background:rgba(0,0,0,0.7); color:#fff; padding:6px 16px; border-radius:999px; font-size:13px; font-weight:500; opacity:0; transition:opacity 0.25s, transform 0.25s; pointer-events:none; backdrop-filter:blur(8px); }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
   #goFirst { left:-46px; }
   #prev { left:4px; }
   #next { right:4px; }
@@ -194,6 +195,7 @@
 <body>
 
 <div id="progress"></div>
+<div class="toast" id="toast">已复制</div>
 
 <div class="main-area">
 
@@ -203,7 +205,7 @@
     <button class="nav-btn" id="next" style="position:absolute;top:50%;transform:translateY(-50%);z-index:50;width:44px;height:44px;border-radius:50%;border:none;background:var(--card-bg);color:var(--fg);box-shadow:0 4px 20px -4px rgba(0,0,0,0.10);cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;border:1px solid var(--border);right:4px">›</button>
     <button class="nav-btn" id="goLast" style="position:absolute;top:50%;transform:translateY(-50%);z-index:49;width:44px;height:44px;border-radius:50%;border:none;background:var(--card-bg);color:var(--fg);box-shadow:0 4px 20px -4px rgba(0,0,0,0.10);cursor:pointer;font-size:16px;transition:all 0.2s;border:1px solid var(--border)">»</button>
     <div class="track-wrap" style="overflow:hidden;border-radius:24px">
-    <div class="page-num" id="pageNum"><span id="pageNumText">1 / 9</span></div>
+    <div class="page-num" id="pageNum"><span id="pageNumText">1 / 10</span></div>
     <div class="track" id="track">
 
       <!-- 1: What is it -->
@@ -217,9 +219,8 @@
           </div>
         </div>
         <div class="slide-right">
-          <div class="v-card" style="text-align:center;padding:30px 20px;background:linear-gradient(135deg,color-mix(in srgb,var(--t,#6366f1) 15%,transparent),color-mix(in srgb,var(--t,#6366f1) 5%,transparent))">
-            <div style="font-size:72px;margin-bottom:8px">🛒</div>
-            <div style="font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">淘 顶 网</div>
+          <div class="v-card" style="text-align:center;padding:40px 24px;background:linear-gradient(135deg,color-mix(in srgb,var(--t,#6366f1) 15%,transparent),color-mix(in srgb,var(--t,#6366f1) 5%,transparent))">
+            <img src="./icon.webp" alt="淘顶网" style="width:220px;height:auto;margin-bottom:12px;border-radius:16px">
             <div style="font-size:14px;color:var(--muted);margin-top:6px">淘点顶会 · 逛着找论文</div>
           </div>
         </div>
@@ -413,32 +414,56 @@
           </div>
         </div>
         <div class="slide-right">
-          <div style="display:flex;gap:10px;flex-wrap:wrap;width:100%">
-            <div style="flex:1;text-align:center;padding:16px 6px;min-width:60px;background:linear-gradient(180deg,#eef2ff,#dbeafe);border-radius:14px">
-              <div style="font-size:28px;margin-bottom:4px">⚛️</div>
-              <div style="font-size:13px;font-weight:700;color:#4f46e5">React</div>
+          <div style="display:flex;gap:8px;flex-wrap:nowrap;width:100%">
+            <div style="flex:1;text-align:center;padding:14px 4px;min-width:0;background:linear-gradient(180deg,#eef2ff,#dbeafe);border-radius:14px">
+              <div style="font-size:32px;margin-bottom:4px">⚛️</div>
+              <div style="font-size:12px;font-weight:700;color:#4f46e5">React</div>
             </div>
-            <div style="flex:1;text-align:center;padding:16px 6px;min-width:60px;background:linear-gradient(180deg,#fce7f3,#fbcfe8);border-radius:14px">
-              <div style="font-size:28px;margin-bottom:4px">🔷</div>
-              <div style="font-size:13px;font-weight:700;color:#be185d">TypeScript</div>
+            <div style="flex:1;text-align:center;padding:14px 4px;min-width:0;background:linear-gradient(180deg,#fce7f3,#fbcfe8);border-radius:14px">
+              <div style="font-size:32px;margin-bottom:4px">🔷</div>
+              <div style="font-size:12px;font-weight:700;color:#be185d">TypeScript</div>
             </div>
-            <div style="flex:1;text-align:center;padding:16px 6px;min-width:60px;background:linear-gradient(180deg,#fef3c7,#fde68a);border-radius:14px">
-              <div style="font-size:28px;margin-bottom:4px">🎨</div>
-              <div style="font-size:13px;font-weight:700;color:#b45309">Tailwind</div>
+            <div style="flex:1;text-align:center;padding:14px 4px;min-width:0;background:linear-gradient(180deg,#fef3c7,#fde68a);border-radius:14px">
+              <div style="font-size:32px;margin-bottom:4px">🎨</div>
+              <div style="font-size:12px;font-weight:700;color:#b45309">Tailwind</div>
             </div>
-            <div style="flex:1;text-align:center;padding:16px 6px;min-width:60px;background:linear-gradient(180deg,#e8f5e9,#c8e6c9);border-radius:14px">
-              <div style="font-size:28px;margin-bottom:4px">⚡</div>
-              <div style="font-size:13px;font-weight:700;color:#2e7d32">Vite</div>
+            <div style="flex:1;text-align:center;padding:14px 4px;min-width:0;background:linear-gradient(180deg,#e8f5e9,#c8e6c9);border-radius:14px">
+              <div style="font-size:32px;margin-bottom:4px">⚡</div>
+              <div style="font-size:12px;font-weight:700;color:#2e7d32">Vite</div>
             </div>
-            <div style="flex:1;text-align:center;padding:16px 6px;min-width:60px;background:linear-gradient(180deg,#f3e5f5,#e1bee7);border-radius:14px">
-              <div style="font-size:28px;margin-bottom:4px">🖼️</div>
-              <div style="font-size:13px;font-weight:700;color:#7b1fa2">Lucide</div>
+            <div style="flex:1;text-align:center;padding:14px 4px;min-width:0;background:linear-gradient(180deg,#f3e5f5,#e1bee7);border-radius:14px">
+              <div style="font-size:32px;margin-bottom:4px">🖼️</div>
+              <div style="font-size:12px;font-weight:700;color:#7b1fa2">Lucide</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 9: Feedback -->
+      <!-- 9: Word Cloud -->
+      <div class="slide" style="--t:#f97316">
+        <div class="slide-left">
+          <div class="s-q what">☁️ 新功能</div>
+          <div class="slide-title">一眼看穿<span class="hl">研究热点</span></div>
+          <div class="slide-body">
+            <p>点击顶部 <strong>词云</strong> 按钮，从当前筛选结果的论文标题中提取高频关键词，生成可视化词云。</p>
+            <p>词越大 → 出现频率越高。点击任意词可将其移除，帮你快速了解当前领域的技术趋势。</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div style="width:100%;height:200px;position:relative;background:var(--bg);border-radius:16px;border:1px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center">
+            <span style="position:absolute;left:12%;top:18%;font-size:28px;font-weight:700;color:#f97316;opacity:0.9">Diffusion</span>
+            <span style="position:absolute;left:55%;top:12%;font-size:18px;font-weight:600;color:#3b82f6;opacity:0.75">LLM</span>
+            <span style="position:absolute;left:22%;top:48%;font-size:22px;font-weight:700;color:#10b981;opacity:0.85">Transformer</span>
+            <span style="position:absolute;left:62%;top:42%;font-size:14px;font-weight:500;color:#8b5cf6;opacity:0.65">RLHF</span>
+            <span style="position:absolute;left:10%;top:72%;font-size:16px;font-weight:600;color:#f43f5e;opacity:0.7">Vision</span>
+            <span style="position:absolute;left:45%;top:65%;font-size:20px;font-weight:700;color:#f59e0b;opacity:0.8">Training</span>
+            <span style="position:absolute;left:72%;top:70%;font-size:13px;font-weight:500;color:#6366f1;opacity:0.6">Prompt</span>
+            <span style="position:absolute;left:35%;top:30%;font-size:12px;font-weight:500;color:#94a3b8;opacity:0.5">Attention</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10: Feedback -->
       <div class="slide" style="--t:#14b8a6">
         <div class="slide-left">
           <div class="s-q why">💬 有话说？</div>
@@ -446,7 +471,7 @@
           <div class="slide-body">
             <p>用得不爽？有想法？欢迎来 GitHub 提 Issue，或者直接发邮件：</p>
             <p style="margin-top:12px"><a href="https://github.com/x2x5/find/issues/new" style="display:inline-block;padding:10px 28px;background:var(--grad);color:#fff;border-radius:999px;text-decoration:none;font-size:14px;font-weight:600">→ 去 GitHub 提 Issue</a></p>
-            <p style="margin-top:12px;display:flex;align-items:center;gap:6px">📧 <a href="mailto:x2x5.blog@outlook.com" style="color:var(--accent);text-decoration:none;font-weight:500">x2x5.blog@outlook.com</a> <button onclick="navigator.clipboard.writeText('x2x5.blog@outlook.com')" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;border-radius:4px;color:var(--muted);transition:all 0.15s" onmouseover="this.style.background='rgba(128,128,128,0.1)'" onmouseout="this.style.background='none'" title="复制邮箱">📋</button></p>
+            <p style="margin-top:12px;display:flex;align-items:center;gap:6px">📧 <a href="mailto:x2x5.blog@outlook.com" style="color:var(--accent);text-decoration:none;font-weight:500">x2x5.blog@outlook.com</a> <button onclick="navigator.clipboard.writeText('x2x5.blog@outlook.com');showToast('邮箱已复制');" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;border-radius:4px;color:var(--muted);transition:all 0.15s" onmouseover="this.style.background='rgba(128,128,128,0.1)'" onmouseout="this.style.background='none'" title="复制邮箱">📋</button></p>
           </div>
         </div>
         <div class="slide-right">
@@ -469,6 +494,14 @@
 
 
 <script>
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg || '已复制';
+  el.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(function() { el.classList.remove('show'); }, 1600);
+}
+
 const track = document.getElementById('track');
 const slides = track.querySelectorAll('.slide');
 const total = slides.length;

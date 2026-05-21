@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Paper } from '@/types';
+import { useAppContext } from '@/context/AppContext';
 
 interface WordCloudDialogProps {
   open: boolean;
@@ -67,6 +68,7 @@ function intersects(a: Box, b: Box) {
 }
 
 export default function WordCloudDialog({ open, papers, onClose }: WordCloudDialogProps) {
+  const { t } = useAppContext();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [hiddenWords, setHiddenWords] = useState<Set<string>>(new Set());
 
@@ -179,8 +181,8 @@ export default function WordCloudDialog({ open, papers, onClose }: WordCloudDial
   if (!open) return null;
 
   const emptyText = papers.length === 0
-    ? '没有可生成的词云数据。可以回主页换个筛选条件再试。'
-    : '没有可生成的词云数据。可以点外围空白关闭后换个筛选条件再试。';
+    ? t.wordCloud.emptyWithPapers
+    : t.wordCloud.emptyNoPapers;
 
   return (
     <div className="fixed inset-0 z-[120] bg-black/35 backdrop-blur-[2px]">
@@ -188,13 +190,13 @@ export default function WordCloudDialog({ open, papers, onClose }: WordCloudDial
       <div className="relative z-[121] mx-auto mt-[6vh] flex h-[82vh] w-[min(860px,calc(100vw-2rem))] flex-col overflow-hidden rounded-[24px] border border-zinc-300 bg-gradient-to-b from-zinc-50 via-white to-stone-100 shadow-2xl shadow-black/20 dark:border-zinc-700 dark:bg-gradient-to-b dark:from-zinc-900 dark:via-zinc-950 dark:to-stone-950">
         <div className="pointer-events-none flex items-start justify-between border-b border-zinc-200/80 px-5 py-3 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-300">
           <div className="max-w-[45%] leading-6">
-            <div>{papers.length} 篇论文标题生成的词云</div>
+            <div>{papers.length}{t.wordCloud.generatedFrom}</div>
           </div>
           <div className="absolute left-1/2 top-3.5 -translate-x-1/2 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
-            显示前 {words.length} 个高频词
+            {t.wordCloud.topWords.replace('{n}', String(words.length))}
           </div>
           <div className="max-w-[35%] text-right leading-6">
-            点击词语可从当前词云中移除
+            {t.wordCloud.clickToRemove}
           </div>
         </div>
         <div className="relative min-h-0 flex-1">

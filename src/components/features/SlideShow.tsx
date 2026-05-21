@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useAppContext } from '@/context/AppContext';
 
 export interface SlideData {
   tag: { text: string; variant: 'what' | 'why' | 'how' };
@@ -28,7 +29,9 @@ const variants = {
   exit: (dir: number) => ({ x: dir > 0 ? -500 : 500, opacity: 0 }),
 };
 
-export default function SlideShow({ slides, backHref, backText = '← 返回主页' }: SlideShowProps) {
+export default function SlideShow({ slides, backHref, backText }: SlideShowProps) {
+  const { t } = useAppContext();
+  const finalBackText = backText ?? `← ${t.common.backToHome}`;
   const total = slides.length;
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -199,7 +202,7 @@ export default function SlideShow({ slides, backHref, backText = '← 返回主�
           href={backHref}
           className="shrink-0 text-xs text-zinc-500 dark:text-zinc-400 font-medium px-3.5 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:border-indigo-400 hover:text-indigo-500 transition-all whitespace-nowrap"
         >
-          {backText}
+          {finalBackText}
         </a>
         <div className="flex-1 flex justify-center">
           <div className="flex gap-1.5">

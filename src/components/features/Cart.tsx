@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ShoppingCart, Github, Copy, Trash2, CircleHelp, KeyRound, Eraser, Save } from 'lucide-react';
-import { CONFERENCE_FIELDS, CONFERENCE_NAMES } from '@/lib/conferences';
+import { ShoppingCart, Github, Copy, Check, Trash2, CircleHelp, KeyRound, Eraser, Save, Minus } from 'lucide-react';
+import { CONFERENCE_FIELDS } from '@/lib/conferences';
 import { getPaperKey } from '@/lib/utils';
-import { useCitationCount } from '@/hooks/useCitationCount';
+import { useCitationCount, type RepoEntry } from '@/hooks/useCitationCount';
+import { useAppContext } from '@/context/AppContext';
 
 interface CartProps {
   items: { conference: string; year: string; title: string }[];
@@ -25,15 +26,17 @@ const FIELD_COLORS: Record<string, { bg: string; text: string }> = {
 };
 const GITHUB_TOKEN_STORAGE_KEY = 'github_token';
 
-function repoText(repo: { stars: number; url: string } | null | undefined): string {
-  if (repo && repo.stars > 0) return `★${repo.stars >= 1000 ? (repo.stars / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : repo.stars} ${repo.url}`;
+function repoText(repo: RepoEntry | undefined): string {
+  if (repo?.kind === 'found' && repo.stars > 0) return `★${repo.stars >= 1000 ? (repo.stars / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : repo.stars} ${repo.url}`;
   return '';
 }
 
 export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t }: CartProps) {
+  const { t: tx } = useAppContext();
   const [token, setToken] = useState('');
   const [tokenDraft, setTokenDraft] = useState('');
   const [showTokenInput, setShowTokenInput] = useState(false);
+  const [justCopied, setJustCopied] = useState(false);
   const { citations, fetchBatch, fetching } = useCitationCount(token);
   const lastAddedRef = useRef<HTMLDivElement | null>(null);
   const previousLengthRef = useRef(items.length);
@@ -44,7 +47,7 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
     let total = 0;
     for (const item of items) {
       const repo = citations[getPaperKey(item as any)];
-      if (repo && repo.stars > 0) total += repo.stars;
+      if (repo?.kind === 'found') total += repo.stars;
     }
     return total;
   }, [items, citations]);
@@ -53,31 +56,31 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
     if (items.length === 0) return;
     const { found, searched, unmatched, blocked, failed, limited, badToken } = await fetchBatch(pageKeys);
     if (badToken) {
-      onShowToast?.('GitHub Token 无效');
+      onShowToast?.(tx.cart.badToken);
       return;
     }
     if (limited) {
       onShowToast?.(
         token
-          ? `GitHub API 限流：仅完成 ${searched}/${items.length} 个查询，找到 ${found} 个，${blocked} 个未完成`
-          : `GitHub API 限流：仅完成 ${searched}/${items.length} 个查询，可先填写 Token`
+          ? tx.cart.rateLimit.replace('{searched}', String(searched)).replace('{total}', String(items.length)).replace('{found}', String(found)).replace('{blocked}', String(blocked))
+          : tx.cart.rateLimitNoToken.replace('{searched}', String(searched)).replace('{total}', String(items.length))
       );
       return;
     }
     if (failed > 0) {
-      onShowToast?.(`GitHub 查询失败：${failed} 篇没查成，已成功检查 ${searched}/${items.length} 篇`);
+      onShowToast?.(tx.cart.queryFailed.replace('{failed}', String(failed)).replace('{searched}', String(searched)).replace('{total}', String(items.length)));
       return;
     }
     if (found === 0) {
-      onShowToast?.(unmatched > 0 ? `没搜到匹配仓库（已检查 ${searched} 篇）` : '没有可搜索的论文');
+      onShowToast?.(unmatched > 0 ? tx.cart.noMatch.replace('{searched}', String(searched)) : tx.cart.noSearchable);
       return;
     }
     if (unmatched > 0) {
-      onShowToast?.(`找到 ${found}/${searched} 个仓库，另有 ${unmatched} 篇没搜到`);
+      onShowToast?.(tx.cart.foundReposPartial.replace('{found}', String(found)).replace('{searched}', String(searched)).replace('{unmatched}', String(unmatched)));
       return;
     }
-    onShowToast?.(`找到 ${found}/${searched} 个 GitHub 仓库`);
-  }, [fetchBatch, pageKeys, items.length, onShowToast, token]);
+    onShowToast?.(tx.cart.foundRepos.replace('{found}', String(found)).replace('{searched}', String(searched)));
+  }, [fetchBatch, pageKeys, items.length, onShowToast, token, tx.cart]);
 
   const handleCheckout = useCallback(async () => {
     const lines = items.map((item) => {
@@ -85,12 +88,12 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
       const gh = repoText(repo);
       return `${item.conference.toUpperCase()} ${item.year} ${item.title}${gh ? ' ' + gh : ''}`;
     });
-    const total = totalStars > 0 ? `\n\n总 ★ ${totalStars >= 1000 ? (totalStars / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : totalStars}` : '';
+    const total = totalStars > 0 ? `\n\n${tx.cart.total.replace('：', ':')} ★ ${totalStars >= 1000 ? (totalStars / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : totalStars}` : '';
     const text = lines.join('\n') + total;
     try {
       await navigator.clipboard.writeText(text);
     } catch {}
-  }, [items, citations, totalStars, onShowToast]);
+  }, [items, citations, totalStars, onShowToast, tx.cart]);
 
   useEffect(() => {
     const wasAdded = items.length > previousLengthRef.current;
@@ -111,8 +114,8 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
     localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, next);
     setToken(next);
     setShowTokenInput(false);
-    onShowToast?.(next ? 'GitHub Token 已保存到本地浏览器' : 'GitHub Token 已清空');
-  }, [tokenDraft, onShowToast]);
+    onShowToast?.(next ? tx.cart.tokenSaved : tx.cart.tokenCleared);
+  }, [tokenDraft, onShowToast, tx.cart]);
 
   return (
     <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 h-full flex flex-col overflow-hidden">
@@ -125,22 +128,26 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
         </div>
         <div className="flex items-center gap-1">
           <button
-            onClick={onCopy}
+            onClick={() => {
+              onCopy();
+              setJustCopied(true);
+              setTimeout(() => setJustCopied(false), 1500);
+            }}
             disabled={items.length === 0}
             title={t.copy}
             aria-label={t.copy}
-            className="inline-flex h-5 w-5 items-center justify-center rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 disabled:opacity-30"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200 hover:text-indigo-700 dark:hover:bg-indigo-900 dark:hover:text-indigo-300 disabled:opacity-30 active:scale-90 transition-all"
           >
-            <Copy className="h-3 w-3" />
+            {justCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           </button>
           <button
             onClick={onClear}
             disabled={items.length === 0}
             title={t.clear}
             aria-label={t.clear}
-            className="inline-flex h-5 w-5 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500 disabled:opacity-30"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-red-100 dark:bg-red-950 text-red-500 dark:text-red-400 hover:bg-red-200 hover:text-red-600 dark:hover:bg-red-900 dark:hover:text-red-300 disabled:opacity-30 active:scale-90 transition-all"
           >
-            <Trash2 className="h-3 w-3" />
+            <Trash2 className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -157,30 +164,34 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
             <div
               key={i}
               ref={isLastItem ? lastAddedRef : null}
-              className="flex items-center gap-1.5 text-xs group"
+              className="flex items-start gap-2 text-xs"
             >
-              <span className={`inline-flex items-center px-1 py-px rounded text-[9px] font-medium shrink-0 ${fc.bg} ${fc.text}`}>
-                {CONFERENCE_NAMES[item.conference] || item.conference.toUpperCase()}
-              </span>
-              <span className="text-zinc-700 dark:text-zinc-200 truncate flex-1">{item.title}</span>
-              {repo && repo.stars > 0 ? (
-                <a href={repo.url} target="_blank" rel="noopener noreferrer" className="shrink-0 text-[10px] text-zinc-400 hover:text-indigo-500 tabular-nums" onClick={(e) => e.stopPropagation()}>
-                  {repo.stars >= 1000 ? (repo.stars / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : repo.stars}★
-                </a>
-              ) : repo === null ? (
-                <span className="shrink-0 text-[10px] text-zinc-300 w-5 text-center">—</span>
-              ) : null}
-              <button onClick={() => onRemove(i)} className="text-zinc-300 hover:text-red-400 shrink-0 opacity-0 group-hover:opacity-100 text-[10px]">
-                ✕
+              <button
+                onClick={() => onRemove(i)}
+                className="shrink-0 w-5 h-5 flex items-center justify-center rounded bg-red-100 text-red-500 hover:bg-red-200 hover:text-red-600 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900 dark:hover:text-red-300 active:scale-90 transition-all mt-0.5"
+              >
+                <Minus className="w-3.5 h-3.5" />
               </button>
+              <span className={`break-words flex-1 ${fc.text}`}>{item.title}</span>
+              <div className="flex flex-col items-end gap-0.5 shrink-0 w-10">
+                {repo?.kind === 'found' ? (
+                  <a href={repo.url} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 tabular-nums" onClick={(e) => e.stopPropagation()}>
+                    {repo.stars >= 1000 ? (repo.stars / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : repo.stars}🌟
+                  </a>
+                ) : repo?.kind === 'not_found' ? (
+                  <span className="text-sm text-zinc-400">❌</span>
+                ) : repo?.kind === 'rate_limited' || repo?.kind === 'error' ? (
+                  <span className="text-sm text-zinc-400">❓</span>
+                ) : null}
+              </div>
             </div>
           );
         })}
       </div>
       <div className="mt-2 pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between shrink-0">
-        <span className="text-[10px] text-zinc-400">总计：</span>
-        <span className="text-[11px] font-bold text-amber-500 tabular-nums">
-          {totalStars > 0 ? `★ ${totalStars.toLocaleString()}` : '★ 0'}
+        <span className="text-sm text-zinc-400">{tx.cart.total}</span>
+        <span className="text-base font-bold text-amber-500 tabular-nums">
+          {totalStars > 0 ? `${totalStars.toLocaleString()}🌟` : '0🌟'}
         </span>
       </div>
       <div className="mt-1.5 space-y-1.5 shrink-0">
@@ -195,8 +206,8 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
             />
             <button
               onClick={handleSaveToken}
-              title="保存 Token"
-              aria-label="保存 Token"
+              title={tx.cart.tooltipSaveToken}
+              aria-label={tx.cart.tooltipSaveToken}
               className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300"
             >
               <Save className="h-3.5 w-3.5" />
@@ -208,16 +219,16 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
             href="github-token.html"
             target="_blank"
             rel="noopener noreferrer"
-            title="怎么获取 Token"
-            aria-label="怎么获取 Token"
+            title={tx.cart.tooltipGetToken}
+            aria-label={tx.cart.tooltipGetToken}
             className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
           >
             <CircleHelp className="h-3.5 w-3.5" />
           </a>
           <button
             onClick={() => setShowTokenInput((prev) => !prev)}
-            title={token ? 'Token 已设置' : '设置 Token'}
-            aria-label={token ? 'Token 已设置' : '设置 Token'}
+            title={token ? tx.cart.tooltipTokenSet : tx.cart.tooltipSetToken}
+            aria-label={token ? tx.cart.tooltipTokenSet : tx.cart.tooltipSetToken}
             className={`inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors ${token ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300'}`}
           >
             <KeyRound className="h-3.5 w-3.5" />
@@ -228,11 +239,11 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
               localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
               setToken('');
               setShowTokenInput(false);
-              onShowToast?.('GitHub Token 已清空');
+              onShowToast?.(tx.cart.tokenCleared);
             }}
             disabled={!token && !tokenDraft}
-            title="清空 Token"
-            aria-label="清空 Token"
+            title={tx.cart.tooltipClearToken}
+            aria-label={tx.cart.tooltipClearToken}
             className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 disabled:opacity-30"
           >
             <Eraser className="h-3.5 w-3.5" />
@@ -243,8 +254,8 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
               handleCheckout();
             }}
             disabled={fetching}
-            title={fetching ? '正在查询 GitHub' : '查询 GitHub 并结算'}
-            aria-label={fetching ? '正在查询 GitHub' : '查询 GitHub 并结算'}
+            title={fetching ? tx.cart.tooltipQuerying : tx.cart.tooltipCheckout}
+            aria-label={fetching ? tx.cart.tooltipQuerying : tx.cart.tooltipCheckout}
             className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 disabled:opacity-30 transition-all shadow-sm"
           >
             {fetching ? <span className="text-[10px] leading-none">···</span> : <Github className="h-3.5 w-3.5" />}

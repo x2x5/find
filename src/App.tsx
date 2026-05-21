@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, useEffect, useRef } from 'react';
 import type { Paper } from '@/types';
-import { AppProvider } from './context/AppContext';
+import { AppProvider, useAppContext } from './context/AppContext';
 import Header from './components/layout/Header';
 import Sidebar from './components/layout/Sidebar';
 import RightSidebar from './components/layout/RightSidebar';
@@ -17,6 +17,7 @@ import { filterPapers } from './lib/search';
 import { shuffle } from './lib/shuffle';
 
 function AppContent() {
+  const { t } = useAppContext();
   const { manifest, loading: manifestLoading, error: manifestError } = useManifest();
   const defaultYear = new Date().getFullYear();
 
@@ -25,18 +26,29 @@ function AppContent() {
   );
   const [yearRange, setYearRange] = useState<[number, number]>([defaultYear - 2, defaultYear]);
   const [searchValue, setSearchValue] = useState('');
-  const pageSize = 10;
+  const [pageSize, setPageSize] = useState(() => {
+    try {
+      const stored = localStorage.getItem('page_size');
+      if (stored) return parseInt(stored, 10);
+    } catch {}
+    return 10;
+  });
+  const handlePageSizeChange = useCallback((size: number) => {
+    setPageSize(size);
+    try { localStorage.setItem('page_size', String(size)); } catch {}
+  }, []);
   const [showTimeline, setShowTimeline] = useState(false);
   const [cart, setCart] = useState<Paper[]>([]);
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
   const [pinnedPaper, setPinnedPaper] = useState<{ key: string; position: number } | null>(null);
-  const [previewPaper, setPreviewPaper] = useState<Paper | null>(null);
   const [issueDialogType, setIssueDialogType] = useState<'feature' | 'bug' | 'chitchat' | null>(null);
   const [showWordCloud, setShowWordCloud] = useState(false);
   const [visitCount, setVisitCount] = useState<number | null>(null);
   const [searchCount, setSearchCount] = useState<number | null>(null);
   const visitFetched = useRef(false);
   const searchFetched = useRef(false);
+  const prevShuffleKeyRef = useRef('');
+  const prevShuffledRef = useRef<Paper[]>([]);
 
   useEffect(() => {
     if (visitFetched.current) return;
@@ -74,6 +86,11 @@ function AppContent() {
   }, [loadedPapers, searchValue, yearRange, selectedConfs]);
 
   const shuffledPapers = useMemo(() => {
+    const key = filteredPapers.map(getPaperKey).join(',');
+    if (key === prevShuffleKeyRef.current && prevShuffledRef.current.length > 0) {
+      return prevShuffledRef.current;
+    }
+    prevShuffleKeyRef.current = key;
     const result = shuffle(filteredPapers);
     if (pinnedPaper) {
       const idx = result.findIndex((p) => getPaperKey(p) === pinnedPaper.key);
@@ -83,17 +100,12 @@ function AppContent() {
         result.splice(insertAt, 0, paper);
       }
     }
+    prevShuffledRef.current = result;
     return result;
   }, [filteredPapers, pinnedPaper]);
 
   const combinedLoading = manifestLoading || papersLoading;
   const combinedError = manifestError || papersError;
-
-  useEffect(() => {
-    if (!previewPaper) return;
-    const exists = filteredPapers.some((paper) => getPaperKey(paper) === getPaperKey(previewPaper));
-    if (!exists) setPreviewPaper(null);
-  }, [filteredPapers, previewPaper]);
 
   const handleToggleConf = useCallback((conf: string) => {
     setSelectedConfs((prev) => {
@@ -148,20 +160,6 @@ function AppContent() {
     incrementSearchCount();
   }, [incrementSearchCount]);
 
-  const handleHeaderWordClick = useCallback((word: string) => {
-    setSearchValue((prev) => {
-      const words = prev ? prev.trim().split(/\s+/) : [];
-      const lower = word.toLowerCase();
-      const idx = words.findIndex((w) => w.toLowerCase() === lower);
-      if (idx !== -1) {
-        words.splice(idx, 1);
-        return words.join(' ');
-      }
-      return prev ? `${prev} ${word}` : word;
-    });
-    incrementSearchCount();
-  }, [incrementSearchCount]);
-
   const hideToast = useCallback(() => {
     setToast((prev) => ({ ...prev, visible: false }));
   }, []);
@@ -174,10 +172,12 @@ function AppContent() {
           setSearchValue(value);
           setPinnedPaper(null);
         }}
-        displayPaper={previewPaper}
-        onTitleWordClick={handleHeaderWordClick}
+        onGenerateWordCloud={() => setShowWordCloud(true)}
+        canGenerateWordCloud={shuffledPapers.length > 0}
         showTimeline={showTimeline}
         onToggleTimeline={() => setShowTimeline((v) => !v)}
+        pageSize={pageSize}
+        onPageSizeChange={handlePageSizeChange}
       />
 
       {showTimeline && <Timeline />}
@@ -217,7 +217,7 @@ function AppContent() {
           )}
 
           {!combinedLoading && !combinedError && (
-            <PapersTable papers={shuffledPapers} pageSize={pageSize} searchTrigger={searchValue} onShowToast={showToast} cart={cart} onToggleCart={handleToggleCart} onWordClick={handleWordClick} onOpenWordCloud={() => setShowWordCloud(true)} onPreviewPaper={setPreviewPaper} previewPaperKey={previewPaper ? getPaperKey(previewPaper) : null} />
+            <PapersTable papers={shuffledPapers} pageSize={pageSize} searchTrigger={searchValue} onShowToast={showToast} cart={cart} onToggleCart={handleToggleCart} onWordClick={handleWordClick} />
           )}
         </section>
 
@@ -235,16 +235,16 @@ function AppContent() {
       <footer className="max-w-[1560px] mx-auto mt-4 px-4 py-2 text-xs text-zinc-400 dark:text-zinc-500">
         <div className="pt-2 grid grid-cols-3 items-center">
           <div className="flex flex-col gap-0.5">
-            <span>总访问量: {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
-            <span>总搜索次数: {searchCount != null ? searchCount.toLocaleString() : '···'}</span>
+            <span>{t.footer.totalVisits}: {visitCount != null ? visitCount.toLocaleString() : '···'}</span>
+            <span>{t.footer.totalSearches}: {searchCount != null ? searchCount.toLocaleString() : '···'}</span>
           </div>
           <span className="text-center">
-            <a href="about.html" className="hover:text-indigo-500">淘顶网 · 淘点顶会</a>
+            <a href="about.html" className="hover:text-indigo-500">{t.footer.slogan}</a>
           </span>
           <span className="text-right space-x-1.5">
-            <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">想加个新功能！</button>
-            <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">发现一个 Bug！</button>
-            <button onClick={() => setIssueDialogType('chitchat')} className="hover:text-indigo-500 text-indigo-400">说点没用的？</button>
+            <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">{t.footer.featureRequest}</button>
+            <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">{t.footer.bugReport}</button>
+            <button onClick={() => setIssueDialogType('chitchat')} className="hover:text-indigo-500 text-indigo-400">{t.footer.chitchat}</button>
           </span>
         </div>
       </footer>

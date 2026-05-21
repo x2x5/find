@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useAppContext } from '@/context/AppContext';
 
 interface IssueDialogProps {
   type: 'feature' | 'bug' | 'chitchat' | null;
   onClose: () => void;
 }
 
-const CONFIGS = {
+const CONFIG_BASE = {
   feature: {
     template: 'feature_request.md',
     labels: 'enhancement',
@@ -13,14 +14,6 @@ const CONFIGS = {
     accentBg: 'bg-emerald-600',
     accentBgHover: 'hover:bg-emerald-700',
     ringColor: 'focus:ring-emerald-500',
-    titles: [
-      '新功能',
-      '界面',
-      '交互',
-      '搜索',
-      '体验',
-    ],
-    descPlaceholder: '详细描述你想要的功能...',
   },
   bug: {
     template: 'bug_report.md',
@@ -29,14 +22,6 @@ const CONFIGS = {
     accentBg: 'bg-red-600',
     accentBgHover: 'hover:bg-red-700',
     ringColor: 'focus:ring-red-500',
-    titles: [
-      '界面',
-      '搜索',
-      '数据',
-      '交互',
-      '异常',
-    ],
-    descPlaceholder: '详细描述问题以及复现步骤...',
   },
   chitchat: {
     template: '',
@@ -45,21 +30,23 @@ const CONFIGS = {
     accentBg: 'bg-indigo-600',
     accentBgHover: 'hover:bg-indigo-700',
     ringColor: 'focus:ring-indigo-500',
-    titles: [
-      '吐槽',
-      '想法',
-      '建议',
-      '随便聊聊',
-      '其他',
-    ],
-    descPlaceholder: '随便说点啥...',
   },
 };
 
 export default function IssueDialog({ type, onClose }: IssueDialogProps) {
-  const config = type ? CONFIGS[type] : null;
-  const [title, setTitle] = useState(config ? config.titles[0] : '');
+  const { t } = useAppContext();
+  const config = type ? CONFIG_BASE[type] : null;
+  const titles = type === 'feature' ? t.issueDialog.featureTitles : type === 'bug' ? t.issueDialog.bugTitles : type === 'chitchat' ? t.issueDialog.chitchatTitles : [];
+  const placeholder = type === 'feature' ? t.issueDialog.featurePlaceholder : type === 'bug' ? t.issueDialog.bugPlaceholder : type === 'chitchat' ? t.issueDialog.chitchatPlaceholder : '';
+  const [title, setTitle] = useState(titles[0] || '');
   const [description, setDescription] = useState('');
+
+  useEffect(() => {
+    if (type) {
+      const nextTitles = type === 'feature' ? t.issueDialog.featureTitles : type === 'bug' ? t.issueDialog.bugTitles : t.issueDialog.chitchatTitles;
+      setTitle(nextTitles[0] || '');
+    }
+  }, [type, t.issueDialog]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -89,18 +76,18 @@ export default function IssueDialog({ type, onClose }: IssueDialogProps) {
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder={config.descPlaceholder}
+            placeholder={placeholder}
             rows={5}
             className={`w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 ${config.ringColor} resize-none`}
           />
           <div className="flex flex-wrap gap-1.5">
-            {config.titles.map((t) => (
+            {titles.map((item) => (
               <button
-                key={t}
+                key={item}
                 type="button"
-                onClick={() => setTitle(t)}
+                onClick={() => setTitle(item)}
                 className={`px-2.5 py-1 text-xs rounded-lg border font-medium transition-colors ${
-                  title === t
+                  title === item
                     ? config.accent === 'emerald'
                       ? 'bg-emerald-600 text-white border-emerald-600'
                       : config.accent === 'indigo'
@@ -109,15 +96,15 @@ export default function IssueDialog({ type, onClose }: IssueDialogProps) {
                     : 'border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600'
                 }`}
               >
-                {t}
+                {item}
               </button>
             ))}
           </div>
         </div>
         <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 dark:border-zinc-700">
-          <button onClick={onClose} className="px-3 py-1.5 text-xs font-medium rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800">取消</button>
+          <button onClick={onClose} className="px-3 py-1.5 text-xs font-medium rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800">{t.issueDialog.cancel}</button>
             <button onClick={handleSubmit} className={`px-3 py-1.5 text-xs font-medium rounded-lg text-white ${config.accentBg} ${config.accentBgHover}`}>
-              {type === 'chitchat' ? '去 GitHub 开聊' : '提交到 GitHub Issues'}
+              {type === 'chitchat' ? t.issueDialog.submitChat : t.issueDialog.submitIssue}
             </button>
         </div>
       </div>

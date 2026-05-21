@@ -61,7 +61,7 @@ export default function Sidebar({
       <div className="shrink-0 p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
         <div className="mb-3 flex items-end justify-between">
           <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-400 dark:text-zinc-500">
-            Total
+            {t.sidebar.total}
           </span>
           <span className="text-base font-semibold tabular-nums text-amber-600 dark:text-amber-300 leading-none">
             {papers.length}

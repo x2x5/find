@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);})();</script>
-<title>GitHub Token 说明</title>
+<title>GitHub 搜索方案</title>
 <style>
   :root {
     --bg: #f1f5f9; --card-bg: #ffffff; --fg: #0f172a; --muted: #64748b;
@@ -34,13 +34,13 @@
   }
 
   .track-wrap { width:100%; position:relative; overflow:hidden; border-radius:24px; flex:1; display:flex; flex-direction:column; }
-  .track { display:flex; transition:transform 0.55s cubic-bezier(0.4,0,0.2,1); will-change:transform; flex:1; overflow:hidden; }
+  .track { position:relative; width:100%; flex:1; overflow:hidden; }
   .slide {
-    width:100%; flex-shrink:0; display:flex; gap:48px; align-items:center;
+    position:absolute; inset:0; width:100%; display:flex; gap:48px; align-items:center;
     background: linear-gradient(135deg, color-mix(in srgb, var(--t,#6366f1) 7%, var(--card-bg)) 0%, var(--card-bg) 50%);
     border:1px solid var(--border);
     border-radius:24px; padding:60px 64px; box-shadow:var(--shadow);
-    min-height:480px; transition:box-shadow 0.4s; overflow:hidden;
+    min-height:480px; overflow:hidden; pointer-events:none;
   }
   .slide-left { flex:1.2; min-width:0; }
   .slide-right { flex:0.8; min-width:0; display:flex; align-items:center; justify-content:center; }
@@ -65,12 +65,68 @@
     font-family: 'SF Mono', 'Fira Code', monospace; color:var(--fg);
   }
   .slide-body a { color:var(--accent); text-decoration:none; font-weight:500; }
-  .slide-body ol { margin:6px 0 0 18px; padding:0; }
+  .slide-body ol, .slide-body ul { margin:6px 0 0 18px; padding:0; }
   .slide-body li { margin-bottom:5px; }
+  .slide-body ul { list-style:disc; }
+  .slide-body .text-xs { font-size:12px; }
 
   .v-card {
     background:var(--bg); border-radius:16px; padding:20px 24px;
     width:100%; border:1px solid var(--border);
+  }
+
+  /* Plan cards */
+  .plan-card {
+    background:var(--bg); border-radius:14px; padding:16px 20px;
+    width:100%; border:1px solid var(--border); text-align:left;
+  }
+  .plan-card .plan-letter {
+    display:inline-flex; width:22px; height:22px; border-radius:50%;
+    align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff;
+  }
+  .plan-card .plan-title { font-size:13px; font-weight:600; color:var(--fg); }
+  .plan-card .plan-item { font-size:11px; }
+  .plan-card .plan-item .pro { color:#10b981; font-weight:600; }
+  .plan-card .plan-item .con { color:#ef4444; font-weight:600; }
+
+  /* Flow cards */
+  .flow-card {
+    background:var(--bg); border-radius:14px; padding:14px 18px;
+    text-align:center; border:1px solid var(--border); width:100%;
+  }
+  .flow-card.accent {
+    background: color-mix(in srgb, #8b5cf6 8%, var(--bg));
+  }
+
+  /* Step cards */
+  .step-card {
+    display:flex; align-items:center; gap:12px;
+    background:var(--bg); border-radius:14px; padding:14px 18px;
+    border:1px solid var(--border); width:100%;
+  }
+  .step-card .step-num {
+    font-size:10px; font-weight:700; margin-bottom:2px;
+  }
+  .step-card .step-text {
+    font-size:11px; color:var(--muted); font-family:'SF Mono','Fira Code',monospace; word-break:break-all;
+  }
+
+  /* Query cards */
+  .query-card {
+    background:var(--bg); border-radius:14px; padding:16px 20px;
+    border:1px solid var(--border); width:100%;
+  }
+  .query-card .query-label { font-size:12px; font-weight:700; margin-bottom:8px; }
+  .query-card .query-code {
+    font-size:11px; font-family:'SF Mono','Fira Code',monospace; color:var(--fg);
+    background:var(--card-bg); border-radius:10px; padding:10px 14px; word-break:break-all;
+  }
+
+  /* Error cards */
+  .err-card {
+    display:flex; align-items:center; gap:12px;
+    background:var(--bg); border-radius:14px; padding:16px 20px;
+    border:1px solid var(--border); width:100%;
   }
 
   .bottom-bar {
@@ -121,16 +177,16 @@
   .dot:hover { background:rgba(128,128,128,0.35); }
   .dot.active { background:var(--accent); width:22px; border-radius:4px; }
 
-  .slide { opacity:0; transform:translateY(10px); transition:opacity 0.4s 0.05s, transform 0.4s 0.05s; }
-  .slide.active { opacity:1; transform:translateY(0); }
+  .slide { opacity:0; transform:translateY(10px); transition:opacity 0.35s ease, transform 0.35s ease; z-index:0; }
+  .slide.active { opacity:1; transform:translateY(0); pointer-events:auto; z-index:1; }
 
   @media (max-width:720px) {
     html, body { height:auto; overflow:auto; }
     body { overflow-x:hidden; }
     .main-area { height:auto; min-height:100vh; padding:0 4px 12px; }
     .track-wrap { overflow:visible; border-radius:0; }
-    .track { display:block; transform:none !important; overflow:visible; }
-    .slide { flex-direction:column; gap:14px; padding:24px 18px; min-height:auto; width:100%; flex-shrink:0; margin-bottom:14px; opacity:1; transform:none; }
+    .track { display:block; height:auto; transform:none !important; overflow:visible; }
+    .slide { position:relative; inset:auto; flex-direction:column; gap:14px; padding:24px 18px; min-height:auto; width:100%; margin-bottom:14px; opacity:1; transform:none; pointer-events:auto; }
     .slide-left, .slide-right { width:100%; }
     .slide-title { font-size:22px; }
     .nav-btn { width:32px; height:32px; font-size:14px; display:none !important; }
@@ -160,17 +216,228 @@
     <button class="nav-btn" id="next" style="position:absolute;top:50%;transform:translateY(-50%);z-index:50;width:44px;height:44px;border-radius:50%;border:none;background:var(--card-bg);color:var(--fg);box-shadow:0 4px 20px -4px rgba(0,0,0,0.10);cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;border:1px solid var(--border);right:4px">›</button>
     <button class="nav-btn" id="goLast" style="position:absolute;top:50%;transform:translateY(-50%);z-index:49;width:44px;height:44px;border-radius:50%;border:none;background:var(--card-bg);color:var(--fg);box-shadow:0 4px 20px -4px rgba(0,0,0,0.10);cursor:pointer;font-size:16px;transition:all 0.2s;border:1px solid var(--border)">»</button>
     <div class="track-wrap" style="overflow:hidden;border-radius:24px">
-    <div class="page-num" id="pageNum"><span id="pageNumText">1 / 4</span></div>
+    <div class="page-num" id="pageNum"><span id="pageNumText">1 / 9</span></div>
     <div class="track" id="track">
 
-      <!-- 1: Why -->
+      <!-- 1: 问题 -->
       <div class="slide active" style="--t:#6366f1">
         <div class="slide-left">
-          <div class="s-q why">🔑 为什么要填</div>
-          <div class="slide-title">不填也能用，但会<span class="hl">限流</span></div>
+          <div class="s-q what">🤔 问题</div>
+          <div class="slide-title">根据论文题目，拿到 GitHub 仓库和 <span class="hl">⭐ 数</span></div>
           <div class="slide-body">
-            <p>购物车的 <strong>结算</strong> 按钮会搜每篇论文的 GitHub 仓库 Star 数。这个查询走 GitHub Search API，<strong>不带 Token 每小时只能搜 10 次</strong>，填了之后额度大幅提升。</p>
-            <p>简单说：不带 Token 也能用，但搜几篇就停了。带 Token 基本够你一次查完。</p>
+            <p>给一篇论文，找到它对应的 GitHub 开源仓库地址和 Star 数。<strong>这一切只能在浏览器里完成</strong>——纯前端，没有后端服务器。</p>
+            <p style="font-weight:600;margin-top:12px;">为什么难？</p>
+            <ul>
+              <li>论文题目 ≠ 仓库名，没有现成的一一对应关系</li>
+              <li>不存在免费、公开的「论文→仓库」查询服务</li>
+              <li>GitHub API 对未认证请求<strong>每小时只给 10 次</strong></li>
+              <li>纯静态页面，不能存数据、不能写后端</li>
+            </ul>
+            <p style="font-weight:600;margin-top:12px;">几种可行方案：</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div style="width:100%;max-width:380px;display:flex;flex-direction:column;gap:6px">
+            <div class="plan-card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span class="plan-letter" style="background:#6366f1">A</span>
+                <span class="plan-title">直接搜 GitHub Search API</span>
+              </div>
+              <div class="plan-item" style="display:flex;gap:6px;margin-left:30px"><span class="pro">✅</span> 最直接</div>
+              <div class="plan-item" style="display:flex;gap:6px;margin-left:30px"><span class="con">❌</span> 标题和仓库名经常对不上；限流严格</div>
+            </div>
+            <div class="plan-card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span class="plan-letter" style="background:#8b5cf6">B</span>
+                <span class="plan-title">先搜 HuggingFace Papers</span>
+              </div>
+              <div class="plan-item" style="display:flex;gap:6px;margin-left:30px"><span class="pro">✅</span> HF 已收录大量 AI 论文与代码仓库的对应关系；匹配率高</div>
+              <div class="plan-item" style="display:flex;gap:6px;margin-left:30px"><span class="con">❌</span> 只覆盖 AI 论文；需解析 HTML 页面</div>
+            </div>
+            <div class="plan-card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span class="plan-letter" style="background:#ec4899">C</span>
+                <span class="plan-title">自己搭后台 + 数据库</span>
+              </div>
+              <div class="plan-item" style="display:flex;gap:6px;margin-left:30px"><span class="pro">✅</span> 体验最好，无 API 限制</div>
+              <div class="plan-item" style="display:flex;gap:6px;margin-left:30px"><span class="con">❌</span> 本项目没服务器；纯静态站做不到</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: 方案选择 -->
+      <div class="slide" style="--t:#8b5cf6">
+        <div class="slide-left">
+          <div class="s-q how">💡 方案</div>
+          <div class="slide-title">本网站的选择：<span class="hl">A + B 组合</span></div>
+          <div class="slide-body">
+            <p>方案 C 做不到（没服务器），只能在 A 和 B 之间选。</p>
+            <p>B 的匹配质量远高于 A，因为 HuggingFace 收录了大量 AI 论文与代码仓库的人工/自动关联，比纯文本搜索准确得多。</p>
+            <p><strong>但 B 不可能覆盖所有论文</strong>，所以需要 A 兜底。</p>
+            <p style="margin-top:8px;">最终策略：<strong>先 B 后 A</strong>，HF 优先，GitHub 兜底。</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div style="width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;gap:10px">
+            <div class="flow-card">
+              <div style="font-size:32px;margin-bottom:4px">📄</div>
+              <div style="font-size:14px;font-weight:600">论文题目</div>
+            </div>
+            <div style="font-size:18px;color:var(--muted)">↓</div>
+            <div class="flow-card" style="background:color-mix(in srgb,#8b5cf6 10%,var(--bg))">
+              <div style="font-size:24px;margin-bottom:2px">🤗</div>
+              <div style="font-size:14px;font-weight:600;color:#7c3aed">① HuggingFace</div>
+              <div style="font-size:11px;color:#a78bfa">搜论文 → 提取仓库</div>
+            </div>
+            <div style="display:flex;gap:12px;width:100%">
+              <div class="flow-card" style="flex:1;background:color-mix(in srgb,#10b981 8%,var(--bg))">
+                <div style="font-size:11px;font-weight:600;color:#059669">找到了 → 拿⭐</div>
+              </div>
+              <div class="flow-card" style="flex:1;background:color-mix(in srgb,#f59e0b 8%,var(--bg))">
+                <div style="font-size:11px;font-weight:600;color:#d97706">没找到 ↓</div>
+              </div>
+            </div>
+            <div class="flow-card" style="background:color-mix(in srgb,#3b82f6 8%,var(--bg))">
+              <div style="font-size:24px;margin-bottom:2px">🐙</div>
+              <div style="font-size:14px;font-weight:600;color:#2563eb">② GitHub Search API</div>
+              <div style="font-size:11px;color:#60a5fa">直接搜仓库 → 拿⭐</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3: HF 第一步 -->
+      <div class="slide" style="--t:#8b5cf6">
+        <div class="slide-left">
+          <div class="s-q how">🔍 第一步</div>
+          <div class="slide-title">HuggingFace Papers <span class="hl">搜论文 → 找仓库</span></div>
+          <div class="slide-body">
+            <p>HuggingFace 的 Papers 板块收录了大量 AI 顶会论文，并且<strong>很多论文页面直接标注了关联的 GitHub 仓库</strong>，比直接搜 GitHub 准确得多。</p>
+            <ol>
+              <li>拿论文标题前 12 个词去 <code>huggingface.co/papers?q=...</code> 搜索</li>
+              <li>解析返回的 HTML，遍历所有 <code>/papers/xxx</code> 链接，用 <strong>Jaccard 相似度</strong>匹配标题（阈值 ≥ 72%）</li>
+              <li>找到目标 paper ID 后，调 <code>huggingface.co/api/papers/xxx</code> 获取元数据</li>
+              <li>从元数据中递归提取 GitHub 链接（可能是字符串、数组或嵌套对象）</li>
+            </ol>
+            <p style="font-size:12px;margin-top:8px;">不直接用 HF 的搜索 API？因为那个是 private API，浏览器请求会被 CORS 拦截。用 HTML 页面 + DOMParser 解析反而能绕过。</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:8px">
+            <div class="step-card">
+              <span style="font-size:22px">🔗</span>
+              <div style="flex:1;min-width:0">
+                <div class="step-num" style="color:#6366f1">STEP 1</div>
+                <div class="step-text">GET huggingface.co/papers?q={title}</div>
+              </div>
+            </div>
+            <div class="step-card">
+              <span style="font-size:22px">📋</span>
+              <div style="flex:1;min-width:0">
+                <div class="step-num" style="color:#6366f1">STEP 2</div>
+                <div class="step-text">DOMParser 解析 HTML，Jaccard 匹配标题</div>
+              </div>
+            </div>
+            <div class="step-card">
+              <span style="font-size:22px">📦</span>
+              <div style="flex:1;min-width:0">
+                <div class="step-num" style="color:#6366f1">STEP 3</div>
+                <div class="step-text">GET huggingface.co/api/papers/{id}</div>
+              </div>
+            </div>
+            <div class="step-card">
+              <span style="font-size:22px">🐙</span>
+              <div style="flex:1;min-width:0">
+                <div class="step-num" style="color:#6366f1">STEP 4</div>
+                <div class="step-text">递归提取 github.com/xxx 链接</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: GitHub 第二步 -->
+      <div class="slide" style="--t:#6366f1">
+        <div class="slide-left">
+          <div class="s-q how">🐙 第二步</div>
+          <div class="slide-title">GitHub Search API <span class="hl">兜底搜索</span></div>
+          <div class="slide-body">
+            <p>如果 HuggingFace 没收录这篇论文，或者页面里没有仓库链接，就退回到 GitHub Search API 直接搜索。</p>
+            <p style="font-weight:600;margin-top:12px;">两轮搜索策略：</p>
+            <ol>
+              <li><strong>精确匹配：</strong>用完整论文标题，限定搜索范围 <code>in:name,in:description,in:topics,in:readme</code>，按 Star 数排序取第一条</li>
+              <li><strong>关键词兜底：</strong>如果精确匹配没结果，改用标题前 4 个关键词宽松搜索</li>
+            </ol>
+            <p style="font-size:12px;margin-top:8px;">两次调用之间有 300ms 延迟，避免触发 GitHub 的速率限制保护。</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px">
+            <div class="query-card">
+              <div class="query-label" style="color:#6366f1">QUERY 1 · 精确匹配</div>
+              <div class="query-code">
+                q="Paper Title Here" in:name,in:description,in:topics,in:readme<br>
+                sort=stars&nbsp;&nbsp;per_page=1
+              </div>
+            </div>
+            <div style="text-align:center;font-size:14px;color:var(--muted)">↓ 没结果则回退</div>
+            <div class="query-card">
+              <div class="query-label" style="color:#f59e0b">QUERY 2 · 关键词兜底</div>
+              <div class="query-code">
+                q=paper title keywords<br>
+                sort=stars&nbsp;&nbsp;per_page=1
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5: 第三步 -->
+      <div class="slide" style="--t:#f59e0b">
+        <div class="slide-left">
+          <div class="s-q how">⭐ 第三步</div>
+          <div class="slide-title">拿到仓库后，<span class="hl">查 Star 数</span></div>
+          <div class="slide-body">
+            <p>无论仓库地址来自 HuggingFace 还是 GitHub Search，最后一步都一样：</p>
+            <ol>
+              <li>从仓库 URL 中<strong>解析出 owner 和 repo 名称</strong>（去 .git 后缀、去多余的路径）</li>
+              <li>调用 GitHub Repo API：<code>GET /repos/:owner/:repo</code></li>
+              <li>从返回数据中读取 <code>stargazers_count</code></li>
+            </ol>
+            <p style="margin-top:8px;">最终每篇论文旁边显示它的 GitHub 仓库链接和 Star 数。</p>
+            <p style="font-size:12px;margin-top:4px;">仓库 URL 解析示例：<code>https://github.com/openai/whisper</code> → owner=openai, repo=whisper</p>
+          </div>
+        </div>
+        <div class="slide-right">
+          <div style="width:100%;max-width:300px;display:flex;flex-direction:column;align-items:center;gap:8px">
+            <div class="flow-card">
+              <div style="font-size:12px;color:var(--muted);margin-bottom:4px">仓库 URL</div>
+              <div style="font-size:14px;font-family:'SF Mono','Fira Code',monospace;font-weight:600;word-break:break-all">github.com/openai/whisper</div>
+            </div>
+            <div style="font-size:18px;color:var(--muted)">↓</div>
+            <div class="flow-card">
+              <div style="font-size:12px;color:var(--muted);margin-bottom:4px">GET /repos/openai/whisper</div>
+              <div style="font-size:11px;font-family:'SF Mono','Fira Code',monospace;color:var(--muted);background:var(--card-bg);border-radius:8px;padding:8px 12px;margin-top:6px;text-align:left">
+                { "stargazers_count": 12345 }
+              </div>
+            </div>
+            <div style="font-size:18px;color:var(--muted)">↓</div>
+            <div style="font-size:28px;font-weight:700;color:#f59e0b">⭐ 12,345</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6: 限流 -->
+      <div class="slide" style="--t:#6366f1">
+        <div class="slide-left">
+          <div class="s-q why">🚦 限流</div>
+          <div class="slide-title">GitHub API 有限制，需要<span class="hl">你的 Token</span></div>
+          <div class="slide-body">
+            <p>前几步调用 GitHub API 时，每个请求都受 GitHub 的速率限制：</p>
+            <p style="margin-top:8px;"><strong>不带 Token：每小时只能 10 次</strong>——搜几篇论文就停了。</p>
+            <p><strong>带了 Personal Access Token：每小时 5000 次</strong>——基本够一次查完所有论文。</p>
+            <p style="margin-top:8px;">所以需要你提供自己的 GitHub Token。这个 Token 任何人都可以在 GitHub 免费创建，不需要任何付费。</p>
           </div>
         </div>
         <div class="slide-right">
@@ -178,23 +445,34 @@
             <div style="font-size:64px;margin-bottom:8px">🔑</div>
             <div style="font-size:16px;font-weight:600">不填 = 限流</div>
             <div style="font-size:13px;color:var(--muted);margin-top:4px">填了 = 畅搜</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px">
+              <div style="text-align:center">
+                <div style="font-size:28px;font-weight:700;color:#ef4444">10</div>
+                <div style="font-size:10px;color:var(--muted)">次/时（无Token）</div>
+              </div>
+              <div style="color:var(--muted)">→</div>
+              <div style="text-align:center">
+                <div style="font-size:28px;font-weight:700;color:#10b981">5000</div>
+                <div style="font-size:10px;color:var(--muted)">次/时（有Token）</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- 2: How to create -->
+      <!-- 7: 获取 Token -->
       <div class="slide" style="--t:#8b5cf6">
         <div class="slide-left">
-          <div class="s-q how">📝 怎么创建</div>
-          <div class="slide-title">几分钟就搞定<span class="hl"></span></div>
+          <div class="s-q how">📝 获取</div>
+          <div class="slide-title">一分钟获取<span class="hl"> GitHub Token</span></div>
           <div class="slide-body">
             <ol>
-              <li>打开 <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener noreferrer">GitHub Token 设置页</a></li>
-              <li>点 <code>Generate new token</code></li>
+              <li>打开 <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">GitHub Token 设置页</a></li>
+              <li>点 <code>Generate new token</code> → 选 <code>Tokens (classic)</code></li>
               <li>起个名字，比如 <code>find-local</code></li>
-              <li>过期时间随意，权限不用额外勾</li>
+              <li>过期时间随意，权限不用额外勾选</li>
               <li>生成后复制那一串 Token</li>
-              <li>回淘顶网购物车底部，点钥匙按钮 🔑 粘贴</li>
+              <li>粘贴到本网站设置页面的输入框里，点保存</li>
             </ol>
           </div>
         </div>
@@ -203,7 +481,7 @@
             <div style="background:var(--bg);border-radius:14px;padding:16px 20px;text-align:center;border:1px solid var(--border)">
               <div style="font-size:36px;margin-bottom:4px">⚙️</div>
               <div style="font-size:14px;font-weight:600">GitHub Settings</div>
-              <div style="font-size:12px;color:var(--muted)">Developer settings → Tokens</div>
+              <div style="font-size:12px;color:var(--muted)">Developer settings → Tokens (classic)</div>
             </div>
             <div style="display:flex;gap:8px;align-items:center">
               <div style="flex:1;background:var(--bg);border-radius:12px;padding:14px;text-align:center;border:1px solid var(--border)">
@@ -225,49 +503,60 @@
         </div>
       </div>
 
-      <!-- 3: Storage -->
+      <!-- 8: 隐私 -->
       <div class="slide" style="--t:#10b981">
         <div class="slide-left">
-          <div class="s-q what">💾 存哪了</div>
-          <div class="slide-title">只在你的<span class="hl">本地浏览器</span></div>
+          <div class="s-q what">🔒 隐私</div>
+          <div class="slide-title">Token 只在你<span class="hl">本地浏览器</span></div>
           <div class="slide-body">
-            <p>Token 保存在浏览器 <code>localStorage</code> 里。<strong>不会上传到任何服务器</strong>，也不会写进仓库代码。</p>
-            <p>换电脑、换浏览器、清缓存后需要重新设置一次。</p>
+            <p>Token 保存在浏览器 <code>localStorage</code> 里。</p>
+            <p style="margin-top:4px;"><strong>本项目是 GitHub Pages 纯静态页面</strong>，没有后端服务器、没有数据库。Token 不会上传到任何地方，也不会写进仓库代码。</p>
+            <p style="font-size:12px;margin-top:8px;">换电脑、换浏览器、清缓存后需要重新设置一次。</p>
           </div>
         </div>
         <div class="slide-right">
           <div class="v-card" style="text-align:center;padding:32px 24px;background:linear-gradient(135deg,color-mix(in srgb,var(--t,#10b981) 15%,transparent),color-mix(in srgb,var(--t,#10b981) 5%,transparent))">
             <div style="font-size:64px;margin-bottom:8px">🔒</div>
             <div style="font-size:16px;font-weight:600;color:var(--t,#10b981)">本地存储 · 不上传</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:4px">换浏览器需要重新设置</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px">纯静态站 · 无服务器 · 无数据库</div>
           </div>
         </div>
       </div>
 
-      <!-- 4: Failures -->
+      <!-- 9: 排错 -->
       <div class="slide" style="--t:#f59e0b">
         <div class="slide-left">
-          <div class="s-q why">⚠️ 为啥还失败</div>
-          <div class="slide-title">填了也不一定<span class="hl">100% 成功</span></div>
+          <div class="s-q why">⚠️ 排错</div>
+          <div class="slide-title">填了 Token 也不一定<span class="hl">100% 成功</span></div>
           <div class="slide-body">
             <p><strong>Token 过期了</strong> — 去 GitHub 重新生成一个</p>
-            <p><strong>API 限流</strong> — 每个 Token 也有频率限制，等一会再试</p>
-            <p><strong>搜不到仓库</strong> — 很正常，很多论文没有开源</p>
+            <p><strong>API 限流</strong> — 短时间查太多，每个 Token 也有频率限制，等一会再试</p>
+            <p><strong>搜不到仓库</strong> — 论文没开源，这很常见</p>
+            <p><strong>HuggingFace 没收录</strong> — HF 并非万能，只覆盖部分 AI 论文</p>
+            <p><strong>HF 有仓库但提取失败</strong> — 元数据格式不统一，偶尔漏掉</p>
           </div>
         </div>
         <div class="slide-right">
           <div style="width:100%;display:flex;flex-direction:column;gap:10px">
-            <div style="background:var(--bg);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+            <div class="err-card">
               <span style="font-size:24px">🕐</span>
               <span style="font-size:14px;color:var(--muted)">Token 过期 → 重新生成</span>
             </div>
-            <div style="background:var(--bg);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+            <div class="err-card">
               <span style="font-size:24px">🚦</span>
-              <span style="font-size:14px;color:var(--muted)">API 限流 → 等一会</span>
+              <span style="font-size:14px;color:var(--muted)">API 限流 → 等一会再试</span>
             </div>
-            <div style="background:var(--bg);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)">
+            <div class="err-card">
               <span style="font-size:24px">🔍</span>
               <span style="font-size:14px;color:var(--muted)">搜不到 → 论文没开源</span>
+            </div>
+            <div class="err-card">
+              <span style="font-size:24px">🤗</span>
+              <span style="font-size:14px;color:var(--muted)">HF 没收录 → 没办法</span>
+            </div>
+            <div class="err-card">
+              <span style="font-size:24px">🧩</span>
+              <span style="font-size:14px;color:var(--muted)">提取失败 → 元数据格式问题</span>
             </div>
           </div>
         </div>
@@ -279,6 +568,7 @@
     <a href="/find/" class="back-home" onclick="localStorage.setItem('return_to_mobile_tab','settings')">← 返回设置</a>
     <div style="flex:1;display:flex;justify-content:center"><div class="dots-wrap"><div class="dots" id="dots"></div></div></div>
   </div>
+</div>
 </div>
 
 <script>
@@ -296,6 +586,15 @@ const prevBtn = document.getElementById('prev');
 const nextBtn = document.getElementById('next');
 const goFirst = document.getElementById('goFirst');
 const goLast = document.getElementById('goLast');
+const trackWrap = document.querySelector('.track-wrap');
+
+slides.forEach((slide, index) => {
+  slide.setAttribute('aria-hidden', index === current ? 'false' : 'true');
+});
+
+function updateTrackPosition() {
+  track.style.transform = 'none';
+}
 
 function updateNavState() {
   goFirst.classList.toggle('show', current > 0);
@@ -324,11 +623,13 @@ function go(i) {
   if (animating || i === current || i < 0 || i >= total) return;
   animating = true;
   slides[current].classList.remove('active');
+  slides[current].setAttribute('aria-hidden', 'true');
   dots.children[current].classList.remove('active');
   current = i;
   slides[current].classList.add('active');
+  slides[current].setAttribute('aria-hidden', 'false');
   dots.children[current].classList.add('active');
-  track.style.transform = `translateX(-${current * 100}%)`;
+  updateTrackPosition();
   progress.style.width = `${((current + 1) / total) * 100}%`;
   pageNumText.textContent = `${current + 1} / ${total}`;
   showPageNum();
@@ -340,6 +641,9 @@ prevBtn.addEventListener('click', () => go(current - 1));
 nextBtn.addEventListener('click', () => go(current + 1));
 goFirst.addEventListener('click', () => go(0));
 goLast.addEventListener('click', () => go(total - 1));
+
+window.addEventListener('resize', updateTrackPosition);
+updateTrackPosition();
 
 updateNavState();
 

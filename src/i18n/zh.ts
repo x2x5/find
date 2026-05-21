@@ -117,7 +117,7 @@ export const zh: Translations = {
     foundRepos: '找到 {found}/{searched} 个 GitHub 仓库',
     badToken: 'GitHub Token 无效',
     total: '总计：',
-    tooltipGetToken: '怎么获取 Token',
+    tooltipGetToken: '如何找到 GitHub 项目',
     tooltipTokenSet: 'Token 已设置',
     tooltipSetToken: '设置 Token',
     tooltipClearToken: '清空 Token',

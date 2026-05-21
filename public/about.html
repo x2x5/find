@@ -35,9 +35,10 @@
   }
 
   .track-wrap { width:100%; position:relative; overflow:hidden; border-radius:24px; flex:1; display:flex; flex-direction:column; }
-  .track { display:flex; transition:transform 0.55s cubic-bezier(0.4,0,0.2,1); will-change:transform; flex:1; overflow:hidden; }
+  .track { position:relative; flex:1; overflow:hidden; }
   .slide {
-    width:100%; flex-shrink:0; display:flex; gap:48px; align-items:center;
+    position:absolute; inset:0;
+    display:flex; gap:48px; align-items:center;
     background: linear-gradient(135deg, color-mix(in srgb, var(--t,#6366f1) 7%, var(--card-bg)) 0%, var(--card-bg) 50%);
     border:1px solid var(--border);
     border-radius:24px; padding:60px 64px; box-shadow:var(--shadow);
@@ -175,8 +176,8 @@
   .dot:hover { background:rgba(128,128,128,0.35); }
   .dot.active { background:var(--accent); width:22px; border-radius:4px; }
 
-  .slide { opacity:0; transform:translateY(10px); transition:opacity 0.4s 0.05s, transform 0.4s 0.05s; }
-  .slide.active { opacity:1; transform:translateY(0); }
+  .slide { opacity:0; pointer-events:none; transform:translateY(10px); transition:opacity 0.4s 0.05s, transform 0.4s 0.05s; }
+  .slide.active { opacity:1; pointer-events:auto; transform:translateY(0); }
 
   @media (max-width:720px) {
     html, body { height:auto; overflow:auto; }
@@ -184,7 +185,7 @@
     .main-area { height:auto; min-height:100vh; padding:0 4px 12px; }
     .track-wrap { overflow:visible; border-radius:0; }
     .track { display:block; transform:none !important; overflow:visible; }
-    .slide { flex-direction:column; gap:14px; padding:24px 18px; min-height:auto; width:100%; flex-shrink:0; margin-bottom:14px; opacity:1; transform:none; }
+    .slide { position:static; flex-direction:column; gap:14px; padding:24px 18px; min-height:auto; width:100%; flex-shrink:0; margin-bottom:14px; opacity:1; pointer-events:auto; transform:none; }
     .slide-left, .slide-right { width:100%; }
     .slide-title { font-size:22px; }
     .nav-btn { width:32px; height:32px; font-size:14px; display:none !important; }
@@ -558,7 +559,7 @@ function go(i) {
   current = i;
   slides[current].classList.add('active');
   dots.children[current].classList.add('active');
-  track.style.transform = `translateX(-${current * 100}%)`;
+  track.style.transform = '';
   progress.style.width = `${((current + 1) / total) * 100}%`;
   pageNumText.textContent = `${current + 1} / ${total}`;
   showPageNum();

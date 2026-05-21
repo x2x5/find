@@ -264,7 +264,7 @@ export const en: Translations = {
     foundRepos: 'Found {found}/{searched} GitHub repos',
     badToken: 'Invalid GitHub Token',
     total: 'Total:',
-    tooltipGetToken: 'How to get Token',
+    tooltipGetToken: 'How to find GitHub repos',
     tooltipTokenSet: 'Token set',
     tooltipSetToken: 'Set Token',
     tooltipClearToken: 'Clear Token',

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Settings, Sun, Moon, PanelTopClose, PanelTopOpen } from 'lucide-react';
 import SearchBar from '@/components/features/SearchBar';
+import GitHubTokenSettings from '@/components/features/GitHubTokenSettings';
 import { useAppContext } from '@/context/AppContext';
 
 interface HeaderProps {
@@ -10,11 +11,31 @@ interface HeaderProps {
   canGenerateWordCloud: boolean;
   showTimeline: boolean;
   onToggleTimeline: () => void;
+  githubToken: string;
+  githubTokenDraft: string;
+  showGithubTokenInput: boolean;
+  onToggleGithubTokenInput: () => void;
+  onGithubTokenDraftChange: (value: string) => void;
+  onSaveGithubToken: () => void;
   compact?: boolean;
 }
 
 export default function Header(props: HeaderProps) {
-  const { searchValue, onSearchChange, onGenerateWordCloud, canGenerateWordCloud, showTimeline, onToggleTimeline, compact } = props;
+  const {
+    searchValue,
+    onSearchChange,
+    onGenerateWordCloud,
+    canGenerateWordCloud,
+    showTimeline,
+    onToggleTimeline,
+    githubToken,
+    githubTokenDraft,
+    showGithubTokenInput,
+    onToggleGithubTokenInput,
+    onGithubTokenDraftChange,
+    onSaveGithubToken,
+    compact,
+  } = props;
   const { theme, toggleTheme, language, toggleLanguage, t } = useAppContext();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
@@ -32,7 +53,7 @@ export default function Header(props: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 pt-2 sm:pt-0">
       <div className="max-w-[1560px] mx-auto px-4">
-        <div className="flex items-center gap-3 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-1 py-1 md:gap-4 md:py-1 lg:grid lg:grid-cols-[216px_minmax(0,1fr)_264px] lg:gap-4 lg:py-1">
+        <div className="flex items-center gap-3 bg-transparent px-1 py-1 md:gap-4 md:py-1 lg:grid lg:grid-cols-[216px_minmax(0,1fr)_264px] lg:gap-4 lg:bg-white lg:dark:bg-zinc-900 lg:py-1 lg:border-b lg:border-zinc-200 lg:dark:border-zinc-800">
           <a
             href="/"
             className="shrink-0 hidden lg:flex items-center"
@@ -65,7 +86,7 @@ export default function Header(props: HeaderProps) {
                 <Settings className="w-5 h-5" />
               </button>
               {settingsOpen && (
-                <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-4 space-y-4 z-50">
+                <div className="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-4 space-y-4 z-50">
                   <div className="border-t-0 flex items-center justify-between">
                     <span className="text-sm font-medium text-zinc-700 dark:text-zinc-200">{t.theme.light} / {t.theme.dark}</span>
                     <button onClick={toggleTheme} className="p-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700">
@@ -77,6 +98,17 @@ export default function Header(props: HeaderProps) {
                     <button onClick={toggleLanguage} className="text-sm px-3 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 font-medium">
                       {language === 'zh' ? 'EN' : '中'}
                     </button>
+                  </div>
+                  <div className="border-t border-zinc-100 dark:border-zinc-800 pt-3">
+                    <GitHubTokenSettings
+                      compact
+                      token={githubToken}
+                      tokenDraft={githubTokenDraft}
+                      showTokenInput={showGithubTokenInput}
+                      onToggleInput={onToggleGithubTokenInput}
+                      onDraftChange={onGithubTokenDraftChange}
+                      onSave={onSaveGithubToken}
+                    />
                   </div>
                 </div>
               )}

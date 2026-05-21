@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ShoppingCart, Github, Copy, Check, Trash2, CircleHelp, KeyRound, Eraser, Save, Minus } from 'lucide-react';
+import { ShoppingCart, Github, Copy, Check, Trash2, Minus } from 'lucide-react';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
 import { getPaperKey } from '@/lib/utils';
 import { useCitationCount, type RepoEntry } from '@/hooks/useCitationCount';
@@ -11,6 +11,7 @@ interface CartProps {
   onCopy: () => void;
   onClear: () => void;
   onShowToast: (msg: string) => void;
+  githubToken: string;
   t: {
     cart: string;
     copy: string;
@@ -24,20 +25,15 @@ const FIELD_COLORS: Record<string, { bg: string; text: string }> = {
   CV: { bg: 'bg-blue-100 dark:bg-blue-950', text: 'text-blue-700 dark:text-blue-300' },
   AI: { bg: 'bg-emerald-100 dark:bg-emerald-950', text: 'text-emerald-700 dark:text-emerald-300' },
 };
-const GITHUB_TOKEN_STORAGE_KEY = 'github_token';
-
 function repoText(repo: RepoEntry | undefined): string {
   if (repo?.kind === 'found' && repo.stars > 0) return `★${repo.stars >= 1000 ? (repo.stars / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : repo.stars} ${repo.url}`;
   return '';
 }
 
-export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t }: CartProps) {
+export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, githubToken, t }: CartProps) {
   const { t: tx } = useAppContext();
-  const [token, setToken] = useState('');
-  const [tokenDraft, setTokenDraft] = useState('');
-  const [showTokenInput, setShowTokenInput] = useState(false);
   const [justCopied, setJustCopied] = useState(false);
-  const { citations, fetchBatch, fetching } = useCitationCount(token);
+  const { citations, fetchBatch, fetching } = useCitationCount(githubToken);
   const lastAddedRef = useRef<HTMLDivElement | null>(null);
   const previousLengthRef = useRef(items.length);
 
@@ -61,7 +57,7 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
     }
     if (limited) {
       onShowToast?.(
-        token
+        githubToken
           ? tx.cart.rateLimit.replace('{searched}', String(searched)).replace('{total}', String(items.length)).replace('{found}', String(found)).replace('{blocked}', String(blocked))
           : tx.cart.rateLimitNoToken.replace('{searched}', String(searched)).replace('{total}', String(items.length))
       );
@@ -80,7 +76,7 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
       return;
     }
     onShowToast?.(tx.cart.foundRepos.replace('{found}', String(found)).replace('{searched}', String(searched)));
-  }, [fetchBatch, pageKeys, items.length, onShowToast, token, tx.cart]);
+  }, [fetchBatch, pageKeys, items.length, onShowToast, githubToken, tx.cart]);
 
   const handleCheckout = useCallback(async () => {
     const lines = items.map((item) => {
@@ -102,20 +98,6 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
     }
     previousLengthRef.current = items.length;
   }, [items]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || '';
-    setToken(saved);
-    setTokenDraft(saved);
-  }, []);
-
-  const handleSaveToken = useCallback(() => {
-    const next = tokenDraft.trim();
-    localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, next);
-    setToken(next);
-    setShowTokenInput(false);
-    onShowToast?.(next ? tx.cart.tokenSaved : tx.cart.tokenCleared);
-  }, [tokenDraft, onShowToast, tx.cart]);
 
   return (
     <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 h-full flex flex-col overflow-hidden">
@@ -194,58 +176,9 @@ export default function Cart({ items, onRemove, onCopy, onClear, onShowToast, t 
           {totalStars > 0 ? `${totalStars.toLocaleString()}🌟` : '0🌟'}
         </span>
       </div>
-      <div className="mt-1.5 space-y-1.5 shrink-0">
-        {showTokenInput && (
-          <div className="flex items-center gap-1.5">
-            <input
-              type="password"
-              value={tokenDraft}
-              onChange={(e) => setTokenDraft(e.target.value)}
-              placeholder="GitHub token"
-              className="flex-1 min-w-0 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-[10px] text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400 outline-none focus:border-indigo-400"
-            />
-            <button
-              onClick={handleSaveToken}
-              title={tx.cart.tooltipSaveToken}
-              aria-label={tx.cart.tooltipSaveToken}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300"
-            >
-              <Save className="h-3.5 w-3.5" />
-            </button>
-          </div>
-        )}
+      <div className="mt-1.5 shrink-0">
         <div className="flex items-center justify-end gap-1.5">
-          <a
-            href="github-token.html"
-            title={tx.cart.tooltipGetToken}
-            aria-label={tx.cart.tooltipGetToken}
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
-          >
-            <CircleHelp className="h-3.5 w-3.5" />
-          </a>
-          <button
-            onClick={() => setShowTokenInput((prev) => !prev)}
-            title={token ? tx.cart.tooltipTokenSet : tx.cart.tooltipSetToken}
-            aria-label={token ? tx.cart.tooltipTokenSet : tx.cart.tooltipSetToken}
-            className={`inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors ${token ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300'}`}
-          >
-            <KeyRound className="h-3.5 w-3.5" />
-          </button>
-          <button
-            onClick={() => {
-              setTokenDraft('');
-              localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
-              setToken('');
-              setShowTokenInput(false);
-              onShowToast?.(tx.cart.tokenCleared);
-            }}
-            disabled={!token && !tokenDraft}
-            title={tx.cart.tooltipClearToken}
-            aria-label={tx.cart.tooltipClearToken}
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-300 disabled:opacity-30"
-          >
-            <Eraser className="h-3.5 w-3.5" />
-          </button>
+          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">找代码</span>
           <button
             onClick={async () => {
               await handleFetch();

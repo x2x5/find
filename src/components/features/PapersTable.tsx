@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { Plus, Minus, Copy, Check, Files } from 'lucide-react';
+import { Minus, Copy, Files, ArrowUpRight, ShoppingCart } from 'lucide-react';
 import type { Paper } from '@/types';
 import { getPaperKey } from '@/lib/utils';
 import { CONFERENCE_FIELDS } from '@/lib/conferences';
@@ -75,7 +75,6 @@ const BATCH_SIZE = 20;
 export default function PapersTable({ papers = [], pageSize = 50, onPageSizeChange, searchTrigger = '', onShowToast, cart = [], onToggleCart, onWordClick, infiniteScroll = false }: PapersTableProps) {
   const { t } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
-  const [justCopied, setJustCopied] = useState<Set<string>>(new Set());
   const [displayCount, setDisplayCount] = useState(BATCH_SIZE);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -206,6 +205,7 @@ export default function PapersTable({ papers = [], pageSize = 50, onPageSizeChan
             const colors = FIELD_COLORS[field] || FIELD_COLORS.ML;
             const opacityStyle = { opacity: yearMax > yearMin ? 0.7 + 0.3 * (parseInt(paper.year) - yearMin) / (yearMax - yearMin) : 1 };
             const isInCart = cartKeys.has(getPaperKey(paper));
+            const externalHref = `https://papers.cool/arxiv/search?highlight=1&query=${encodeURIComponent(paper.title)}`;
 
             return (
               <div
@@ -221,34 +221,27 @@ export default function PapersTable({ papers = [], pageSize = 50, onPageSizeChan
                     {highlightText(paper.title, searchTrigger, (word) => onWordClick?.(word, paper, globalIdx))}
                   </span>
                   <div className="shrink-0 flex flex-col items-end gap-1">
-                    <a
-                      href={`https://papers.cool/arxiv/search?highlight=1&query=${encodeURIComponent(paper.title)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText} hover:opacity-80 transition-opacity`}
+                    <span
+                      className={`inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}
                     >
                       {paper.conference.toUpperCase()} {paper.year.slice(-2)}
-                    </a>
+                    </span>
                     <div className="flex gap-1">
-                      <button
-                        onClick={async () => {
-                          const key = getPaperKey(paper);
-                          try { await navigator.clipboard.writeText(paper.title); onShowToast?.(t.common.copiedTitle); }
-                          catch {}
-                          setJustCopied((prev) => new Set([...prev, key]));
-                          setTimeout(() => setJustCopied((prev) => { const n = new Set(prev); n.delete(key); return n; }), 1500);
-                        }}
+                      <a
+                        href={externalHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="shrink-0 w-5 h-5 flex items-center justify-center rounded-md bg-amber-100 text-amber-600 hover:bg-amber-200 hover:text-amber-700 dark:bg-amber-950 dark:text-amber-400 dark:hover:bg-amber-900 dark:hover:text-amber-300 active:scale-90 transition-all"
-                        title={t.common.copiedTitle}
+                        title={t.table.searchExternal}
                       >
-                        {justCopied.has(getPaperKey(paper)) ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                      </button>
+                        <ArrowUpRight className="w-3 h-3" />
+                      </a>
                       <button
                         onClick={() => onToggleCart?.(paper)}
                         className={`shrink-0 w-5 h-5 flex items-center justify-center rounded-md active:scale-90 transition-all ${isInCart ? "bg-red-100 text-red-500 hover:bg-red-200 hover:text-red-600 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900 dark:hover:text-red-300" : "bg-emerald-100 text-emerald-600 hover:bg-emerald-200 hover:text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 dark:hover:bg-emerald-900 dark:hover:text-emerald-300"}`}
                         title={isInCart ? "Remove from cart" : "Add to cart"}
                       >
-                        {isInCart ? <Minus className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                        {isInCart ? <Minus className="w-3 h-3" /> : <ShoppingCart className="w-3 h-3" />}
                       </button>
                     </div>
                   </div>
@@ -256,40 +249,32 @@ export default function PapersTable({ papers = [], pageSize = 50, onPageSizeChan
 
                 {/* Desktop: horizontal row */}
                 <div className="hidden sm:flex items-center gap-3">
-                  <a
-                    href={`https://papers.cool/arxiv/search?highlight=1&query=${encodeURIComponent(paper.title)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center justify-center w-[4.5rem] shrink-0 px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText} hover:opacity-80 transition-opacity`}
-                    title={t.table.searchExternal}
+                  <span
+                    className={`inline-flex items-center justify-center w-[4.5rem] shrink-0 px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}
                   >
                     {paper.conference.toUpperCase()} {paper.year.slice(-2)}
-                  </a>
+                  </span>
                   <span
                     className={`text-sm ${colors.text} ${colors.darkText} flex-1 min-w-0 break-words leading-5`}
                     style={opacityStyle}
                   >
                     {highlightText(paper.title, searchTrigger, (word) => onWordClick?.(word, paper, globalIdx))}
                   </span>
-                  <button
-                    onClick={async () => {
-                      const key = getPaperKey(paper);
-                      try { await navigator.clipboard.writeText(paper.title); onShowToast?.(t.common.copiedTitle); }
-                      catch {}
-                      setJustCopied((prev) => new Set([...prev, key]));
-                      setTimeout(() => setJustCopied((prev) => { const n = new Set(prev); n.delete(key); return n; }), 1500);
-                    }}
+                  <a
+                    href={externalHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="shrink-0 w-7 h-7 flex items-center justify-center rounded-md bg-amber-100 text-amber-600 hover:bg-amber-200 hover:text-amber-700 dark:bg-amber-950 dark:text-amber-400 dark:hover:bg-amber-900 dark:hover:text-amber-300 active:scale-90 transition-all"
-                    title={t.common.copiedTitle}
+                    title={t.table.searchExternal}
                   >
-                    {justCopied.has(getPaperKey(paper)) ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  </button>
+                    <ArrowUpRight className="w-4 h-4" />
+                  </a>
                   <button
                     onClick={() => onToggleCart?.(paper)}
                     className={`shrink-0 w-7 h-7 flex items-center justify-center rounded-md active:scale-90 transition-all ${isInCart ? "bg-red-100 text-red-500 hover:bg-red-200 hover:text-red-600 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900 dark:hover:text-red-300" : "bg-emerald-100 text-emerald-600 hover:bg-emerald-200 hover:text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 dark:hover:bg-emerald-900 dark:hover:text-emerald-300"}`}
                     title={isInCart ? "Remove from cart" : "Add to cart"}
                   >
-                    {isInCart ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    {isInCart ? <Minus className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
                   </button>
                 </div>
               </div>

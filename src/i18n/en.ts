@@ -127,7 +127,8 @@ export interface Translations {
     generate: string;
     popupBlocked: string;
     writeFailed: string;
-    generatedFrom: string;
+    generatedFromPrefix: string;
+    generatedFromSuffix: string;
     topWords: string;
     clickToRemove: string;
     emptyWithPapers: string;
@@ -275,7 +276,8 @@ export const en: Translations = {
     generate: 'Word Cloud',
     popupBlocked: 'Popup was blocked',
     writeFailed: 'Failed to prepare word cloud',
-    generatedFrom: ' titles word cloud',
+    generatedFromPrefix: 'Generated from ',
+    generatedFromSuffix: ' titles',
     topWords: 'Top {n} words',
     clickToRemove: 'Click words to remove',
     emptyWithPapers: 'No word cloud data. Try different filters on the main page.',

@@ -77,68 +77,68 @@ export default function Sidebar({
         />
       </div>
       <div className="shrink-0 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-2">
-        <div className="sm:hidden space-y-2">
+        <div className="sm:hidden">
           <div className="flex items-center justify-between gap-2 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1.5">
             <span className="shrink-0 text-xs font-semibold text-amber-600 dark:text-amber-400">
               {t.sidebar.from}
             </span>
-            <div className="flex min-w-0 flex-col items-center justify-center gap-0.5">
-              <button
-                type="button"
-                onClick={() => adjustStart(1)}
-                disabled={startYear >= endYear}
-                className="inline-flex h-4 w-6 items-center justify-center rounded-md text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 disabled:cursor-default disabled:opacity-30 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-                aria-label={`${t.sidebar.from} +1`}
-              >
-                <ChevronUp className="h-3.5 w-3.5" />
-              </button>
-              <span className="text-sm font-semibold tabular-nums leading-none text-zinc-700 dark:text-zinc-200">
-                {formatYear(startYear)}
-              </span>
+            <div className="flex min-w-0 items-center justify-center gap-1">
               <button
                 type="button"
                 onClick={() => adjustStart(-1)}
                 disabled={startYear <= minYear}
-                className="inline-flex h-4 w-6 items-center justify-center rounded-md text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 disabled:cursor-default disabled:opacity-30 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-md text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 disabled:cursor-default disabled:opacity-30 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
                 aria-label={`${t.sidebar.from} -1`}
               >
-                <ChevronDown className="h-3.5 w-3.5" />
+                <ChevronUp className="h-3.5 w-3.5 -rotate-90" />
+              </button>
+              <span className="min-w-[2rem] text-center text-sm font-semibold tabular-nums leading-none text-zinc-700 dark:text-zinc-200">
+                {formatYear(startYear)}
+              </span>
+              <button
+                type="button"
+                onClick={() => adjustStart(1)}
+                disabled={startYear >= endYear}
+                className="inline-flex h-6 w-6 items-center justify-center rounded-md text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 disabled:cursor-default disabled:opacity-30 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                aria-label={`${t.sidebar.from} +1`}
+              >
+                <ChevronUp className="h-3.5 w-3.5 rotate-90" />
               </button>
             </div>
             <span className="shrink-0 text-xs font-semibold text-amber-600 dark:text-amber-400">
               {t.sidebar.to}
             </span>
-            <div className="flex min-w-0 flex-col items-center justify-center gap-0.5">
-              <button
-                type="button"
-                onClick={() => adjustEnd(1)}
-                disabled={endYear >= maxYear}
-                className="inline-flex h-4 w-6 items-center justify-center rounded-md text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 disabled:cursor-default disabled:opacity-30 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-                aria-label={`${t.sidebar.to} +1`}
-              >
-                <ChevronUp className="h-3.5 w-3.5" />
-              </button>
-              <span className="text-sm font-semibold tabular-nums leading-none text-zinc-700 dark:text-zinc-200">
-                {formatYear(endYear)}
-              </span>
+            <div className="flex min-w-0 items-center justify-center gap-1">
               <button
                 type="button"
                 onClick={() => adjustEnd(-1)}
                 disabled={endYear <= startYear}
-                className="inline-flex h-4 w-6 items-center justify-center rounded-md text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 disabled:cursor-default disabled:opacity-30 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-md text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 disabled:cursor-default disabled:opacity-30 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
                 aria-label={`${t.sidebar.to} -1`}
               >
-                <ChevronDown className="h-3.5 w-3.5" />
+                <ChevronUp className="h-3.5 w-3.5 -rotate-90" />
+              </button>
+              <span className="min-w-[2rem] text-center text-sm font-semibold tabular-nums leading-none text-zinc-700 dark:text-zinc-200">
+                {formatYear(endYear)}
+              </span>
+              <button
+                type="button"
+                onClick={() => adjustEnd(1)}
+                disabled={endYear >= maxYear}
+                className="inline-flex h-6 w-6 items-center justify-center rounded-md text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 disabled:cursor-default disabled:opacity-30 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                aria-label={`${t.sidebar.to} +1`}
+              >
+                <ChevronUp className="h-3.5 w-3.5 rotate-90" />
               </button>
             </div>
+            <button
+              onClick={setRecent}
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-amber-50 text-amber-500 hover:bg-amber-100 hover:text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/40 dark:hover:text-amber-200"
+              title={t.sidebar.recent2y}
+            >
+              <Undo2 className="h-4 w-4" />
+            </button>
           </div>
-          <button
-            onClick={setRecent}
-            className="inline-flex h-9 w-full items-center justify-center rounded-md bg-amber-50 px-2 text-amber-500 hover:bg-amber-100 hover:text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/40 dark:hover:text-amber-200"
-            title={t.sidebar.recent2y}
-          >
-            <Undo2 className="h-4 w-4" />
-          </button>
         </div>
 
         <div className="hidden sm:grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-2">

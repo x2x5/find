@@ -11,6 +11,7 @@ interface RightSidebarProps {
   onCopyCart: () => void;
   onClearCart: () => void;
   onShowToast: (msg: string) => void;
+  githubToken: string;
   hideCountdown?: boolean;
 }
 
@@ -20,6 +21,7 @@ export default function RightSidebar({
   onCopyCart,
   onClearCart,
   onShowToast,
+  githubToken,
   hideCountdown,
 }: RightSidebarProps) {
   const { t } = useAppContext();
@@ -38,6 +40,7 @@ export default function RightSidebar({
           onCopy={onCopyCart}
           onClear={onClearCart}
           onShowToast={onShowToast}
+          githubToken={githubToken}
           t={t.cart}
         />
       </div>

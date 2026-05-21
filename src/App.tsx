@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback, useEffect, useRef } from 'react';
-import { SlidersHorizontal, ScrollText, Settings, Sun, Moon, CalendarDays, ArrowUp, Lightbulb, Bug, MessageCircle, ChevronRight, Info } from 'lucide-react';
+import { SlidersHorizontal, ScrollText, Settings, Sun, Moon, CalendarDays, ArrowUp, Lightbulb, Bug, ChevronRight, Info } from 'lucide-react';
 import type { Paper } from '@/types';
 import { AppProvider, useAppContext } from './context/AppContext';
 import Header from './components/layout/Header';
@@ -12,6 +12,7 @@ import Toast from './components/ui/Toast';
 import IssueDialog from './components/ui/IssueDialog';
 import WordCloudDialog from './components/ui/WordCloudDialog';
 import DeadlineCountdown from './components/features/DeadlineCountdown';
+import GitHubTokenSettings from './components/features/GitHubTokenSettings';
 import { Skeleton } from './components/ui/Skeleton';
 import { useManifest } from './hooks/useManifest';
 import { usePapers } from './hooks/usePapers';
@@ -23,6 +24,8 @@ function AppContent() {
   const { t, theme, toggleTheme, language, toggleLanguage } = useAppContext();
   const { manifest, loading: manifestLoading, error: manifestError } = useManifest();
   const defaultYear = new Date().getFullYear();
+  const githubTokenStorageKey = 'github_token';
+  const returnMobileTabStorageKey = 'return_to_mobile_tab';
 
   const [selectedConfs, setSelectedConfs] = useState<Set<string>>(
     () => new Set(['nips', 'icml', 'iclr', 'cvpr', 'eccv', 'iccv'])
@@ -50,10 +53,20 @@ function AppContent() {
   const [showWordCloud, setShowWordCloud] = useState(false);
   const [visitCount, setVisitCount] = useState<number | null>(null);
   const [searchCount, setSearchCount] = useState<number | null>(null);
+  const [githubToken, setGithubToken] = useState('');
+  const [githubTokenDraft, setGithubTokenDraft] = useState('');
+  const [showGithubTokenInput, setShowGithubTokenInput] = useState(false);
   const visitFetched = useRef(false);
   const searchFetched = useRef(false);
   const prevShuffleKeyRef = useRef('');
   const prevShuffledRef = useRef<Paper[]>([]);
+  const mobileTabFromHash = useCallback((hash: string) => {
+    const tab = hash.replace(/^#/, '');
+    if (tab === 'papers' || tab === 'filter' || tab === 'timeline' || tab === 'settings') {
+      return tab;
+    }
+    return null;
+  }, []);
 
   useEffect(() => {
     if (visitFetched.current) return;
@@ -63,6 +76,37 @@ function AppContent() {
       .then((data) => setVisitCount(data.value))
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(githubTokenStorageKey) || '';
+    setGithubToken(saved);
+    setGithubTokenDraft(saved);
+  }, []);
+
+  useEffect(() => {
+    const returnTab = localStorage.getItem(returnMobileTabStorageKey);
+    if (returnTab === 'settings') {
+      setMobileTab('settings');
+      localStorage.removeItem(returnMobileTabStorageKey);
+    }
+  }, []);
+
+  useEffect(() => {
+    const applyHash = () => {
+      const nextTab = mobileTabFromHash(window.location.hash);
+      if (nextTab) setMobileTab(nextTab);
+    };
+    applyHash();
+    window.addEventListener('hashchange', applyHash);
+    return () => window.removeEventListener('hashchange', applyHash);
+  }, [mobileTabFromHash]);
+
+  useEffect(() => {
+    const nextHash = `#${mobileTab}`;
+    if (window.location.hash !== nextHash) {
+      window.history.replaceState(null, '', nextHash);
+    }
+  }, [mobileTab]);
 
   useEffect(() => {
     if (searchFetched.current) return;
@@ -175,6 +219,14 @@ function AppContent() {
     setToast((prev) => ({ ...prev, visible: false }));
   }, []);
 
+  const handleSaveGithubToken = useCallback(() => {
+    const next = githubTokenDraft.trim();
+    localStorage.setItem(githubTokenStorageKey, next);
+    setGithubToken(next);
+    setShowGithubTokenInput(false);
+    showToast(next ? t.cart.tokenSaved : t.cart.tokenCleared);
+  }, [githubTokenDraft, showToast, t.cart]);
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-200">
       <Header
@@ -187,6 +239,12 @@ function AppContent() {
         canGenerateWordCloud={shuffledPapers.length > 0}
         showTimeline={showTimeline}
         onToggleTimeline={() => setShowTimeline((v) => !v)}
+        githubToken={githubToken}
+        githubTokenDraft={githubTokenDraft}
+        showGithubTokenInput={showGithubTokenInput}
+        onToggleGithubTokenInput={() => setShowGithubTokenInput((prev) => !prev)}
+        onGithubTokenDraftChange={setGithubTokenDraft}
+        onSaveGithubToken={handleSaveGithubToken}
         compact={mobileTab === 'timeline' || mobileTab === 'settings'}
       />
 
@@ -239,6 +297,7 @@ function AppContent() {
           onCopyCart={handleCopyCart}
           onClearCart={handleClearCart}
           onShowToast={showToast}
+          githubToken={githubToken}
         />
       </main>
 
@@ -263,6 +322,7 @@ function AppContent() {
                 onCopyCart={handleCopyCart}
                 onClearCart={handleClearCart}
                 onShowToast={showToast}
+                githubToken={githubToken}
                 hideCountdown
               />
             </div>
@@ -327,15 +387,14 @@ function AppContent() {
                 <ChevronRight className="w-4 h-4 text-zinc-300" />
               </button>
 
-              {/* 关于 */}
-              <a
-                href="about.html"
-                className="w-full flex items-center gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 text-sm"
-              >
-                <Info className="w-5 h-5 text-indigo-500" />
-                <span className="flex-1 text-left text-zinc-700 dark:text-zinc-200">{t.language.about}</span>
-                <ChevronRight className="w-4 h-4 text-zinc-300" />
-              </a>
+              <GitHubTokenSettings
+                token={githubToken}
+                tokenDraft={githubTokenDraft}
+                showTokenInput={showGithubTokenInput}
+                onToggleInput={() => setShowGithubTokenInput((prev) => !prev)}
+                onDraftChange={setGithubTokenDraft}
+                onSave={handleSaveGithubToken}
+              />
 
               {/* 反馈区 */}
               <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
@@ -355,14 +414,35 @@ function AppContent() {
                   <span className="flex-1 text-left text-zinc-700 dark:text-zinc-200">{t.footer.bugReport}</span>
                   <ChevronRight className="w-4 h-4 text-zinc-300" />
                 </button>
-                <button
-                  onClick={() => setIssueDialogType('chitchat')}
+              </div>
+
+              <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+                <div className="px-4 py-4 flex justify-center border-b border-zinc-100 dark:border-zinc-800">
+                  <img
+                    src={`${import.meta.env.BASE_URL}icon.webp`}
+                    alt="淘顶网"
+                    className="h-16 w-auto object-contain"
+                  />
+                </div>
+                <div className="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-zinc-500 dark:text-zinc-400">{t.footer.totalVisits}</span>
+                    <span className="font-semibold tabular-nums text-zinc-700 dark:text-zinc-200">{visitCount != null ? visitCount.toLocaleString() : '···'}</span>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between text-sm">
+                    <span className="text-zinc-500 dark:text-zinc-400">{t.footer.totalSearches}</span>
+                    <span className="font-semibold tabular-nums text-zinc-700 dark:text-zinc-200">{searchCount != null ? searchCount.toLocaleString() : '···'}</span>
+                  </div>
+                </div>
+                <a
+                  href="about.html"
+                  onClick={() => localStorage.setItem(returnMobileTabStorageKey, 'settings')}
                   className="w-full flex items-center gap-3 px-4 py-3 text-sm"
                 >
-                  <MessageCircle className="w-5 h-5 text-indigo-500" />
-                  <span className="flex-1 text-left text-zinc-700 dark:text-zinc-200">{t.footer.chitchat}</span>
+                  <Info className="w-5 h-5 text-indigo-500" />
+                  <span className="flex-1 text-left text-zinc-700 dark:text-zinc-200">{t.language.about}</span>
                   <ChevronRight className="w-4 h-4 text-zinc-300" />
-                </button>
+                </a>
               </div>
             </div>
           )}
@@ -380,20 +460,6 @@ function AppContent() {
 
         {/* 底部 Tab 栏 */}
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm border-t border-zinc-200 dark:border-zinc-800">
-          {mobileTab === 'settings' && (
-            <div className="border-b border-zinc-200 dark:border-zinc-800 px-4 py-3">
-              <div className="rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50/90 dark:bg-zinc-950/80 px-4 py-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-zinc-500 dark:text-zinc-400">{t.footer.totalVisits}</span>
-                  <span className="font-semibold tabular-nums text-zinc-700 dark:text-zinc-200">{visitCount != null ? visitCount.toLocaleString() : '···'}</span>
-                </div>
-                <div className="mt-2 flex items-center justify-between text-sm">
-                  <span className="text-zinc-500 dark:text-zinc-400">{t.footer.totalSearches}</span>
-                  <span className="font-semibold tabular-nums text-zinc-700 dark:text-zinc-200">{searchCount != null ? searchCount.toLocaleString() : '···'}</span>
-                </div>
-              </div>
-            </div>
-          )}
           <div className="flex items-center h-14">
             <button
               onClick={() => setMobileTab('papers')}
@@ -455,7 +521,6 @@ function AppContent() {
           <span className="text-right space-x-1.5">
             <button onClick={() => setIssueDialogType('feature')} className="hover:text-emerald-600 text-emerald-500">{t.footer.featureRequest}</button>
             <button onClick={() => setIssueDialogType('bug')} className="hover:text-red-600 text-red-500">{t.footer.bugReport}</button>
-            <button onClick={() => setIssueDialogType('chitchat')} className="hover:text-indigo-500 text-indigo-400">{t.footer.chitchat}</button>
           </span>
         </div>
       </footer>

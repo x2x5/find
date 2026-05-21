@@ -5,6 +5,7 @@ import { useAppContext } from '@/context/AppContext';
 interface WordCloudDialogProps {
   open: boolean;
   papers: Paper[];
+  excludedQuery?: string;
   onClose: () => void;
 }
 
@@ -67,14 +68,24 @@ function intersects(a: Box, b: Box) {
   );
 }
 
-export default function WordCloudDialog({ open, papers, onClose }: WordCloudDialogProps) {
+function parseExcludedWords(query: string) {
+  return new Set(
+    query
+      .toLowerCase()
+      .split(/\s+/)
+      .map((word) => word.trim())
+      .filter(Boolean)
+  );
+}
+
+export default function WordCloudDialog({ open, papers, excludedQuery = '', onClose }: WordCloudDialogProps) {
   const { t } = useAppContext();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [hiddenWords, setHiddenWords] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (open) setHiddenWords(new Set());
-  }, [open, papers]);
+    if (open) setHiddenWords(parseExcludedWords(excludedQuery));
+  }, [open, papers, excludedQuery]);
 
   const words = useMemo(() => buildWords(papers, hiddenWords), [papers, hiddenWords]);
 

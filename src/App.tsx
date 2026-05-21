@@ -533,6 +533,7 @@ function AppContent() {
       <WordCloudDialog
         open={showWordCloud}
         papers={shuffledPapers}
+        excludedQuery={searchValue}
         onClose={() => setShowWordCloud(false)}
       />
       <Toast

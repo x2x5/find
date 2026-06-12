@@ -1,22 +1,13 @@
-import { useState, useRef, useEffect } from 'react';
-import { Settings, Sun, Moon, PanelTopClose, PanelTopOpen } from 'lucide-react';
-import SearchBar from '@/components/features/SearchBar';
-import GitHubTokenSettings from '@/components/features/GitHubTokenSettings';
-import { useAppContext } from '@/context/AppContext';
+import { Sun, Moon } from "lucide-react";
+import SearchBar from "@/components/features/SearchBar";
+import DeadlineCountdown from "@/components/features/DeadlineCountdown";
+import { useAppContext } from "@/context/AppContext";
 
 interface HeaderProps {
   searchValue: string;
   onSearchChange: (value: string) => void;
   onGenerateWordCloud: () => void;
   canGenerateWordCloud: boolean;
-  showTimeline: boolean;
-  onToggleTimeline: () => void;
-  githubToken: string;
-  githubTokenDraft: string;
-  showGithubTokenInput: boolean;
-  onToggleGithubTokenInput: () => void;
-  onGithubTokenDraftChange: (value: string) => void;
-  onSaveGithubToken: () => void;
   compact?: boolean;
 }
 
@@ -26,93 +17,46 @@ export default function Header(props: HeaderProps) {
     onSearchChange,
     onGenerateWordCloud,
     canGenerateWordCloud,
-    showTimeline,
-    onToggleTimeline,
-    githubToken,
-    githubTokenDraft,
-    showGithubTokenInput,
-    onToggleGithubTokenInput,
-    onGithubTokenDraftChange,
-    onSaveGithubToken,
     compact,
   } = props;
-  const { theme, toggleTheme, language, toggleLanguage, t } = useAppContext();
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const settingsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (settingsRef.current && !settingsRef.current.contains(e.target as Node)) {
-        setSettingsOpen(false);
-      }
-    };
-    if (settingsOpen) document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [settingsOpen]);
+  const { theme, toggleTheme, language, toggleLanguage } = useAppContext();
 
   return (
     <header className="sticky top-0 z-50 pt-2 sm:pt-0">
       <div className="max-w-[1560px] mx-auto px-4">
-        <div className="flex items-center gap-3 bg-transparent px-1 py-1 md:gap-4 md:py-1 lg:grid lg:grid-cols-[216px_minmax(0,1fr)_264px] lg:gap-4 lg:bg-white lg:dark:bg-zinc-900 lg:py-1 lg:border-b lg:border-zinc-200 lg:dark:border-zinc-800">
-          <a
-            href="/"
-            className="shrink-0 hidden lg:flex items-center"
-            aria-label="淘顶网"
+        <div className="flex items-center gap-3 bg-transparent py-1 md:gap-4 md:py-1 lg:grid lg:grid-cols-[260px_minmax(0,1fr)_216px] lg:gap-4 lg:bg-white lg:dark:bg-zinc-900 lg:py-1 lg:border lg:border-zinc-200 lg:dark:border-zinc-800 lg:rounded-lg lg:shadow-sm">
+          <div className="hidden lg:flex items-center min-w-0">
+            <DeadlineCountdown compact />
+          </div>
+          <div
+            className={`flex min-w-0 flex-1 items-center gap-2 lg:ml-6 ${compact ? "hidden lg:flex" : ""}`}
           >
-            <img
-              src={`${import.meta.env.BASE_URL}icon.webp`}
-              alt="淘顶网"
-              className="h-12 w-auto object-contain md:h-14"
-            />
-          </a>
-          <div className={`flex min-w-0 flex-1 items-center gap-2 ${compact ? 'hidden lg:flex' : ''}`}>
             <SearchBar
               value={searchValue}
               onChange={onSearchChange}
               onGenerateWordCloud={onGenerateWordCloud}
               canGenerateWordCloud={canGenerateWordCloud}
             />
-            <button
-              onClick={onToggleTimeline}
-              className="hidden lg:inline-flex shrink-0 p-2 rounded-md bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 dark:text-emerald-400 dark:hover:text-emerald-200"
-              title={t.sidebar.timeline}
-            >
-              {showTimeline ? <PanelTopClose className="w-5 h-5" /> : <PanelTopOpen className="w-5 h-5" />}
-            </button>
           </div>
           <div className="hidden lg:flex items-center gap-2 shrink-0 lg:justify-end">
-            <div className="relative" ref={settingsRef}>
-              <button onClick={() => setSettingsOpen(!settingsOpen)} className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 dark:bg-indigo-950 dark:text-indigo-400 dark:hover:bg-indigo-900 dark:hover:text-indigo-300 active:scale-90 transition-all">
-                <Settings className="w-5 h-5" />
-              </button>
-              {settingsOpen && (
-                <div className="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-4 space-y-4 z-50">
-                  <div className="border-t-0 flex items-center justify-between">
-                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-200">{t.theme.light} / {t.theme.dark}</span>
-                    <button onClick={toggleTheme} className="p-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700">
-                      {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                    </button>
-                  </div>
-                  <div className="border-t border-zinc-100 dark:border-zinc-800 pt-3 flex items-center justify-between">
-                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-200">{t.language.label}</span>
-                    <button onClick={toggleLanguage} className="text-sm px-3 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 font-medium">
-                      {language === 'zh' ? 'EN' : '中'}
-                    </button>
-                  </div>
-                  <div className="border-t border-zinc-100 dark:border-zinc-800 pt-3">
-                    <GitHubTokenSettings
-                      compact
-                      token={githubToken}
-                      tokenDraft={githubTokenDraft}
-                      showTokenInput={showGithubTokenInput}
-                      onToggleInput={onToggleGithubTokenInput}
-                      onDraftChange={onGithubTokenDraftChange}
-                      onSave={onSaveGithubToken}
-                    />
-                  </div>
-                </div>
+            <button
+              onClick={toggleTheme}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 dark:bg-indigo-950 dark:text-indigo-400 dark:hover:bg-indigo-900 dark:hover:text-indigo-300 active:scale-90 transition-all"
+              title={theme === "dark" ? "浅色" : "深色"}
+            >
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
               )}
-            </div>
+            </button>
+            <button
+              onClick={toggleLanguage}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-emerald-100 text-emerald-600 hover:bg-emerald-200 hover:text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 dark:hover:bg-emerald-900 dark:hover:text-emerald-300 active:scale-90 transition-all text-sm font-bold mr-2"
+              title={language === "zh" ? "English" : "中文"}
+            >
+              {language === "zh" ? "EN" : "中"}
+            </button>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
-import { ChevronLeft, ChevronRight, ChevronsLeft } from 'lucide-react';
-import { useAppContext } from '@/context/AppContext';
+import { ChevronLeft, ChevronRight, ChevronsLeft } from "lucide-react";
+import { useAppContext } from "@/context/AppContext";
 
 interface PaginationProps {
   currentPage: number;
@@ -9,7 +9,13 @@ interface PaginationProps {
   onPageSizeChange?: (size: number) => void;
 }
 
-export default function Pagination({ currentPage, totalPages, onPageChange, pageSize, onPageSizeChange }: PaginationProps) {
+export default function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+  pageSize,
+  onPageSizeChange,
+}: PaginationProps) {
   const { t } = useAppContext();
   return (
     <div className="grid grid-cols-[auto_1fr_auto] items-center px-4 py-4 border-t border-zinc-200 dark:border-zinc-800 gap-4">
@@ -47,15 +53,17 @@ export default function Pagination({ currentPage, totalPages, onPageChange, page
 
       {onPageSizeChange && (
         <div className="flex items-center gap-1.5 justify-end">
-          <span className="text-xs text-zinc-400 dark:text-zinc-500">{t.common.perPage}</span>
+          <span className="text-xs text-zinc-400 dark:text-zinc-500">
+            {t.common.perPage}
+          </span>
           {[10, 50, 100].map((size) => (
             <button
               key={size}
               onClick={() => onPageSizeChange(size)}
               className={`text-xs px-2 py-1 rounded-md font-medium transition-colors ${
                 pageSize === size
-                  ? 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300'
-                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                  ? "bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300"
+                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
               }`}
             >
               {size}

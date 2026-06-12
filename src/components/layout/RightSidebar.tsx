@@ -1,49 +1,17 @@
-import Cart from '@/components/features/Cart';
-import DeadlineCountdown from '@/components/features/DeadlineCountdown';
-import { useAppContext } from '@/context/AppContext';
-import type { Paper } from '@/types';
+import VerticalTimeline from "@/components/features/VerticalTimeline";
 
 interface RightSidebarProps {
-  paperCount: number;
-  tableReady: boolean;
-  cart: Paper[];
-  onRemoveFromCart: (idx: number) => void;
-  onCopyCart: () => void;
-  onClearCart: () => void;
-  onShowToast: (msg: string) => void;
-  githubToken: string;
-  hideCountdown?: boolean;
+  showTimeline: boolean;
 }
 
-export default function RightSidebar({
-  cart,
-  onRemoveFromCart,
-  onCopyCart,
-  onClearCart,
-  onShowToast,
-  githubToken,
-  hideCountdown,
-}: RightSidebarProps) {
-  const { t } = useAppContext();
-
+export default function RightSidebar({ showTimeline }: RightSidebarProps) {
   return (
-    <aside className="lg:sticky lg:top-[3.5rem] self-start flex flex-col gap-3">
-      {!hideCountdown && (
-        <div className="shrink-0">
-          <DeadlineCountdown />
+    <aside className="self-start flex flex-col gap-3">
+      {showTimeline && (
+        <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 overflow-hidden">
+          <VerticalTimeline />
         </div>
       )}
-      <div>
-        <Cart
-          items={cart}
-          onRemove={onRemoveFromCart}
-          onCopy={onCopyCart}
-          onClear={onClearCart}
-          onShowToast={onShowToast}
-          githubToken={githubToken}
-          t={t.cart}
-        />
-      </div>
     </aside>
   );
 }

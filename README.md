@@ -1,6 +1,6 @@
 # README for AI | [README for Human](https://x2x5.github.io/find/about.html)
 
-## Project: 淘顶网
+## Project: 找顶网
 
 A React-based single-page application for browsing and searching AI conference paper titles across 9 top venues (NeurIPS, ICML, ICLR, CVPR, ECCV, ICCV, AAAI, MM, IJCAI).
 
@@ -8,7 +8,7 @@ A React-based single-page application for browsing and searching AI conference p
 
 - **Framework**: React 18 + TypeScript, built with Vite 6
 - **Styling**: Tailwind CSS 3.4 with dark mode (`class` strategy)
-- **Icons**: Lucide React
+- **Icons**: Lucide React + custom assets (papers.cool favicon)
 - **Entry**: `src/main.tsx` → `src/App.tsx`
 - **Data flow**: JSON manifest + per-conference paper files → `useManifest` + `usePapers` hooks → `AppContext` state → component tree
 - **Routing**: None (single page). All navigation via state.
@@ -19,13 +19,14 @@ A React-based single-page application for browsing and searching AI conference p
 | Component | Path | Purpose |
 |-----------|------|---------|
 | App | `src/App.tsx` | Root layout, state management, data wiring |
-| Header | `src/components/layout/Header.tsx` | Year selector, search bar, lucky paper, controls |
-| Sidebar | `src/components/layout/Sidebar.tsx` | Field filter + distributions + cart |
-| PapersTable | `src/components/features/PapersTable.tsx` | Paginated paper list with highlight |
-| Distributions | `src/components/features/Distributions.tsx` | Bar charts by conference and year |
-| Timeline | `src/components/features/Timeline.tsx` | Conference deadline/result timeline |
-| Cart | `src/components/features/Cart.tsx` | Shopping cart for paper collection |
-| FieldFilter | `src/components/features/FieldFilter.tsx` | Conference checkboxes (legacy, now merged into Distributions) |
+| Header | `src/components/layout/Header.tsx` | Countdown, search bar, theme/language toggles |
+| Sidebar | `src/components/layout/Sidebar.tsx` | Conference filter, year range, stats & feedback |
+| RightSidebar | `src/components/layout/RightSidebar.tsx` | Vertical timeline with logo |
+| PapersTable | `src/components/features/PapersTable.tsx` | Paginated paper list with copy, GitHub search, papers.cool links |
+| VerticalTimeline | `src/components/features/VerticalTimeline.tsx` | Conference deadline/result vertical timeline with logo lightbox |
+| DeadlineCountdown | `src/components/features/DeadlineCountdown.tsx` | Countdown timer with editable target |
+| Distributions | `src/components/features/Distributions.tsx` | Bar charts by conference |
+| YearDistribution | `src/components/features/YearDistribution.tsx` | Year distribution bar chart |
 
 ### State Architecture
 
@@ -35,25 +36,23 @@ State lives in `App.tsx` (via `useState`) and flows down as props:
 - `yearRange: [number, number]` — year filter range
 - `searchValue: string` — real-time search query text
 - `pageSize: number` — items per page (10/50/100)
-- `showTimeline: boolean` — timeline visibility toggle
-- `cart: Paper[]` — cart items
 - `toast: { message, visible }` — toast notification state
+- `githubToken: string` — GitHub API token for authenticated requests
 
 Derived state (via `useMemo`):
 - `filteredPapers` — `filterPapers(loadedPapers, searchValue, yearRange, selectedConfs)`
 - `shuffledPapers` — Fisher-Yates shuffle of `filteredPapers`
-- `luckyPaper` — random pick from `filteredPapers`
 
 ### Build & Deploy
 
 ```bash
-cd v2
+cd find
 npm install
-npm run dev      # dev server at localhost:5173
+npm run dev      # dev server at localhost:5173/find/
 npm run build    # production build to dist/
 ```
 
-Deploy `v2/dist/` to any static host (GitHub Pages, Vercel, Netlify).
+Deploy `dist/` to any static host (GitHub Pages, Vercel, Netlify).
 
 ### Data Pipeline
 
@@ -61,11 +60,11 @@ Raw paper titles live in `papers/<conference>/<year>.txt` (one title per line).
 
 Generate JSON data:
 ```bash
-cd v2/scripts
+cd find/scripts
 npx tsx gen-data.ts
 ```
 
-This produces `v2/public/manifest.json` and per-conference JSON files in `v2/public/data/`.
+This produces `public/data/manifest.json` and per-conference JSON files in `public/data/`.
 
 ### Types
 
@@ -96,8 +95,19 @@ CONFERENCE_NAMES: Record<string, string>               // maps conf key to displ
 
 ### Search Logic
 
-`v2/src/lib/search.ts` — keyword splitting, camelCase expansion, case-insensitive regex matching.
+`src/lib/search.ts` — keyword splitting, camelCase expansion, case-insensitive regex matching.
+
+### Key Features
+
+- **Vertical Timeline**: Conference deadlines and results displayed chronologically in left sidebar
+- **GitHub Search**: One-click search for paper's GitHub repository
+- **papers.cool Integration**: Direct link to search paper on papers.cool
+- **Copy Title**: Quick copy paper title to clipboard
+- **Countdown**: Customizable deadline countdown timer
+- **Word Cloud**: Generate word cloud from search results
+- **Dark Mode**: Full dark mode support
+- **i18n**: Chinese and English interfaces
 
 ### About Page
 
-A standalone HTML page served at `/about.html` (or `https://x2x5.github.io/find/about`). Linked from the app header via "关于/About" button and from this README.
+A standalone HTML page served at `/about.html` (or `https://x2x5.github.io/find/about`). Linked from the app footer and from this README.

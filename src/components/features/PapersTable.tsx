@@ -121,6 +121,7 @@ export default function PapersTable({
   const [displayCount, setDisplayCount] = useState(BATCH_SIZE);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const [githubLoadingIdx, setGithubLoadingIdx] = useState<number | null>(null);
+  const [externalLoadingIdx, setExternalLoadingIdx] = useState<number | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const searchGitHub = useCallback(
@@ -142,6 +143,34 @@ export default function PapersTable({
         onShowToast?.("GitHub 搜索失败");
       } finally {
         setGithubLoadingIdx(null);
+      }
+    },
+    [onShowToast],
+  );
+
+  const openAlphaXiv = useCallback(
+    async (title: string, globalIdx: number) => {
+      const fallback = `https://arxiv.org/search/?query=${encodeURIComponent(title)}&searchtype=title&abstracts=show&order=-announced_date_first&size=50`;
+      const opened = window.open("about:blank", "_blank");
+      if (!opened) {
+        onShowToast?.("浏览器拦截了新窗口");
+        return;
+      }
+      opened.opener = null;
+      setExternalLoadingIdx(globalIdx);
+      try {
+        const response = await fetch(
+          `https://find-arxiv.supertian007.workers.dev/search?title=${encodeURIComponent(title)}`,
+        );
+        if (!response.ok) throw new Error("No arXiv match");
+        const data = (await response.json()) as { id?: string };
+        opened.location.href = data.id
+          ? `https://www.alphaxiv.org/abs/${encodeURIComponent(data.id)}`
+          : fallback;
+      } catch {
+        opened.location.href = fallback;
+      } finally {
+        setExternalLoadingIdx(null);
       }
     },
     [onShowToast],
@@ -268,8 +297,6 @@ export default function PapersTable({
                   (0.3 * (parseInt(paper.year) - yearMin)) / (yearMax - yearMin)
                 : 1,
           };
-          const externalHref = `https://arxiv.org/search/?query=${encodeURIComponent(paper.title)}&searchtype=title&abstracts=show&order=-announced_date_first&size=50`;
-
           return (
             <div
               key={globalIdx}
@@ -307,15 +334,14 @@ export default function PapersTable({
                         <Copy className="w-3 h-3" />
                       )}
                     </button>
-                    <a
-                      href={externalHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      onClick={() => openAlphaXiv(paper.title, globalIdx)}
+                      disabled={externalLoadingIdx === globalIdx}
                       className="shrink-0 w-5 h-5 flex items-center justify-center rounded-md bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900 dark:hover:text-red-300 active:scale-90 transition-all"
                       title={t.table.searchExternal}
                     >
-                      <Search className="w-3 h-3" aria-label="arXiv" />
-                    </a>
+                      <Search className={`w-3 h-3 ${externalLoadingIdx === globalIdx ? "animate-pulse" : ""}`} aria-label="AlphaXiv" />
+                    </button>
                     <button
                       onClick={() => searchGitHub(paper.title, globalIdx)}
                       disabled={githubLoadingIdx === globalIdx}
@@ -358,15 +384,14 @@ export default function PapersTable({
                     <Copy className="w-4 h-4" />
                   )}
                 </button>
-                <a
-                  href={externalHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => openAlphaXiv(paper.title, globalIdx)}
+                  disabled={externalLoadingIdx === globalIdx}
                   className="shrink-0 w-7 h-7 flex items-center justify-center rounded-md bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900 dark:hover:text-red-300 active:scale-90 transition-all"
                   title={t.table.searchExternal}
                 >
-                  <Search className="w-4 h-4" aria-label="arXiv" />
-                </a>
+                  <Search className={`w-4 h-4 ${externalLoadingIdx === globalIdx ? "animate-pulse" : ""}`} aria-label="AlphaXiv" />
+                </button>
                 <button
                   onClick={() => searchGitHub(paper.title, globalIdx)}
                   disabled={githubLoadingIdx === globalIdx}

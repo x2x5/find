@@ -33,7 +33,7 @@ export const zh: Translations = {
     loading: "加载中...",
     clickWordHint: "点击单词，快速搜索",
     clickWordHintShort: "点击单词，快速搜索",
-    searchExternal: "在 arXiv 搜索标题",
+    searchExternal: "在 AlphaXiv 打开",
   },
   pagination: {
     page: "第",

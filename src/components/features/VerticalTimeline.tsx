@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { useAppContext } from "@/context/AppContext";
+import { getTimelineDeadlineOverrides } from "@/lib/deadlines";
 
 const RAW_DATA = [
   { deadline: "01-19", result: "04-29", conference: "IJCAI" },
@@ -36,6 +37,15 @@ export default function VerticalTimeline() {
   const today = useMemo(() => new Date(), []);
   const currentYear = today.getFullYear();
   const [showLightbox, setShowLightbox] = useState(false);
+  const [deadlineOverrides, setDeadlineOverrides] = useState<
+    Record<string, string>
+  >({});
+
+  useEffect(() => {
+    void getTimelineDeadlineOverrides(currentYear)
+      .then(setDeadlineOverrides)
+      .catch(() => {});
+  }, [currentYear]);
 
   const closeLightbox = useCallback(() => setShowLightbox(false), []);
 
@@ -51,14 +61,15 @@ export default function VerticalTimeline() {
   const events = useMemo(() => {
     const all: TimelineEvent[] = [];
     for (const item of RAW_DATA) {
-      const dDate = new Date(`${currentYear}-${item.deadline}T00:00:00`);
-      const dlParts = item.deadline.split("-");
+      const deadline = deadlineOverrides[item.conference] ?? item.deadline;
+      const dDate = new Date(`${currentYear}-${deadline}T00:00:00`);
+      const dlParts = deadline.split("-");
       all.push({
         conference: item.conference,
         date: `${parseInt(dlParts[0])}/${parseInt(dlParts[1])}`,
         label: t.timeline.deadline,
         type: "deadline",
-        monthDay: parseMd(item.deadline),
+        monthDay: parseMd(deadline),
         fullDate: dDate,
       });
       const rMd = parseMd(item.result);
@@ -75,7 +86,7 @@ export default function VerticalTimeline() {
       });
     }
     return all.sort((a, b) => a.fullDate.getTime() - b.fullDate.getTime());
-  }, [currentYear, t.timeline]);
+  }, [currentYear, deadlineOverrides, t.timeline]);
 
   const items = useMemo(() => {
     const todayDate = new Date(

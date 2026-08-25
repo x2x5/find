@@ -36,6 +36,17 @@ export interface ConferenceDeadline {
 }
 
 let deadlineRequest: Promise<ConferenceDeadline[]> | null = null;
+let conferenceDataRequest: Promise<CcfConference[]> | null = null;
+
+function getConferenceData() {
+  conferenceDataRequest ??= fetch(CCFDDL_DATA_URL)
+    .then((response) => {
+      if (!response.ok) throw new Error(`CCFDDL returned ${response.status}`);
+      return response.text();
+    })
+    .then((text) => parse(text) as CcfConference[]);
+  return conferenceDataRequest;
+}
 
 function timezoneOffsetMinutes(timezone: string): number | null {
   if (timezone === "AoE") return -12 * 60;
@@ -67,9 +78,7 @@ function formatShanghaiIso(timestamp: number): string {
 }
 
 async function fetchUpcomingDeadlines(): Promise<ConferenceDeadline[]> {
-  const response = await fetch(CCFDDL_DATA_URL);
-  if (!response.ok) throw new Error(`CCFDDL returned ${response.status}`);
-  const conferences = parse(await response.text()) as CcfConference[];
+  const conferences = await getConferenceData();
   const now = Date.now();
   const upcoming: { label: string; timestamp: number }[] = [];
 
@@ -107,4 +116,46 @@ async function fetchUpcomingDeadlines(): Promise<ConferenceDeadline[]> {
 export function getUpcomingConferenceDeadlines() {
   deadlineRequest ??= fetchUpcomingDeadlines().catch(() => []);
   return deadlineRequest;
+}
+
+export async function getTimelineDeadlineOverrides(
+  currentYear: number,
+): Promise<Record<string, string>> {
+  const conferences = await getConferenceData();
+  const overrides: Record<string, string> = {};
+
+  for (const conference of conferences) {
+    const label = SUPPORTED_CONFERENCES.get(
+      conference.title?.trim().toUpperCase() ?? "",
+    );
+    if (!label) continue;
+
+    const candidates: { timestamp: number; year: number; monthDay: string }[] = [];
+    for (const edition of conference.confs ?? []) {
+      const deadline = edition.timeline?.find(
+        (item) => item.deadline && item.deadline !== "TBD",
+      )?.deadline;
+      const match = deadline?.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!match) continue;
+      candidates.push({
+        timestamp: Date.UTC(+match[1], +match[2] - 1, +match[3]),
+        year: +match[1],
+        monthDay: `${match[2]}-${match[3]}`,
+      });
+    }
+
+    const sameYear = candidates
+      .filter((item) => item.year === currentYear)
+      .sort((a, b) => b.timestamp - a.timestamp)[0];
+    const latestPast = candidates
+      .filter((item) => item.year < currentYear)
+      .sort((a, b) => b.timestamp - a.timestamp)[0];
+    const earliestFuture = candidates
+      .filter((item) => item.year > currentYear)
+      .sort((a, b) => a.timestamp - b.timestamp)[0];
+    const selected = sameYear ?? latestPast ?? earliestFuture;
+    if (selected) overrides[label] = selected.monthDay;
+  }
+
+  return overrides;
 }

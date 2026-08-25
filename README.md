@@ -1,86 +1,21 @@
 # 实时搜索 AI 顶会论文
 
-[English](README-en.md)
+[English](README-en.md) · [打开网站](https://x2x5.top/find/)
 
-这个网站把多个 AI 顶会历年的论文标题放在一起，让你可以直接搜索关键词、筛选会议和年份，快速找到值得继续阅读的论文。
+每年，NeurIPS、ICML、ICLR、CVPR、ECCV、ICCV、AAAI、ACM MM 和 IJCAI 都会发表大量论文。
 
-在线地址：<https://x2x5.top/find/>
+这个网站做的事情很简单：输入一个关键词，相关论文会立即出现。
 
-## 支持的会议
+看到标题里有更准确的词，直接点击它，搜索范围会继续收窄。
 
-- ML：NeurIPS、ICML、ICLR
-- CV：CVPR、ECCV、ICCV
-- AI：AAAI、ACM MM、IJCAI
+右侧的数量分布和词云会随着结果一起变化，帮助你判断这个方向主要出现在哪些会议、哪些概念经常与它同时出现。
 
-## 主要功能
+找到感兴趣的论文后，可以前往 arXiv 搜索论文，也可以搜索相关的 GitHub 仓库。
 
-- 按关键词、会议和年份筛选论文
-- 点击标题中的单词继续搜索
-- 复制论文标题
-- 在 arXiv 搜索论文
-- 搜索相关 GitHub 仓库
-- 根据当前结果生成词云
-- 查看会议投稿倒计时和时间轴
-- 支持中文、英文和深色模式
-- 支持桌面端和移动端
+需要分析结果时，可以一次性直接复制500篇论文的标题。
 
-会议截止日期优先读取 [CCFDDL](https://ccfddl.com/) 的公开数据。
+页面左上角还会显示接下来最近一次会议截稿倒计时。
 
-```bash
-git clone https://github.com/x2x5/find.git
-cd find
-npm ci
-npm run dev
-```
+点击日期可以查看完整时间，会议时间线则把九个会议放在一年中一起观察。
 
-打开终端中显示的本地地址。项目的 Vite 基础路径是 `/find/`。
-
-## 构建
-
-```bash
-npm run build
-```
-
-构建结果位于 `dist/`。
-
-## 更新论文数据
-
-论文标题存放在：
-
-```text
-papers/<会议>/<年份>.txt
-```
-
-每行填写一个论文标题。例如：
-
-```text
-papers/icml/2026.txt
-```
-
-修改数据后，在项目根目录运行：
-
-```bash
-npm run gen:data
-```
-
-该命令会重新生成 `public/data/` 下的 JSON 文件和清单。
-
-## 项目结构
-
-```text
-papers/        原始论文标题
-public/data/   生成后的网页数据
-scripts/       数据生成脚本
-src/           React 前端代码
-```
-
-## 技术栈
-
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-
-## 部署
-
-推送到 `main` 分支后，GitHub Actions 会构建项目并部署到 GitHub Pages。
+网站支持中文、英文和深色模式，也针对移动端调整了布局。

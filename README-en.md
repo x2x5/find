@@ -1,27 +1,21 @@
 # Search AI Conference Papers in Real Time
 
-[中文](README.md)
+[中文](README.md) · [Open the website](https://x2x5.top/find/)
 
-This website puts paper titles from multiple AI conferences and years in one place, so you can search by keyword, filter by venue and year, and quickly find papers worth reading.
+Every year, NeurIPS, ICML, ICLR, CVPR, ECCV, ICCV, AAAI, ACM MM, and IJCAI publish a huge number of papers.
 
-Live site: <https://x2x5.top/find/>
+This website does one simple thing: enter a keyword, and relevant papers appear immediately.
 
-## Supported conferences
+When you spot a more precise term in a title, click it to narrow the search further.
 
-- ML: NeurIPS, ICML, ICLR
-- CV: CVPR, ECCV, ICCV
-- AI: AAAI, ACM MM, IJCAI
+The result distribution and word cloud on the right update along with your search, helping you see which conferences cover the topic most often and which concepts frequently appear together.
 
-## Features
+Once you find an interesting paper, you can search for it on arXiv or look for a related GitHub repository.
 
-- Filter papers by keyword, conference, and year
-- Click a word in a title to search again
-- Copy paper titles
-- Search papers on arXiv
-- Search for related GitHub repositories
-- Generate a word cloud from the current results
-- View conference deadlines and a submission timeline
-- Chinese, English, and dark mode
-- Desktop and mobile layouts
+When you need to analyze the results, you can copy the titles of up to 500 papers at once.
 
-Conference deadlines are loaded from the public [CCFDDL](https://ccfddl.com/) dataset when available.
+The top-left corner shows a countdown to the next upcoming conference deadline.
+
+Click the date to see the exact time, or use the conference timeline to view all nine conferences across the year.
+
+The website supports Chinese, English, and dark mode, with a layout adapted for mobile devices.

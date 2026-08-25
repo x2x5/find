@@ -35,7 +35,7 @@ export interface ConferenceDeadline {
   target: string;
 }
 
-let deadlineRequest: Promise<ConferenceDeadline | null> | null = null;
+let deadlineRequest: Promise<ConferenceDeadline[]> | null = null;
 
 function timezoneOffsetMinutes(timezone: string): number | null {
   if (timezone === "AoE") return -12 * 60;
@@ -66,12 +66,12 @@ function formatShanghaiIso(timestamp: number): string {
   return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}T${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}+08:00`;
 }
 
-async function fetchNextDeadline(): Promise<ConferenceDeadline | null> {
+async function fetchUpcomingDeadlines(): Promise<ConferenceDeadline[]> {
   const response = await fetch(CCFDDL_DATA_URL);
   if (!response.ok) throw new Error(`CCFDDL returned ${response.status}`);
   const conferences = parse(await response.text()) as CcfConference[];
   const now = Date.now();
-  let next: { label: string; timestamp: number } | null = null;
+  const upcoming: { label: string; timestamp: number }[] = [];
 
   for (const conference of conferences) {
     const label = SUPPORTED_CONFERENCES.get(
@@ -85,19 +85,26 @@ async function fetchNextDeadline(): Promise<ConferenceDeadline | null> {
           timeline.deadline,
           edition.timezone ?? "UTC",
         );
-        if (timestamp && timestamp > now && (!next || timestamp < next.timestamp)) {
-          next = { label, timestamp };
-        }
+        if (timestamp && timestamp > now) upcoming.push({ label, timestamp });
       }
     }
   }
 
-  return next
-    ? { label: next.label, target: formatShanghaiIso(next.timestamp) }
-    : null;
+  return upcoming
+    .sort((a, b) => a.timestamp - b.timestamp)
+    .filter(
+      (item, index, items) =>
+        index === 0 ||
+        item.label !== items[index - 1].label ||
+        item.timestamp !== items[index - 1].timestamp,
+    )
+    .map((item) => ({
+      label: item.label,
+      target: formatShanghaiIso(item.timestamp),
+    }));
 }
 
-export function getNextConferenceDeadline() {
-  deadlineRequest ??= fetchNextDeadline().catch(() => null);
+export function getUpcomingConferenceDeadlines() {
+  deadlineRequest ??= fetchUpcomingDeadlines().catch(() => []);
   return deadlineRequest;
 }

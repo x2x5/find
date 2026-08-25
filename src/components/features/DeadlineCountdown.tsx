@@ -1,126 +1,99 @@
 import { useEffect, useMemo, useState } from "react";
-import { Settings2 } from "lucide-react";
-import { useAppContext } from "@/context/AppContext";
-import { getNextConferenceDeadline } from "@/lib/deadlines";
+import { ChevronDown } from "lucide-react";
+import {
+  getUpcomingConferenceDeadlines,
+  type ConferenceDeadline,
+} from "@/lib/deadlines";
 
-const STORAGE_KEY = "next_deadline_at";
-const LABEL_STORAGE_KEY = "next_deadline_label";
-const DEFAULT_TARGET = "2026-09-26T19:59:59+08:00";
-const DEFAULT_LABEL = "ICLR";
+const FALLBACK_DEADLINES: ConferenceDeadline[] = [
+  { label: "ICLR", target: "2026-09-26T19:59:59+08:00" },
+];
 
-interface CountdownParts {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-  expired: boolean;
-}
-
-function readStoredTarget() {
-  try {
-    return localStorage.getItem(STORAGE_KEY) || DEFAULT_TARGET;
-  } catch {
-    return DEFAULT_TARGET;
-  }
-}
-
-function formatForInputs(iso: string) {
-  const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
-  if (!match) {
-    return {
-      year: "26",
-      month: "07",
-      day: "28",
-      hour: "19",
-      minute: "59",
-      second: "59",
-    };
-  }
+function getCountdownParts(target: string, nowMs: number) {
+  const totalSeconds = Math.floor(
+    Math.max(0, new Date(target).getTime() - nowMs) / 1000,
+  );
   return {
-    year: match[1].slice(2),
-    month: match[2],
-    day: match[3],
-    hour: match[4],
-    minute: match[5],
-    second: match[6],
+    days: Math.floor(totalSeconds / 86400),
+    hours: Math.floor((totalSeconds % 86400) / 3600),
+    minutes: Math.floor((totalSeconds % 3600) / 60),
+    seconds: totalSeconds % 60,
   };
 }
 
-function toIsoString(
-  year: string,
-  month: string,
-  day: string,
-  hour: string,
-  minute: string,
-  second: string,
-) {
-  return `20${year}-${month}-${day}T${hour}:${minute}:${second}+08:00`;
-}
-
-function getCountdownParts(target: string, nowMs: number): CountdownParts {
-  const diff = new Date(target).getTime() - nowMs;
-  if (!Number.isFinite(diff) || diff <= 0) {
-    return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
-  }
-
-  const totalSeconds = Math.floor(diff / 1000);
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  return { days, hours, minutes, seconds, expired: false };
-}
-
-interface DeadlineCountdownProps {
-  compact?: boolean;
-  hideSettings?: boolean;
-  hideText?: boolean;
-}
-
-export default function DeadlineCountdown({
+function CountdownText({
+  deadline,
+  nowMs,
   compact = false,
-  hideSettings = false,
-  hideText = false,
-}: DeadlineCountdownProps) {
-  const { t, language } = useAppContext();
-  const [target, setTarget] = useState(DEFAULT_TARGET);
-  const [label, setLabel] = useState(DEFAULT_LABEL);
-  const [editing, setEditing] = useState(false);
-  const [labelEditing, setLabelEditing] = useState(false);
+}: {
+  deadline: ConferenceDeadline;
+  nowMs: number;
+  compact?: boolean;
+}) {
+  const countdown = getCountdownParts(deadline.target, nowMs);
+  const numberClass = compact
+    ? "text-amber-600 dark:text-amber-400"
+    : "text-zinc-900 dark:text-zinc-50";
+
+  return (
+    <span className="inline-flex items-baseline gap-1 whitespace-nowrap tabular-nums">
+      <span className="font-semibold text-pink-500">{deadline.label}</span>
+      <span className="text-zinc-400">remains</span>
+      <span className={numberClass}>{countdown.days}</span>
+      <span className="text-zinc-400">D</span>
+      <span className={numberClass}>
+        {String(countdown.hours).padStart(2, "0")}
+      </span>
+      <span className="text-zinc-400">H</span>
+      <span className={numberClass}>
+        {String(countdown.minutes).padStart(2, "0")}
+      </span>
+      <span className="text-zinc-400">M</span>
+      <span className={numberClass}>
+        {String(countdown.seconds).padStart(2, "0")}
+      </span>
+      <span className="text-zinc-400">s</span>
+    </span>
+  );
+}
+
+function NextDeadline({
+  deadline,
+  nowMs,
+}: {
+  deadline?: ConferenceDeadline;
+  nowMs: number;
+}) {
+  return (
+    <>
+      <div className="flex justify-center text-sm">
+        {deadline ? (
+          <CountdownText deadline={deadline} nowMs={nowMs} compact />
+        ) : (
+          <span className="text-zinc-400">No later deadline announced</span>
+        )}
+      </div>
+      <a
+        href="https://ccfddl.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-3 flex w-full items-center justify-center rounded-md bg-indigo-100 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-950 dark:text-indigo-300 dark:hover:bg-indigo-900"
+      >
+        CCF-DDL
+      </a>
+    </>
+  );
+}
+
+export default function DeadlineCountdown({ compact = false }: { compact?: boolean }) {
+  const [deadlines, setDeadlines] = useState(FALLBACK_DEADLINES);
+  const [expanded, setExpanded] = useState(false);
   const [nowMs, setNowMs] = useState(() => Date.now());
-  const [draft, setDraft] = useState(() => formatForInputs(DEFAULT_TARGET));
-  const [labelDraft, setLabelDraft] = useState(DEFAULT_LABEL);
 
   useEffect(() => {
-    const stored = readStoredTarget();
-    let storedLabel = DEFAULT_LABEL;
-    let hasStoredTarget = false;
-    try {
-      hasStoredTarget = Boolean(localStorage.getItem(STORAGE_KEY));
-      storedLabel = localStorage.getItem(LABEL_STORAGE_KEY) || DEFAULT_LABEL;
-    } catch {
-      // ignore
-    }
-    setTarget(stored);
-    setLabel(storedLabel);
-    setDraft(formatForInputs(stored));
-    setLabelDraft(storedLabel);
-
-    if (!hasStoredTarget || new Date(stored).getTime() <= Date.now()) {
-      void getNextConferenceDeadline().then((next) => {
-        if (!next) return;
-        setTarget(next.target);
-        setLabel(next.label);
-        setDraft(formatForInputs(next.target));
-        setLabelDraft(next.label);
-        try {
-          localStorage.setItem(STORAGE_KEY, next.target);
-          localStorage.setItem(LABEL_STORAGE_KEY, next.label);
-        } catch {
-          // ignore
-        }
-      });
-    }
+    void getUpcomingConferenceDeadlines().then((items) => {
+      if (items.length > 0) setDeadlines(items);
+    });
   }, []);
 
   useEffect(() => {
@@ -128,247 +101,34 @@ export default function DeadlineCountdown({
     return () => window.clearInterval(timer);
   }, []);
 
-  const countdown = useMemo(
-    () => getCountdownParts(target, nowMs),
-    [target, nowMs],
+  const activeDeadlines = useMemo(
+    () => deadlines.filter((item) => new Date(item.target).getTime() > nowMs),
+    [deadlines, nowMs],
   );
+  const current = activeDeadlines[0] ?? FALLBACK_DEADLINES[0];
+  const next = activeDeadlines[1];
 
-  const handleSave = () => {
-    const next = toIsoString(
-      draft.year,
-      draft.month,
-      draft.day,
-      draft.hour,
-      draft.minute,
-      draft.second,
-    );
-    const nextLabel = labelDraft.trim() || DEFAULT_LABEL;
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-      localStorage.setItem(LABEL_STORAGE_KEY, nextLabel);
-    } catch {
-      // ignore
-    }
-    setTarget(next);
-    setLabel(nextLabel);
-    setEditing(false);
-  };
+  const toggle = (
+    <button
+      onClick={() => setExpanded((value) => !value)}
+      aria-expanded={expanded}
+      aria-label="Show next conference deadline"
+      className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 transition-colors"
+    >
+      <ChevronDown
+        className={`h-4 w-4 transition-transform ${expanded ? "rotate-180" : ""}`}
+      />
+    </button>
+  );
 
   if (compact) {
     return (
-      <div className="relative flex items-center gap-1.5 shrink-0 text-sm tabular-nums">
-        {!hideText && (
-          <>
-            <span
-              onClick={() => setLabelEditing(true)}
-              className="font-semibold text-pink-500 cursor-pointer hover:bg-pink-50 dark:hover:bg-pink-950/30 rounded px-0.5"
-            >
-              {labelEditing ? (
-                <input
-                  value={labelDraft}
-                  onChange={(e) => setLabelDraft(e.target.value)}
-                  onBlur={() => {
-                    setLabel(labelDraft.trim() || DEFAULT_LABEL);
-                    setLabelEditing(false);
-                    try {
-                      localStorage.setItem(
-                        LABEL_STORAGE_KEY,
-                        labelDraft.trim() || DEFAULT_LABEL,
-                      );
-                    } catch {}
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setLabel(labelDraft.trim() || DEFAULT_LABEL);
-                      setLabelEditing(false);
-                      try {
-                        localStorage.setItem(
-                          LABEL_STORAGE_KEY,
-                          labelDraft.trim() || DEFAULT_LABEL,
-                        );
-                      } catch {}
-                    }
-                    if (e.key === "Escape") {
-                      setLabelDraft(label);
-                      setLabelEditing(false);
-                    }
-                  }}
-                  className="inline w-14 rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-1 py-0 text-sm font-semibold text-pink-500 tabular-nums"
-                  autoFocus
-                />
-              ) : (
-                label
-              )}
-            </span>
-
-            {countdown.expired ? (
-              <span className="text-zinc-400">{t.countdown.expired}</span>
-            ) : (
-              <>
-                <span className="text-zinc-400">{t.countdown.untilSuffix}</span>
-                <span className="font-medium">
-                  {countdown.days > 0 && (
-                    <>
-                      <span className="text-zinc-400"> </span>
-                      <span className="text-amber-600 dark:text-amber-400">
-                        {countdown.days}
-                      </span>
-                      <span className="text-zinc-400"> {t.countdown.day}</span>
-                    </>
-                  )}
-                  <span className="text-zinc-400"> </span>
-                  <span className="text-amber-600 dark:text-amber-400">
-                    {String(countdown.hours).padStart(2, "0")}
-                  </span>
-                  <span className="text-zinc-400"> {t.countdown.hour}</span>
-                  <span className="text-zinc-400"> </span>
-                  <span className="text-amber-600 dark:text-amber-400">
-                    {String(countdown.minutes).padStart(2, "0")}
-                  </span>
-                  <span className="text-zinc-400"> {t.countdown.minute}</span>
-                  <span className="text-zinc-400"> </span>
-                  <span className="text-amber-600 dark:text-amber-400">
-                    {String(countdown.seconds).padStart(2, "0")}
-                  </span>
-                  <span className="text-zinc-400"> {t.countdown.second}</span>
-                </span>
-              </>
-            )}
-          </>
-        )}
-        {!hideSettings && (
-          <button
-            onClick={() => setEditing((prev) => !prev)}
-            className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 hover:bg-amber-200 hover:text-amber-700 dark:hover:bg-amber-900 dark:hover:text-amber-300 active:scale-90 transition-all shrink-0"
-            title={editing ? t.common.collapse : t.common.settings}
-          >
-            <Settings2 className="w-3.5 h-3.5" />
-          </button>
-        )}
-        {editing && (
-          <div className="absolute top-full left-0 mt-1 z-50 max-h-[calc(100vh-4rem)] overflow-y-auto bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-3 space-y-2 w-56 max-w-[calc(100vw-2rem)]">
-            <div className="flex items-center gap-2">
-              <label className="flex items-center gap-1">
-                <input
-                  value={draft.year}
-                  onChange={(e) =>
-                    setDraft((p) => ({
-                      ...p,
-                      year: e.target.value.replace(/\D/g, "").slice(0, 2),
-                    }))
-                  }
-                  className="w-10 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1 py-1 text-xs tabular-nums text-center"
-                  placeholder="26"
-                  inputMode="numeric"
-                />
-                <span className="text-xs text-zinc-500">
-                  {t.countdown.year}
-                </span>
-              </label>
-              <label className="flex items-center gap-1">
-                <input
-                  value={draft.month}
-                  onChange={(e) =>
-                    setDraft((p) => ({
-                      ...p,
-                      month: e.target.value.replace(/\D/g, "").slice(0, 2),
-                    }))
-                  }
-                  className="w-10 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1 py-1 text-xs tabular-nums text-center"
-                  placeholder="07"
-                  inputMode="numeric"
-                />
-                <span className="text-xs text-zinc-500">
-                  {t.countdown.month}
-                </span>
-              </label>
-              <label className="flex items-center gap-1">
-                <input
-                  value={draft.day}
-                  onChange={(e) =>
-                    setDraft((p) => ({
-                      ...p,
-                      day: e.target.value.replace(/\D/g, "").slice(0, 2),
-                    }))
-                  }
-                  className="w-10 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1 py-1 text-xs tabular-nums text-center"
-                  placeholder="28"
-                  inputMode="numeric"
-                />
-                <span className="text-xs text-zinc-500">
-                  {t.countdown.dayLabel}
-                </span>
-              </label>
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="flex items-center gap-1">
-                <input
-                  value={draft.hour}
-                  onChange={(e) =>
-                    setDraft((p) => ({
-                      ...p,
-                      hour: e.target.value.replace(/\D/g, "").slice(0, 2),
-                    }))
-                  }
-                  className="w-10 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1 py-1 text-xs tabular-nums text-center"
-                  placeholder="19"
-                  inputMode="numeric"
-                />
-                <span className="text-xs text-zinc-500">
-                  {t.countdown.hourLabel}
-                </span>
-              </label>
-              <label className="flex items-center gap-1">
-                <input
-                  value={draft.minute}
-                  onChange={(e) =>
-                    setDraft((p) => ({
-                      ...p,
-                      minute: e.target.value.replace(/\D/g, "").slice(0, 2),
-                    }))
-                  }
-                  className="w-10 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1 py-1 text-xs tabular-nums text-center"
-                  placeholder="59"
-                  inputMode="numeric"
-                />
-                <span className="text-xs text-zinc-500">
-                  {t.countdown.minuteLabel}
-                </span>
-              </label>
-              <label className="flex items-center gap-1">
-                <input
-                  value={draft.second}
-                  onChange={(e) =>
-                    setDraft((p) => ({
-                      ...p,
-                      second: e.target.value.replace(/\D/g, "").slice(0, 2),
-                    }))
-                  }
-                  className="w-10 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1 py-1 text-xs tabular-nums text-center"
-                  placeholder="59"
-                  inputMode="numeric"
-                />
-                <span className="text-xs text-zinc-500">
-                  {t.countdown.secondLabel}
-                </span>
-              </label>
-            </div>
-            <div className="flex items-center gap-2">
-              <a
-                href="https://ccfddl.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 text-center rounded-md bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
-              >
-                {t.countdown.selfCheck}
-              </a>
-              <button
-                onClick={handleSave}
-                className="flex-1 rounded-md bg-indigo-100 dark:bg-indigo-950 px-3 py-1.5 text-xs font-medium text-indigo-700 dark:text-indigo-300"
-              >
-                {language === "zh" ? "保存" : "Save"}
-              </button>
-            </div>
+      <div className="relative flex min-w-0 items-center gap-1 text-sm">
+        <CountdownText deadline={current} nowMs={nowMs} compact />
+        {toggle}
+        {expanded && (
+          <div className="absolute left-0 top-full z-50 mt-1 w-max max-w-[calc(100vw-2rem)] rounded-lg border border-zinc-200 bg-white p-3 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+            <NextDeadline deadline={next} nowMs={nowMs} />
           </div>
         )}
       </div>
@@ -376,236 +136,14 @@ export default function DeadlineCountdown({
   }
 
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-white to-orange-50/70 dark:from-zinc-900 dark:to-orange-950/20 p-3 shadow-sm">
-      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
-        <a
-          href="https://ccfddl.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300"
-        >
-          {t.countdown.selfCheck}
-        </a>
-        <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 text-center">
-          {t.countdown.untilPrefix}
-          {labelEditing ? (
-            <input
-              value={labelDraft}
-              onChange={(e) => setLabelDraft(e.target.value)}
-              onBlur={() => {
-                setLabel(labelDraft.trim() || DEFAULT_LABEL);
-                setLabelEditing(false);
-                try {
-                  localStorage.setItem(
-                    LABEL_STORAGE_KEY,
-                    labelDraft.trim() || DEFAULT_LABEL,
-                  );
-                } catch {}
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  setLabel(labelDraft.trim() || DEFAULT_LABEL);
-                  setLabelEditing(false);
-                  try {
-                    localStorage.setItem(
-                      LABEL_STORAGE_KEY,
-                      labelDraft.trim() || DEFAULT_LABEL,
-                    );
-                  } catch {}
-                }
-                if (e.key === "Escape") {
-                  setLabelDraft(label);
-                  setLabelEditing(false);
-                }
-              }}
-              className="inline w-14 rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-1 py-0 text-sm font-semibold text-pink-500 tabular-nums"
-              autoFocus
-            />
-          ) : (
-            <span
-              onClick={() => {
-                setLabelDraft(label);
-                setLabelEditing(true);
-              }}
-              className="text-pink-500 text-sm font-semibold cursor-pointer hover:bg-pink-50 dark:hover:bg-pink-950/30 rounded px-0.5"
-            >
-              {label}
-            </span>
-          )}
-          <a
-            href="https://ccfddl.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline"
-          >
-            {t.countdown.submit}
-          </a>
-          {t.countdown.untilSuffix}
-        </span>
-        <button
-          onClick={() => setEditing((prev) => !prev)}
-          className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 hover:bg-amber-200 hover:text-amber-700 dark:hover:bg-amber-900 dark:hover:text-amber-300 active:scale-90 transition-all"
-          title={editing ? t.common.collapse : t.common.settings}
-        >
-          <Settings2 className="w-5 h-5" />
-        </button>
+    <div className="relative rounded-lg border border-zinc-200 bg-gradient-to-br from-white to-orange-50/70 p-3 shadow-sm dark:border-zinc-800 dark:from-zinc-900 dark:to-orange-950/20">
+      <div className="flex items-center justify-center gap-1 text-sm">
+        <CountdownText deadline={current} nowMs={nowMs} />
+        {toggle}
       </div>
-
-      <div className="mt-2 grid grid-cols-4 gap-1.5">
-        <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
-          <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">
-            {countdown.days}
-          </div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-700 dark:text-zinc-200">
-            {t.countdown.day}
-          </div>
-        </div>
-        <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
-          <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">
-            {String(countdown.hours).padStart(2, "0")}
-          </div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-700 dark:text-zinc-200">
-            {t.countdown.hour}
-          </div>
-        </div>
-        <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
-          <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">
-            {String(countdown.minutes).padStart(2, "0")}
-          </div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-700 dark:text-zinc-200">
-            {t.countdown.minute}
-          </div>
-        </div>
-        <div className="rounded-lg border border-orange-100 dark:border-orange-900/40 bg-white/80 dark:bg-zinc-900/70 px-2 py-2 text-center">
-          <div className="text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">
-            {String(countdown.seconds).padStart(2, "0")}
-          </div>
-          <div className="text-[10px] tracking-[0.18em] text-zinc-700 dark:text-zinc-200">
-            {t.countdown.second}
-          </div>
-        </div>
-      </div>
-
-      {countdown.expired && (
-        <div className="mt-2 text-[10px] text-zinc-400 tabular-nums">
-          {t.countdown.expired}
-        </div>
-      )}
-
-      {editing && (
-        <div className="mt-2 space-y-2">
-          <div className="flex items-center gap-3">
-            <label className="flex items-center gap-1">
-              <input
-                value={draft.year}
-                onChange={(e) =>
-                  setDraft((prev) => ({
-                    ...prev,
-                    year: e.target.value.replace(/\D/g, "").slice(0, 2),
-                  }))
-                }
-                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
-                placeholder="26"
-                inputMode="numeric"
-              />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">
-                {t.countdown.year}
-              </span>
-            </label>
-            <label className="flex items-center gap-1">
-              <input
-                value={draft.month}
-                onChange={(e) =>
-                  setDraft((prev) => ({
-                    ...prev,
-                    month: e.target.value.replace(/\D/g, "").slice(0, 2),
-                  }))
-                }
-                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
-                placeholder="07"
-                inputMode="numeric"
-              />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">
-                {t.countdown.month}
-              </span>
-            </label>
-            <label className="flex items-center gap-1">
-              <input
-                value={draft.day}
-                onChange={(e) =>
-                  setDraft((prev) => ({
-                    ...prev,
-                    day: e.target.value.replace(/\D/g, "").slice(0, 2),
-                  }))
-                }
-                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
-                placeholder="28"
-                inputMode="numeric"
-              />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">
-                {t.countdown.dayLabel}
-              </span>
-            </label>
-          </div>
-          <div className="flex items-center gap-3">
-            <label className="flex items-center gap-1">
-              <input
-                value={draft.hour}
-                onChange={(e) =>
-                  setDraft((prev) => ({
-                    ...prev,
-                    hour: e.target.value.replace(/\D/g, "").slice(0, 2),
-                  }))
-                }
-                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
-                placeholder="19"
-                inputMode="numeric"
-              />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">
-                {t.countdown.hourLabel}
-              </span>
-            </label>
-            <label className="flex items-center gap-1">
-              <input
-                value={draft.minute}
-                onChange={(e) =>
-                  setDraft((prev) => ({
-                    ...prev,
-                    minute: e.target.value.replace(/\D/g, "").slice(0, 2),
-                  }))
-                }
-                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
-                placeholder="59"
-                inputMode="numeric"
-              />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">
-                {t.countdown.minuteLabel}
-              </span>
-            </label>
-            <label className="flex items-center gap-1">
-              <input
-                value={draft.second}
-                onChange={(e) =>
-                  setDraft((prev) => ({
-                    ...prev,
-                    second: e.target.value.replace(/\D/g, "").slice(0, 2),
-                  }))
-                }
-                className="w-10 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-1.5 py-1 text-[10px] tabular-nums text-center"
-                placeholder="59"
-                inputMode="numeric"
-              />
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 w-4 text-center">
-                {t.countdown.secondLabel}
-              </span>
-            </label>
-          </div>
-          <button
-            onClick={handleSave}
-            className="w-full rounded-md bg-indigo-100 dark:bg-indigo-950 px-2 py-1 text-[10px] text-indigo-700 dark:text-indigo-300"
-          >
-            {t.common.saveLocal}
-          </button>
+      {expanded && (
+        <div className="mt-3 border-t border-zinc-200 pt-3 dark:border-zinc-700">
+          <NextDeadline deadline={next} nowMs={nowMs} />
         </div>
       )}
     </div>

@@ -65,17 +65,19 @@ export default function Sidebar({
 
   return (
     <aside className="self-start flex flex-col gap-3">
-      <div className="shrink-0 p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+      <div className="shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <img
           src={`${import.meta.env.BASE_URL}icon.webp`}
           alt="淘顶网"
-          className="-mx-4 -mt-4 mb-4 block h-auto w-[calc(100%+2rem)] rounded-t-lg"
+          className="block h-auto w-full"
         />
-        <Distributions
-          papers={papers}
-          selectedConfs={selectedConfs}
-          onToggleConf={onToggleConf}
-        />
+        <div className="p-4">
+          <Distributions
+            papers={papers}
+            selectedConfs={selectedConfs}
+            onToggleConf={onToggleConf}
+          />
+        </div>
       </div>
       <div className="shrink-0 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-2">
         <div className="sm:hidden">

@@ -137,7 +137,7 @@ export default function DeadlineCountdown({ compact = false }: { compact?: boole
           rel="noopener noreferrer"
           className="flex flex-1 items-center justify-center rounded-md bg-indigo-100 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-950 dark:text-indigo-300 dark:hover:bg-indigo-900"
         >
-          CCF-DDL
+          CCFDDL
         </a>
         <button
           onClick={() => setExpanded(false)}

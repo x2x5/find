@@ -8,9 +8,9 @@
 
 ## 支持的会议
 
-- 机器学习：NeurIPS、ICML、ICLR
-- 计算机视觉：CVPR、ECCV、ICCV
-- 人工智能：AAAI、ACM MM、IJCAI
+- ML：NeurIPS、ICML、ICLR
+- CV：CVPR、ECCV、ICCV
+- AI：AAAI、ACM MM、IJCAI
 
 ## 主要功能
 

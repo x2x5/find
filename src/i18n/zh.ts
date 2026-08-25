@@ -19,9 +19,9 @@ export const zh: Translations = {
     total: "总计",
   },
   fields: {
-    CV: "计算机视觉",
-    AI: "人工智能",
-    ML: "机器学习",
+    CV: "CV",
+    AI: "AI",
+    ML: "ML",
   },
   table: {
     title: "论文列表",

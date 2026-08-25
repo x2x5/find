@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import type { Paper } from '@/types';
 import { CONFERENCE_FIELDS, CONFERENCE_NAMES } from '@/lib/conferences';
-import { useAppContext } from '@/context/AppContext';
 
 interface DistributionsProps {
   papers: Paper[];
@@ -10,16 +9,14 @@ interface DistributionsProps {
 }
 
 const FIELDS = [
-  { key: 'ML', labelZh: '机器学习', labelEn: 'ML', bar: 'bg-violet-400 dark:bg-violet-500',    barDim: 'bg-violet-100 dark:bg-violet-900/40',    text: 'text-violet-700 dark:text-violet-300',    bg: 'bg-violet-50/50 dark:bg-violet-950/20' },
-  { key: 'CV', labelZh: '计算机视觉', labelEn: 'CV', bar: 'bg-blue-400 dark:bg-blue-500',        barDim: 'bg-blue-100 dark:bg-blue-900/40',        text: 'text-blue-700 dark:text-blue-300',        bg: 'bg-blue-50/50 dark:bg-blue-950/20' },
-  { key: 'AI', labelZh: '人工智能', labelEn: 'AI', bar: 'bg-emerald-400 dark:bg-emerald-500',  barDim: 'bg-emerald-100 dark:bg-emerald-900/40',  text: 'text-emerald-700 dark:text-emerald-300',  bg: 'bg-emerald-50/50 dark:bg-emerald-950/20' },
+  { key: 'ML', label: 'ML', bar: 'bg-violet-400 dark:bg-violet-500',    barDim: 'bg-violet-100 dark:bg-violet-900/40',    text: 'text-violet-700 dark:text-violet-300',    bg: 'bg-violet-50/50 dark:bg-violet-950/20' },
+  { key: 'CV', label: 'CV', bar: 'bg-blue-400 dark:bg-blue-500',        barDim: 'bg-blue-100 dark:bg-blue-900/40',        text: 'text-blue-700 dark:text-blue-300',        bg: 'bg-blue-50/50 dark:bg-blue-950/20' },
+  { key: 'AI', label: 'AI', bar: 'bg-emerald-400 dark:bg-emerald-500',  barDim: 'bg-emerald-100 dark:bg-emerald-900/40',  text: 'text-emerald-700 dark:text-emerald-300',  bg: 'bg-emerald-50/50 dark:bg-emerald-950/20' },
 ] as const;
 
 const CONF_ORDER = Object.keys(CONFERENCE_FIELDS);
 
 export default function Distributions({ papers, selectedConfs, onToggleConf }: DistributionsProps) {
-  const { language } = useAppContext();
-
   const { confCounts, fieldGroups } = useMemo(() => {
     const cc: Record<string, number> = {};
     for (const p of papers) {
@@ -47,12 +44,10 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
 
   return (
     <div className="text-xs">
-      {FIELDS.map(({ key, labelZh, labelEn, bar, barDim, text, bg }) => {
+      {FIELDS.map(({ key, label, bar, barDim, text, bg }) => {
         const confs = fieldGroups[key] || [];
         const fieldAll = confs.every((c) => selectedConfs.has(c));
         const fieldAny = confs.some((c) => selectedConfs.has(c));
-        const label = language === 'en' ? labelEn : labelZh;
-
         return (
           <div key={key} className="relative pl-8">
             <div className={`absolute left-0 top-0 bottom-0 w-[5.5rem] rounded ${bg} pointer-events-none`} />
@@ -63,7 +58,7 @@ export default function Distributions({ papers, selectedConfs, onToggleConf }: D
               <span className={`text-[10px] font-extrabold leading-tight text-left ${text} ${
                 fieldAll ? '' : fieldAny ? 'opacity-50' : 'opacity-30'
               }`}>
-                {language === 'en' ? label : label === '机器学习' ? <>机器<br />学习</> : label === '计算机视觉' ? <>计算机<br />视觉</> : label === '人工智能' ? <>人工<br />智能</> : label}
+                {label}
               </span>
             </button>
 

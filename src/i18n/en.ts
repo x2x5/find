@@ -167,9 +167,9 @@ export const en: Translations = {
     total: "Total",
   },
   fields: {
-    CV: "Computer Vision",
-    AI: "Artificial Intelligence",
-    ML: "Machine Learning",
+    CV: "CV",
+    AI: "AI",
+    ML: "ML",
   },
   table: {
     title: "Papers",

@@ -8,9 +8,9 @@ Live site: <https://x2x5.top/find/>
 
 ## Supported conferences
 
-- Machine learning: NeurIPS, ICML, ICLR
-- Computer vision: CVPR, ECCV, ICCV
-- Artificial intelligence: AAAI, ACM MM, IJCAI
+- ML: NeurIPS, ICML, ICLR
+- CV: CVPR, ECCV, ICCV
+- AI: AAAI, ACM MM, IJCAI
 
 ## Features
 

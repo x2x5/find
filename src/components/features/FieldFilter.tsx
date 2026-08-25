@@ -1,5 +1,4 @@
 import { CONFERENCE_FIELDS, CONFERENCE_NAMES } from '@/lib/conferences';
-import { useAppContext } from '@/context/AppContext';
 
 interface FieldFilterProps {
   selectedConfs: Set<string>;
@@ -7,16 +6,14 @@ interface FieldFilterProps {
 }
 
 const FIELDS = [
-  { key: 'ML', labelZh: '机器学习', labelEn: 'ML', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' },
-  { key: 'CV', labelZh: '计算机视觉', labelEn: 'CV', color: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300' },
-  { key: 'AI', labelZh: '人工智能', labelEn: 'AI', color: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300' },
+  { key: 'ML', label: 'ML', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' },
+  { key: 'CV', label: 'CV', color: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300' },
+  { key: 'AI', label: 'AI', color: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300' },
 ] as const;
 
 const ALL_CONFS = Object.keys(CONFERENCE_FIELDS);
 
 export default function FieldFilter({ selectedConfs, onToggleConf }: FieldFilterProps) {
-  const { language } = useAppContext();
-
   const toggleField = (confs: string[]) => {
     const allField = confs.every((c) => selectedConfs.has(c));
     confs.forEach((c) => {
@@ -31,12 +28,10 @@ export default function FieldFilter({ selectedConfs, onToggleConf }: FieldFilter
 
   return (
     <div className="space-y-2.5">
-      {FIELDS.map(({ key, labelZh, labelEn, color }) => {
+      {FIELDS.map(({ key, label, color }) => {
         const confs = ALL_CONFS.filter((c) => CONFERENCE_FIELDS[c] === key);
         const fieldAll = confs.every((c) => selectedConfs.has(c));
         const fieldAny = confs.some((c) => selectedConfs.has(c));
-        const label = language === 'en' ? labelEn : labelZh;
-
         return (
           <div key={key} className="flex items-center gap-1">
             <button
@@ -45,7 +40,7 @@ export default function FieldFilter({ selectedConfs, onToggleConf }: FieldFilter
                 !fieldAny ? 'opacity-30 grayscale' : fieldAll ? 'ring-1 ring-inset ring-black/10 dark:ring-white/10' : 'opacity-60'
               }`}
             >
-              {language === 'en' ? label : label === '机器学习' ? <>机器<br />学习</> : label === '计算机视觉' ? <>计算机<br />视觉</> : label === '人工智能' ? <>人工<br />智能</> : label}
+              {label}
             </button>
             <div className="flex items-center gap-0">
               {confs.map((conf) => (

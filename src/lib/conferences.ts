@@ -11,9 +11,9 @@ export const CONFERENCE_FIELDS: Record<string, 'CV' | 'AI' | 'ML'> = {
 };
 
 export const FIELD_LABELS: Record<string, string> = {
-  CV: 'Computer Vision',
-  AI: 'Artificial Intelligence',
-  ML: 'Machine Learning',
+  CV: 'CV',
+  AI: 'AI',
+  ML: 'ML',
 };
 
 export const CONFERENCE_NAMES: Record<string, string> = {

@@ -1,113 +1,86 @@
-# README for AI | [README for Human](https://x2x5.github.io/find/about.html)
+# 实时搜索 AI 顶会论文
 
-## Project: 找顶网
+[English](README-en.md)
 
-A React-based single-page application for browsing and searching AI conference paper titles across 9 top venues (NeurIPS, ICML, ICLR, CVPR, ECCV, ICCV, AAAI, MM, IJCAI).
+这个网站把多个 AI 顶会历年的论文标题放在一起，让你可以直接搜索关键词、筛选会议和年份，快速找到值得继续阅读的论文。
 
-### Architecture
+在线地址：<https://x2x5.top/find/>
 
-- **Framework**: React 18 + TypeScript, built with Vite 6
-- **Styling**: Tailwind CSS 3.4 with dark mode (`class` strategy)
-- **Icons**: Lucide React + custom assets (papers.cool favicon)
-- **Entry**: `src/main.tsx` → `src/App.tsx`
-- **Data flow**: JSON manifest + per-conference paper files → `useManifest` + `usePapers` hooks → `AppContext` state → component tree
-- **Routing**: None (single page). All navigation via state.
-- **i18n**: `src/i18n/zh.ts` and `en.ts`, consumed via `useAppContext().t`
+## 支持的会议
 
-### Key Components
+- 机器学习：NeurIPS、ICML、ICLR
+- 计算机视觉：CVPR、ECCV、ICCV
+- 人工智能：AAAI、ACM MM、IJCAI
 
-| Component | Path | Purpose |
-|-----------|------|---------|
-| App | `src/App.tsx` | Root layout, state management, data wiring |
-| Header | `src/components/layout/Header.tsx` | Countdown, search bar, theme/language toggles |
-| Sidebar | `src/components/layout/Sidebar.tsx` | Conference filter, year range, stats & feedback |
-| RightSidebar | `src/components/layout/RightSidebar.tsx` | Vertical timeline with logo |
-| PapersTable | `src/components/features/PapersTable.tsx` | Paginated paper list with copy, GitHub search, papers.cool links |
-| VerticalTimeline | `src/components/features/VerticalTimeline.tsx` | Conference deadline/result vertical timeline with logo lightbox |
-| DeadlineCountdown | `src/components/features/DeadlineCountdown.tsx` | Countdown timer with editable target |
-| Distributions | `src/components/features/Distributions.tsx` | Bar charts by conference |
-| YearDistribution | `src/components/features/YearDistribution.tsx` | Year distribution bar chart |
+## 主要功能
 
-### State Architecture
+- 按关键词、会议和年份筛选论文
+- 点击标题中的单词继续搜索
+- 复制论文标题
+- 在 arXiv 搜索论文
+- 搜索相关 GitHub 仓库
+- 根据当前结果生成词云
+- 查看会议投稿倒计时和时间轴
+- 支持中文、英文和深色模式
+- 支持桌面端和移动端
 
-State lives in `App.tsx` (via `useState`) and flows down as props:
-
-- `selectedConfs: Set<string>` — active conference filters (default: ICML/ICLR/NeurIPS/CVPR/ECCV/ICCV)
-- `yearRange: [number, number]` — year filter range
-- `searchValue: string` — real-time search query text
-- `pageSize: number` — items per page (10/50/100)
-- `toast: { message, visible }` — toast notification state
-- `githubToken: string` — GitHub API token for authenticated requests
-
-Derived state (via `useMemo`):
-- `filteredPapers` — `filterPapers(loadedPapers, searchValue, yearRange, selectedConfs)`
-- `shuffledPapers` — Fisher-Yates shuffle of `filteredPapers`
-
-### Build & Deploy
+会议截止日期优先读取 [CCFDDL](https://ccfddl.com/) 的公开数据。
 
 ```bash
+git clone https://github.com/x2x5/find.git
 cd find
-npm install
-npm run dev      # dev server at localhost:5173/find/
-npm run build    # production build to dist/
+npm ci
+npm run dev
 ```
 
-Deploy `dist/` to any static host (GitHub Pages, Vercel, Netlify).
+打开终端中显示的本地地址。项目的 Vite 基础路径是 `/find/`。
 
-### Data Pipeline
+## 构建
 
-Raw paper titles live in `papers/<conference>/<year>.txt` (one title per line).
-
-Generate JSON data:
 ```bash
-cd find/scripts
-npx tsx gen-data.ts
+npm run build
 ```
 
-This produces `public/data/manifest.json` and per-conference JSON files in `public/data/`.
+构建结果位于 `dist/`。
 
-### Types
+## 更新论文数据
 
-```typescript
-interface Paper {
-  conference: string;  // e.g., "cvpr"
-  year: string;        // e.g., "2025"
-  title: string;
-}
+论文标题存放在：
 
-interface Manifest {
-  version: string;
-  conferences: Record<string, ConferenceMeta>;
-}
+```text
+papers/<会议>/<年份>.txt
 ```
 
-See `src/types/index.ts` for full type definitions.
+每行填写一个论文标题。例如：
 
-### Conference Data
-
-```typescript
-// src/lib/conferences.ts
-CONFERENCE_FIELDS: Record<string, 'CV' | 'AI' | 'ML'> // maps conf key to field
-CONFERENCE_NAMES: Record<string, string>               // maps conf key to display name
+```text
+papers/icml/2026.txt
 ```
 
-9 conferences → 3 fields: ML (nips, icml, iclr), CV (cvpr, eccv, iccv), AI (aaai, mm, ijcai).
+修改数据后，在项目根目录运行：
 
-### Search Logic
+```bash
+npm run gen:data
+```
 
-`src/lib/search.ts` — keyword splitting, camelCase expansion, case-insensitive regex matching.
+该命令会重新生成 `public/data/` 下的 JSON 文件和清单。
 
-### Key Features
+## 项目结构
 
-- **Vertical Timeline**: Conference deadlines and results displayed chronologically in left sidebar
-- **GitHub Search**: One-click search for paper's GitHub repository
-- **papers.cool Integration**: Direct link to search paper on papers.cool
-- **Copy Title**: Quick copy paper title to clipboard
-- **Countdown**: Customizable deadline countdown timer
-- **Word Cloud**: Generate word cloud from search results
-- **Dark Mode**: Full dark mode support
-- **i18n**: Chinese and English interfaces
+```text
+papers/        原始论文标题
+public/data/   生成后的网页数据
+scripts/       数据生成脚本
+src/           React 前端代码
+```
 
-### About Page
+## 技术栈
 
-A standalone HTML page served at `/about.html` (or `https://x2x5.github.io/find/about`). Linked from the app footer and from this README.
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
+
+## 部署
+
+推送到 `main` 分支后，GitHub Actions 会构建项目并部署到 GitHub Pages。

@@ -95,9 +95,19 @@ async function searchArxiv(request, title, context) {
   endpoint.searchParams.set("start", "0");
   endpoint.searchParams.set("max_results", "8");
 
-  const response = await fetch(endpoint, {
-    headers: { "User-Agent": "find-arxiv/1.0 (https://x2x5.github.io/find/)" },
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
+  let response;
+  try {
+    response = await fetch(endpoint, {
+      headers: { "User-Agent": "find-arxiv/1.0 (https://x2x5.top/find/)" },
+      signal: controller.signal,
+    });
+  } catch {
+    return json(request, { error: "arXiv timeout" }, 504);
+  } finally {
+    clearTimeout(timeout);
+  }
   if (!response.ok) return json(request, { error: "arXiv unavailable" }, 502);
 
   const entries = parseEntries(await response.text());

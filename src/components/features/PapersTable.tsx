@@ -151,16 +151,18 @@ export default function PapersTable({
   const openAlphaXiv = useCallback(
     async (title: string, globalIdx: number) => {
       const fallback = `https://arxiv.org/search/?query=${encodeURIComponent(title)}&searchtype=title&abstracts=show&order=-announced_date_first&size=50`;
-      const opened = window.open("about:blank", "_blank");
+      const opened = window.open(fallback, "_blank");
       if (!opened) {
         onShowToast?.("浏览器拦截了新窗口");
         return;
       }
-      opened.opener = null;
       setExternalLoadingIdx(globalIdx);
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 12_000);
       try {
         const response = await fetch(
           `https://find-arxiv.supertian007.workers.dev/search?title=${encodeURIComponent(title)}`,
+          { signal: controller.signal },
         );
         if (!response.ok) throw new Error("No arXiv match");
         const data = (await response.json()) as { id?: string };
@@ -170,6 +172,7 @@ export default function PapersTable({
       } catch {
         opened.location.href = fallback;
       } finally {
+        window.clearTimeout(timeout);
         setExternalLoadingIdx(null);
       }
     },

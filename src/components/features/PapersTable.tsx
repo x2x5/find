@@ -252,11 +252,6 @@ export default function PapersTable({
       </div>
 
       <div className="relative divide-y divide-zinc-200 dark:divide-zinc-800">
-        {papers.length === 0 && (
-          <div className="absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 text-center text-sm text-zinc-500 pointer-events-none">
-            {t.table.noResults}
-          </div>
-        )}
         {pagePapers.map((paper, i) => {
           const globalIdx = infiniteScroll ? i : startIdx + i;
           const field = CONFERENCE_FIELDS[paper.conference] || "ML";
@@ -406,7 +401,7 @@ export default function PapersTable({
         </div>
       )}
 
-      {!infiniteScroll && (
+      {!infiniteScroll && papers.length > 0 && (
         <Pagination
           currentPage={safePage}
           totalPages={totalPages}

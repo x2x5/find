@@ -1,6 +1,4 @@
 const ALLOWED_ORIGINS = new Set([
-  "https://x2x5.top",
-  "https://www.x2x5.top",
   "https://x2x5.github.io",
   "http://localhost:5173",
   "http://127.0.0.1:5173",

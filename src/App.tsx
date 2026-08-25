@@ -8,7 +8,6 @@ import {
   CalendarDays,
   ArrowUp,
   ChevronRight,
-  Info,
 } from "lucide-react";
 import type { Paper } from "@/types";
 import { AppProvider, useAppContext } from "./context/AppContext";
@@ -20,7 +19,6 @@ import PapersTable from "./components/features/PapersTable";
 import Toast from "./components/ui/Toast";
 import WordCloudDialog from "./components/ui/WordCloudDialog";
 import DeadlineCountdown from "./components/features/DeadlineCountdown";
-import GitHubTokenSettings from "./components/features/GitHubTokenSettings";
 import { Skeleton } from "./components/ui/Skeleton";
 import { useManifest } from "./hooks/useManifest";
 import { usePapers } from "./hooks/usePapers";
@@ -36,8 +34,6 @@ function AppContent() {
     error: manifestError,
   } = useManifest();
   const defaultYear = new Date().getFullYear();
-  const githubTokenStorageKey = "github_token";
-  const returnMobileTabStorageKey = "return_to_mobile_tab";
 
   const [selectedConfs, setSelectedConfs] = useState<Set<string>>(
     () => new Set(["nips", "icml", "iclr", "cvpr", "eccv", "iccv"]),
@@ -77,9 +73,6 @@ function AppContent() {
   const [showWordCloud, setShowWordCloud] = useState(false);
   const [visitCount, setVisitCount] = useState<number | null>(null);
   const [searchCount, setSearchCount] = useState<number | null>(null);
-  const [githubToken, setGithubToken] = useState("");
-  const [githubTokenDraft, setGithubTokenDraft] = useState("");
-  const [showGithubTokenInput, setShowGithubTokenInput] = useState(false);
   const visitFetched = useRef(false);
   const searchFetched = useRef(false);
   const prevShuffleKeyRef = useRef("");
@@ -104,20 +97,6 @@ function AppContent() {
       .then((res) => res.json())
       .then((data) => setVisitCount(data.value))
       .catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    const saved = localStorage.getItem(githubTokenStorageKey) || "";
-    setGithubToken(saved);
-    setGithubTokenDraft(saved);
-  }, []);
-
-  useEffect(() => {
-    const returnTab = localStorage.getItem(returnMobileTabStorageKey);
-    if (returnTab === "settings") {
-      setMobileTab("settings");
-      localStorage.removeItem(returnMobileTabStorageKey);
-    }
   }, []);
 
   useEffect(() => {
@@ -233,14 +212,6 @@ function AppContent() {
     setToast((prev) => ({ ...prev, visible: false }));
   }, []);
 
-  const handleSaveGithubToken = useCallback(() => {
-    const next = githubTokenDraft.trim();
-    localStorage.setItem(githubTokenStorageKey, next);
-    setGithubToken(next);
-    setShowGithubTokenInput(false);
-    showToast(next ? "Token saved" : "Token cleared");
-  }, [githubTokenDraft, showToast]);
-
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-200">
       <Header
@@ -319,7 +290,6 @@ function AppContent() {
                 yearRange={yearRange}
                 onYearChange={handleYearChange}
               />
-              <RightSidebar showTimeline={showTimeline} />
             </div>
           )}
           {mobileTab === "papers" && (
@@ -405,23 +375,12 @@ function AppContent() {
                 <ChevronRight className="w-4 h-4 text-zinc-300" />
               </button>
 
-              <GitHubTokenSettings
-                token={githubToken}
-                tokenDraft={githubTokenDraft}
-                showTokenInput={showGithubTokenInput}
-                onToggleInput={() => setShowGithubTokenInput((prev) => !prev)}
-                onDraftChange={setGithubTokenDraft}
-                onSave={handleSaveGithubToken}
-              />
-
               <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
-                <div className="px-4 py-4 flex justify-center border-b border-zinc-100 dark:border-zinc-800">
-                  <img
-                    src={`${import.meta.env.BASE_URL}icon.webp`}
-                    alt="淘顶网"
-                    className="h-16 w-auto object-contain"
-                  />
-                </div>
+                <img
+                  src={`${import.meta.env.BASE_URL}icon.webp`}
+                  alt="淘顶网"
+                  className="block h-auto w-full border-b border-zinc-100 dark:border-zinc-800"
+                />
                 <div className="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-zinc-500 dark:text-zinc-400">
@@ -442,19 +401,6 @@ function AppContent() {
                     </span>
                   </div>
                 </div>
-                <a
-                  href="about.html"
-                  onClick={() =>
-                    localStorage.setItem(returnMobileTabStorageKey, "settings")
-                  }
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm"
-                >
-                  <Info className="w-5 h-5 text-indigo-500" />
-                  <span className="flex-1 text-left text-zinc-700 dark:text-zinc-200">
-                    {t.language.about}
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-zinc-300" />
-                </a>
               </div>
             </div>
           )}

@@ -210,7 +210,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      <div className="shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="hidden shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 lg:block">
         <img
           src={`${import.meta.env.BASE_URL}icon.webp`}
           alt="淘顶网"

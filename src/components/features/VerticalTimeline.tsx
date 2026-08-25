@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { getTimelineDeadlineOverrides } from "@/lib/deadlines";
 
@@ -36,7 +36,6 @@ export default function VerticalTimeline() {
   const { t } = useAppContext();
   const today = useMemo(() => new Date(), []);
   const currentYear = today.getFullYear();
-  const [showLightbox, setShowLightbox] = useState(false);
   const [deadlineOverrides, setDeadlineOverrides] = useState<
     Record<string, string>
   >({});
@@ -46,17 +45,6 @@ export default function VerticalTimeline() {
       .then(setDeadlineOverrides)
       .catch(() => {});
   }, [currentYear]);
-
-  const closeLightbox = useCallback(() => setShowLightbox(false), []);
-
-  useEffect(() => {
-    if (!showLightbox) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setShowLightbox(false);
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [showLightbox]);
 
   const events = useMemo(() => {
     const all: TimelineEvent[] = [];
@@ -119,18 +107,6 @@ export default function VerticalTimeline() {
       : "text-emerald-600 dark:text-emerald-300";
   return (
     <div className="relative">
-      {/* Logo */}
-      <div
-        className="-mx-4 -mt-4 mb-4 cursor-pointer"
-        onClick={() => setShowLightbox(true)}
-      >
-        <img
-          src={`${import.meta.env.BASE_URL}icon.webp`}
-          alt="淘顶网"
-          className="w-full h-auto block rounded-t-lg"
-        />
-      </div>
-
       <div className="relative">
         {/* Center axis line */}
         <div className="absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-zinc-200 dark:bg-zinc-700" />
@@ -220,18 +196,6 @@ export default function VerticalTimeline() {
         })}
       </div>
 
-      {showLightbox && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center cursor-pointer"
-          onClick={closeLightbox}
-        >
-          <img
-            src={`${import.meta.env.BASE_URL}icon.webp`}
-            alt="淘顶网"
-            className="max-w-[80vw] max-h-[80vh] w-auto h-auto object-contain"
-          />
-        </div>
-      )}
     </div>
   );
 }

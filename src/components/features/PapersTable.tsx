@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import { Copy, Files, Check, Github } from "lucide-react";
+import { Copy, Files, Check, Github, Search } from "lucide-react";
 import type { Paper } from "@/types";
 import { CONFERENCE_FIELDS } from "@/lib/conferences";
 import { useAppContext } from "@/context/AppContext";
@@ -268,7 +268,7 @@ export default function PapersTable({
                   (0.3 * (parseInt(paper.year) - yearMin)) / (yearMax - yearMin)
                 : 1,
           };
-          const externalHref = `https://papers.cool/arxiv/search?highlight=1&query=${encodeURIComponent(paper.title)}`;
+          const externalHref = `https://arxiv.org/search/?query=${encodeURIComponent(paper.title)}&searchtype=title&abstracts=show&order=-announced_date_first&size=50`;
 
           return (
             <div
@@ -311,14 +311,10 @@ export default function PapersTable({
                       href={externalHref}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="shrink-0 w-5 h-5 flex items-center justify-center rounded-md bg-amber-100 text-amber-600 hover:bg-amber-200 hover:text-amber-700 dark:bg-amber-950 dark:text-amber-400 dark:hover:bg-amber-900 dark:hover:text-amber-300 active:scale-90 transition-all"
+                      className="shrink-0 w-5 h-5 flex items-center justify-center rounded-md bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900 dark:hover:text-red-300 active:scale-90 transition-all"
                       title={t.table.searchExternal}
                     >
-                      <img
-                        src={`${import.meta.env.BASE_URL}cools.ico`}
-                        alt="papers.cool"
-                        className="w-3 h-3"
-                      />
+                      <Search className="w-3 h-3" aria-label="arXiv" />
                     </a>
                     <button
                       onClick={() => searchGitHub(paper.title, globalIdx)}
@@ -366,14 +362,10 @@ export default function PapersTable({
                   href={externalHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 w-7 h-7 flex items-center justify-center rounded-md bg-amber-100 text-amber-600 hover:bg-amber-200 hover:text-amber-700 dark:bg-amber-950 dark:text-amber-400 dark:hover:bg-amber-900 dark:hover:text-amber-300 active:scale-90 transition-all"
+                  className="shrink-0 w-7 h-7 flex items-center justify-center rounded-md bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900 dark:hover:text-red-300 active:scale-90 transition-all"
                   title={t.table.searchExternal}
                 >
-                  <img
-                    src={`${import.meta.env.BASE_URL}cools.ico`}
-                    alt="papers.cool"
-                    className="w-4 h-4"
-                  />
+                  <Search className="w-4 h-4" aria-label="arXiv" />
                 </a>
                 <button
                   onClick={() => searchGitHub(paper.title, globalIdx)}

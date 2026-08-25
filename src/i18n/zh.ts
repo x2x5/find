@@ -33,7 +33,7 @@ export const zh: Translations = {
     loading: "加载中...",
     clickWordHint: "点论文标题里的单词，可以继续缩小范围",
     clickWordHintShort: "点词继续搜",
-    searchExternal: "在 papers.cool 搜索",
+    searchExternal: "在 arXiv 搜索标题",
   },
   pagination: {
     page: "第",

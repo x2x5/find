@@ -181,7 +181,7 @@ export const en: Translations = {
     loading: "Loading data...",
     clickWordHint: "Click any word in a title to narrow search",
     clickWordHintShort: "Tap words to search",
-    searchExternal: "Search on papers.cool",
+    searchExternal: "Search title on arXiv",
   },
   pagination: {
     page: "Page",

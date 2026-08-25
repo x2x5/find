@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Settings2 } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
+import { getNextConferenceDeadline } from "@/lib/deadlines";
 
 const STORAGE_KEY = "next_deadline_at";
 const LABEL_STORAGE_KEY = "next_deadline_label";
-const DEFAULT_TARGET = "2026-07-28T19:59:59+08:00";
-const DEFAULT_LABEL = "AAAI";
+const DEFAULT_TARGET = "2026-09-26T19:59:59+08:00";
+const DEFAULT_LABEL = "ICLR";
 
 interface CountdownParts {
   days: number;
@@ -93,7 +94,9 @@ export default function DeadlineCountdown({
   useEffect(() => {
     const stored = readStoredTarget();
     let storedLabel = DEFAULT_LABEL;
+    let hasStoredTarget = false;
     try {
+      hasStoredTarget = Boolean(localStorage.getItem(STORAGE_KEY));
       storedLabel = localStorage.getItem(LABEL_STORAGE_KEY) || DEFAULT_LABEL;
     } catch {
       // ignore
@@ -102,6 +105,22 @@ export default function DeadlineCountdown({
     setLabel(storedLabel);
     setDraft(formatForInputs(stored));
     setLabelDraft(storedLabel);
+
+    if (!hasStoredTarget || new Date(stored).getTime() <= Date.now()) {
+      void getNextConferenceDeadline().then((next) => {
+        if (!next) return;
+        setTarget(next.target);
+        setLabel(next.label);
+        setDraft(formatForInputs(next.target));
+        setLabelDraft(next.label);
+        try {
+          localStorage.setItem(STORAGE_KEY, next.target);
+          localStorage.setItem(LABEL_STORAGE_KEY, next.label);
+        } catch {
+          // ignore
+        }
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -227,7 +246,7 @@ export default function DeadlineCountdown({
           </button>
         )}
         {editing && (
-          <div className="absolute top-full right-0 mt-1 z-50 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-3 space-y-2 w-56">
+          <div className="absolute top-full left-0 mt-1 z-50 max-h-[calc(100vh-4rem)] overflow-y-auto bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-3 space-y-2 w-56 max-w-[calc(100vw-2rem)]">
             <div className="flex items-center gap-2">
               <label className="flex items-center gap-1">
                 <input

@@ -57,21 +57,30 @@ function CountdownText({
   );
 }
 
-function NextDeadline({
-  deadline,
-  nowMs,
-}: {
-  deadline?: ConferenceDeadline;
-  nowMs: number;
-}) {
+function DeadlineDetails({ deadline }: { deadline: ConferenceDeadline }) {
+  const date = new Date(deadline.target);
+  const formattedParts = new Intl.DateTimeFormat("zh-CN", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    formattedParts.find((part) => part.type === type)?.value ?? "";
+  const parts = `${value("year")}年${value("month")}月${value("day")}日 ${value("hour")}:${value("minute")}:${value("second")}`;
+
   return (
     <>
-      <div className="flex justify-center text-sm">
-        {deadline ? (
-          <CountdownText deadline={deadline} nowMs={nowMs} compact />
-        ) : (
-          <span className="text-zinc-400">No later deadline announced</span>
-        )}
+      <div className="text-center text-sm tabular-nums">
+        <div className="font-semibold text-pink-500">{deadline.label}</div>
+        <div className="mt-1 whitespace-nowrap text-zinc-600 dark:text-zinc-300">
+          {parts}
+        </div>
+        <div className="mt-0.5 text-xs text-zinc-400">UTC+8</div>
       </div>
       <a
         href="https://ccfddl.com"
@@ -106,7 +115,6 @@ export default function DeadlineCountdown({ compact = false }: { compact?: boole
     [deadlines, nowMs],
   );
   const current = activeDeadlines[0] ?? FALLBACK_DEADLINES[0];
-  const next = activeDeadlines[1];
 
   const toggle = (
     <button
@@ -128,7 +136,7 @@ export default function DeadlineCountdown({ compact = false }: { compact?: boole
         {toggle}
         {expanded && (
           <div className="absolute left-0 top-full z-50 mt-1 w-max max-w-[calc(100vw-2rem)] rounded-lg border border-zinc-200 bg-white p-3 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
-            <NextDeadline deadline={next} nowMs={nowMs} />
+            <DeadlineDetails deadline={current} />
           </div>
         )}
       </div>
@@ -143,7 +151,7 @@ export default function DeadlineCountdown({ compact = false }: { compact?: boole
       </div>
       {expanded && (
         <div className="mt-3 border-t border-zinc-200 pt-3 dark:border-zinc-700">
-          <NextDeadline deadline={next} nowMs={nowMs} />
+          <DeadlineDetails deadline={current} />
         </div>
       )}
     </div>

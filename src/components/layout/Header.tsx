@@ -1,4 +1,4 @@
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, BarChart3, Search } from "lucide-react";
 import SearchBar from "@/components/features/SearchBar";
 import DeadlineCountdown from "@/components/features/DeadlineCountdown";
 import { useAppContext } from "@/context/AppContext";
@@ -8,6 +8,8 @@ interface HeaderProps {
   onSearchChange: (value: string) => void;
   onGenerateWordCloud: () => void;
   canGenerateWordCloud: boolean;
+  visitCount?: number | null;
+  searchCount?: number | null;
   compact?: boolean;
 }
 
@@ -17,6 +19,8 @@ export default function Header(props: HeaderProps) {
     onSearchChange,
     onGenerateWordCloud,
     canGenerateWordCloud,
+    visitCount,
+    searchCount,
     compact,
   } = props;
   const { theme, toggleTheme, language, toggleLanguage } = useAppContext();
@@ -39,6 +43,14 @@ export default function Header(props: HeaderProps) {
             />
           </div>
           <div className="hidden lg:flex items-center gap-2 shrink-0 lg:justify-end">
+            <span className="inline-flex items-center gap-1 text-xs font-semibold tabular-nums text-zinc-600 dark:text-zinc-300" title="Total visits">
+              <BarChart3 className="h-3.5 w-3.5 text-amber-500" />
+              {visitCount != null ? visitCount.toLocaleString() : "···"}
+            </span>
+            <span className="inline-flex items-center gap-1 text-xs font-semibold tabular-nums text-zinc-600 dark:text-zinc-300" title="Total searches">
+              <Search className="h-3.5 w-3.5 text-indigo-500" />
+              {searchCount != null ? searchCount.toLocaleString() : "···"}
+            </span>
             <button
               onClick={toggleTheme}
               className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 dark:bg-indigo-950 dark:text-indigo-400 dark:hover:bg-indigo-900 dark:hover:text-indigo-300 active:scale-90 transition-all"

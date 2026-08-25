@@ -7,8 +7,6 @@ import {
   Moon,
   CalendarDays,
   ArrowUp,
-  Lightbulb,
-  Bug,
   ChevronRight,
   Info,
 } from "lucide-react";
@@ -20,7 +18,6 @@ import RightSidebar from "./components/layout/RightSidebar";
 import VerticalTimeline from "./components/features/VerticalTimeline";
 import PapersTable from "./components/features/PapersTable";
 import Toast from "./components/ui/Toast";
-import IssueDialog from "./components/ui/IssueDialog";
 import WordCloudDialog from "./components/ui/WordCloudDialog";
 import DeadlineCountdown from "./components/features/DeadlineCountdown";
 import GitHubTokenSettings from "./components/features/GitHubTokenSettings";
@@ -73,9 +70,6 @@ function AppContent() {
     key: string;
     position: number;
   } | null>(null);
-  const [issueDialogType, setIssueDialogType] = useState<
-    "feature" | "bug" | null
-  >(null);
   const [mobileTab, setMobileTab] = useState<
     "papers" | "filter" | "timeline" | "settings"
   >("papers");
@@ -257,6 +251,8 @@ function AppContent() {
         }}
         onGenerateWordCloud={() => setShowWordCloud(true)}
         canGenerateWordCloud={shuffledPapers.length > 0}
+        visitCount={visitCount}
+        searchCount={searchCount}
         compact={mobileTab === "timeline" || mobileTab === "settings"}
       />
 
@@ -306,9 +302,6 @@ function AppContent() {
           onToggleConf={handleToggleConf}
           yearRange={yearRange}
           onYearChange={handleYearChange}
-          visitCount={visitCount}
-          searchCount={searchCount}
-          onFeatureRequest={() => setIssueDialogType("feature")}
         />
       </main>
 
@@ -324,9 +317,6 @@ function AppContent() {
                 onToggleConf={handleToggleConf}
                 yearRange={yearRange}
                 onYearChange={handleYearChange}
-                visitCount={visitCount}
-                searchCount={searchCount}
-                onFeatureRequest={() => setIssueDialogType("feature")}
               />
               <RightSidebar showTimeline={showTimeline} />
             </div>
@@ -422,30 +412,6 @@ function AppContent() {
                 onDraftChange={setGithubTokenDraft}
                 onSave={handleSaveGithubToken}
               />
-
-              {/* 反馈区 */}
-              <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
-                <button
-                  onClick={() => setIssueDialogType("feature")}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm border-b border-zinc-100 dark:border-zinc-800"
-                >
-                  <Lightbulb className="w-5 h-5 text-amber-500" />
-                  <span className="flex-1 text-left text-zinc-700 dark:text-zinc-200">
-                    {t.footer.featureRequest}
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-zinc-300" />
-                </button>
-                <button
-                  onClick={() => setIssueDialogType("bug")}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm border-b border-zinc-100 dark:border-zinc-800"
-                >
-                  <Bug className="w-5 h-5 text-red-500" />
-                  <span className="flex-1 text-left text-zinc-700 dark:text-zinc-200">
-                    {t.footer.bugReport}
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-zinc-300" />
-                </button>
-              </div>
 
               <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
                 <div className="px-4 py-4 flex justify-center border-b border-zinc-100 dark:border-zinc-800">
@@ -554,11 +520,6 @@ function AppContent() {
         </div>
       </div>
 
-      <IssueDialog
-        key={issueDialogType}
-        type={issueDialogType}
-        onClose={() => setIssueDialogType(null)}
-      />
       <WordCloudDialog
         open={showWordCloud}
         papers={shuffledPapers}

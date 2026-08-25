@@ -7,9 +7,10 @@ interface SearchBarProps {
   onChange: (value: string) => void;
   onGenerateWordCloud: () => void;
   canGenerateWordCloud: boolean;
+  resultCount: number;
 }
 
-export default function SearchBar({ value, onChange, onGenerateWordCloud, canGenerateWordCloud }: SearchBarProps) {
+export default function SearchBar({ value, onChange, onGenerateWordCloud, canGenerateWordCloud, resultCount }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useAppContext();
 
@@ -53,6 +54,12 @@ export default function SearchBar({ value, onChange, onGenerateWordCloud, canGen
         <Sparkles className="h-3.5 w-3.5" />
         {t.wordCloud.generate}
       </button>
+      <span
+        className="inline-flex h-8 min-w-10 shrink-0 items-center justify-center rounded-md bg-zinc-100 px-2 text-xs font-semibold tabular-nums text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
+        title={`${resultCount.toLocaleString()} papers`}
+      >
+        {resultCount.toLocaleString()}
+      </span>
     </div>
   );
 }

@@ -251,6 +251,7 @@ function AppContent() {
         }}
         onGenerateWordCloud={() => setShowWordCloud(true)}
         canGenerateWordCloud={shuffledPapers.length > 0}
+        resultCount={shuffledPapers.length}
         visitCount={visitCount}
         searchCount={searchCount}
         compact={mobileTab === "timeline" || mobileTab === "settings"}

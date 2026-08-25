@@ -66,14 +66,6 @@ export default function Sidebar({
   return (
     <aside className="self-start flex flex-col gap-3">
       <div className="shrink-0 p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="mb-3 flex items-end justify-between">
-          <span className="text-xs font-bold text-amber-500 dark:text-amber-400">
-            {t.sidebar.total}
-          </span>
-          <span className="text-base font-semibold tabular-nums text-amber-600 dark:text-amber-300 leading-none">
-            {papers.length}
-          </span>
-        </div>
         <Distributions
           papers={papers}
           selectedConfs={selectedConfs}

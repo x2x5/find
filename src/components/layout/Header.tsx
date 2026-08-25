@@ -8,6 +8,7 @@ interface HeaderProps {
   onSearchChange: (value: string) => void;
   onGenerateWordCloud: () => void;
   canGenerateWordCloud: boolean;
+  resultCount: number;
   visitCount?: number | null;
   searchCount?: number | null;
   compact?: boolean;
@@ -19,6 +20,7 @@ export default function Header(props: HeaderProps) {
     onSearchChange,
     onGenerateWordCloud,
     canGenerateWordCloud,
+    resultCount,
     visitCount,
     searchCount,
     compact,
@@ -40,6 +42,7 @@ export default function Header(props: HeaderProps) {
               onChange={onSearchChange}
               onGenerateWordCloud={onGenerateWordCloud}
               canGenerateWordCloud={canGenerateWordCloud}
+              resultCount={resultCount}
             />
           </div>
           <div className="hidden lg:flex items-center gap-2 shrink-0 lg:justify-end">

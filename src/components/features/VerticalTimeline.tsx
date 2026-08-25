@@ -220,10 +220,6 @@ export default function VerticalTimeline() {
         })}
       </div>
 
-      <div className="mt-2 text-[10px] text-zinc-400 dark:text-zinc-500 text-center leading-tight">
-        {t.timeline.disclaimer}
-      </div>
-
       {showLightbox && (
         <div
           className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center cursor-pointer"

@@ -1,4 +1,3 @@
-name
 $\alpha$Depth: Learning Single-Pass Soft Boundary Decomposition for Stereo Conversion
 $\boldsymbol{f}$-OPD: Stabilizing Long-Horizon On-Policy Distillation with Freshness-Aware Control
 $\chi$-Bench: Can AI Agents Automate End-to-End, Long-Horizon, Policy-Rich Healthcare Workflows?
